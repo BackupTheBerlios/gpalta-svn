@@ -30,30 +30,30 @@ public class TreeBuilder
     {
         nodeBuilderGrow = new NodeBuilderGrow();
         nodeBuilderFull = new NodeBuilderFull();
-        nTreesEachDepth = new int[Config.maxDepth];
+        nTreesEachDepth = new int[Config.maxDepth - Config.initialMinDepth + 1];
         /* nTreesEachDepth will contain the number of trees created for each
-         * depth from 1 to maxDepth
+         * depth from initialMinDepth to maxDepth
          * ie:
-         * nTreesEachDepth[0] = number of trees crated with max depth 1
-         * nTreesEachDepth[1] = number of trees crated with max depth 2
+         * nTreesEachDepth[0] = number of trees crated with max depth initialMinDepth
+         * nTreesEachDepth[1] = number of trees crated with max depth initialMinDepth + 1
          * and so on
          * This is done from greater to lower depth in order to favor larger trees.
          */
         int depth = Config.maxDepth;
         for (int i=0; i<Config.populationSize; i++)
         {
-            if (depth == 0)
+            if (depth == Config.initialMinDepth - 1)
             {
                 depth = Config.maxDepth;
             }
-            nTreesEachDepth[depth-1]++;
+            nTreesEachDepth[depth - Config.initialMinDepth]++;
             depth--;
         }
     }
     
     public void build (List<Tree> population)
     {
-        int depth = 1;
+        int depth = Config.initialMinDepth;
         Tree tree;
         int treesDoneThisDepth = 0;
         for (int i=0; i<Config.populationSize; i++)
@@ -63,7 +63,7 @@ public class TreeBuilder
             population.add(tree);
             
             treesDoneThisDepth++;
-            if (treesDoneThisDepth == nTreesEachDepth[depth-1])
+            if (treesDoneThisDepth == nTreesEachDepth[depth - Config.initialMinDepth])
             {
                 depth++;
                 treesDoneThisDepth = 0;

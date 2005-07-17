@@ -24,6 +24,7 @@ public abstract class Config
     public static int tournamentSize = 2;
     
     public static int maxDepth = 9;
+    public static int initialMinDepth = 3;
 
     /* Upper limits for the probability regions of the tree operations. This means:
      * probability of crossover = upLimitProbCrossOver - 0
