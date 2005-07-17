@@ -511,7 +511,6 @@ public class GPaltaGUI extends javax.swing.JFrame {
     {
         Logger.log("Starting evolution for " + n + " generations");
         evoThread.go(n);
-        labInfo.setText("Running");
         progressBar.setMaximum(n);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
