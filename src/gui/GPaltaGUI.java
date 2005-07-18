@@ -36,6 +36,8 @@ public class GPaltaGUI extends javax.swing.JFrame {
      */
     public GPaltaGUI()
     {
+        Config config = new Config();
+        config.init("Config.txt");
         
         initComponents();
         

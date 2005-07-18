@@ -38,9 +38,9 @@ public class Fitness
         /* How much each SNR is more important than the next one:
          * Must be smaller than 1/3
          */
-        deltaSNR = 0.05;
+        deltaSNR = Config.deltaSNR;
         //How much important is voice over silence:
-        kHR1 = 4;
+        kHR1 = Config.kHR1;
         
         sizePenalization = 1/ (500*Math.pow(2,Config.maxDepth+1));
         

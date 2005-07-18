@@ -10,12 +10,16 @@
 
 package GPalta;
 
+import java.io.*;
+import java.util.*;
+
 /**
  * Holds the GP parameters
- *
- * @author neven
+ * It isn't abstract, to be able to create an instance and modify the static 
+ * fields automatically
+ * 
  */
-public abstract class Config 
+public class Config 
 {
     
     public static int populationSize = 500;
@@ -55,4 +59,71 @@ public abstract class Config
     public static String logFileName = "log.txt";
     
     public static boolean useVect = false;
+    
+    //For fitness:
+    
+    /* How much each SNR is more important than the next one:
+     * Must be smaller than 1/3
+     */
+    public static double deltaSNR = 0.05;
+    
+    //How much important is voice over silence:
+    public static double kHR1 = 4;
+    
+    public void init(String fileName)
+    {
+        try
+        {
+            FileInputStream in = new FileInputStream(fileName);
+            Properties applicationProps = new Properties();
+            applicationProps.load(in);
+            in.close();
+            
+            java.lang.reflect.Field[] fields = Config.class.getFields();
+            for (int i = 0; i < fields.length; i++)
+            {
+                Class type = fields[i].getType();
+                if (applicationProps.getProperty(fields[i].getName()) == null)
+                {
+                    Logger.log("Property " + fields[i].getName() + " not found in " + fileName);
+                    System.exit(-1);
+                }
+                
+                if (type.getName().equals("double"))
+                {
+                    fields[i].setDouble(this, Double.parseDouble(applicationProps.getProperty(fields[i].getName())));
+                }
+                else if (type.getName().equals("int"))
+                {
+                    fields[i].setInt(this, Integer.parseInt(applicationProps.getProperty(fields[i].getName())));
+                }
+                else if (type.getName().equals("boolean"))
+                {
+                    fields[i].setBoolean(this, Boolean.parseBoolean(applicationProps.getProperty(fields[i].getName())));
+                }
+                else if (type.getName().equals("java.lang.String"))
+                {
+                    fields[i].set(this, applicationProps.getProperty(fields[i].getName()));
+                }
+            }
+            
+        }
+        catch (IOException e)
+        {
+            Logger.log(e);
+        }
+        catch (IllegalAccessException e)
+        {
+            Logger.log(e);
+        }
+        catch (IllegalArgumentException e)
+        {
+            Logger.log(e);
+        }
+        catch (ExceptionInInitializerError e)
+        {
+            Logger.log(e.getMessage());
+        }
+        
+    }
 }
