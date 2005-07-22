@@ -67,6 +67,9 @@ public class Config
      */
     public static double deltaSNR = 0.05;
     
+    
+    public static double continuityImportance = 0.001;
+    
     //How much important is voice over silence:
     public static double kHR1 = 4;
     

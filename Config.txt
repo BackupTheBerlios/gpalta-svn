@@ -1,0 +1,52 @@
+#---No Comment---
+#Mon Jul 18 11:21:09 CLT 2005
+
+populationSize = 500
+nGenerations = 10000
+    
+tournamentSize = 2
+    
+maxDepth = 9
+initialMinDepth = 3
+
+#Upper limits for the probability regions of the tree operations. This means:
+#probability of crossover = upLimitProbCrossOver - 0
+#probability of mutation = upLimitProbMutation - upLimitProbCrossOver
+#probability of reproduction = 1 - upLimitProbMutation
+
+upLimitProbCrossOver = 0.85
+upLimitProbMutation = 0.9
+#The rest is for reproduction
+    
+constLowLimit = -100
+constUpLimit = 100
+    
+maxCrossoverTries = 10
+    
+upLimitProbSelectTerminal = .1
+upLimitProbSelectNonTerminal = 1
+upLimitProbSelectRoot = 0
+#The rest is for select any node
+    
+probGrowBuild = .5
+#The rest is for Full Build
+    
+nPreviousOutput = 0
+
+saveFileName = evo.bin
+    
+logFileName = log.txt
+    
+useVect = false
+
+#For fitness:
+    
+#How much each SNR is more important than the next one:
+#Must be smaller than 1/3
+
+deltaSNR = 0.05
+
+continuityImportance = 0.001
+    
+#How much important is voice over silence:
+kHR1 = 2

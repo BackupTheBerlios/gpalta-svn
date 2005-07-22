@@ -28,6 +28,7 @@ public class Fitness
     private boolean useSNR;
     private double deltaSNR;
     private double kHR1;
+    private double continuityImportance;
     
     /** Creates a new instance of Fitness */
     public Fitness()
@@ -39,6 +40,7 @@ public class Fitness
          * Must be smaller than 1/3
          */
         deltaSNR = Config.deltaSNR;
+        continuityImportance = Config.continuityImportance;
         //How much important is voice over silence:
         kHR1 = Config.kHR1;
         
@@ -200,7 +202,7 @@ public class Fitness
                 }
             }
             sumMaxContinuity += maxContinuity;
-            double continuityPenalizacion = .001 * (RealDataHolder.nSamples - (double)sumMaxContinuity) / RealDataHolder.nSamples;
+            double continuityPenalizacion = continuityImportance * (RealDataHolder.nSamples - (double)sumMaxContinuity) / RealDataHolder.nSamples;
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
             tree.fitness = (tree.hr0 + kHR1*tree.hr1)/(kHR1+1);

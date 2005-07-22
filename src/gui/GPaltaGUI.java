@@ -36,6 +36,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
      */
     public GPaltaGUI()
     {
+        //First thing to do is read config from file
         Config config = new Config();
         config.init("Config.txt");
         
