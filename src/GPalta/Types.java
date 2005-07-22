@@ -52,6 +52,14 @@ public abstract class Types
         {
             realTerminal.add(new RealVar(i+1));
         } 
+        
+        if (Config.usePreviousOutputAsReal)
+        {
+            for (int i=0; i<LogicDataHolder.nDelays; i++)
+            {
+                realTerminal.add(new RealPreviousOutput(i+1));
+            }
+        }
 
         realAny.addAll(realFunction);
         realAny.addAll(realTerminal);
@@ -68,11 +76,16 @@ public abstract class Types
          * Maybe we could add a single PreviousOutput and create an init() method
          * that randomly defines every copy's delay
          */
-        for (int i=0; i<LogicDataHolder.nDelays; i++)
+        if (!Config.usePreviousOutputAsReal)
         {
-            logicTerminal.add(new PreviousOutput(i+1));
+            for (int i=0; i<LogicDataHolder.nDelays; i++)
+            {
+                logicTerminal.add(new PreviousOutput(i+1));
+            }
         }
-        if (LogicDataHolder.nDelays == 0)
+        
+        //If there aren't any logic terminals, add logic constants for closure:
+        if (Config.usePreviousOutputAsReal || LogicDataHolder.nDelays == 0)
         {
             logicTerminal.add(new LogicConstant());
         }

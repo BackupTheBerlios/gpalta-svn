@@ -29,6 +29,9 @@ public abstract class LogicDataHolder
             prevOut[i] = false;
         }
         index = 0;
+
+        Logger.log("Using " + Config.nPreviousOutput + " previous outputs as " + (Config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
+        
     }
     
     public static void reset()

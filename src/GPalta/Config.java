@@ -73,6 +73,8 @@ public class Config
     //How much important is voice over silence:
     public static double kHR1 = 4;
     
+    public static boolean usePreviousOutputAsReal = false;
+    
     public void init(String fileName)
     {
         try

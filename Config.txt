@@ -1,7 +1,7 @@
 #---No Comment---
 #Mon Jul 18 11:21:09 CLT 2005
 
-populationSize = 500
+populationSize = 40
 nGenerations = 10000
     
 tournamentSize = 2
@@ -49,4 +49,6 @@ deltaSNR = 0.05
 continuityImportance = 0.001
     
 #How much important is voice over silence:
-kHR1 = 2
+kHR1 = 4
+
+usePreviousOutputAsReal = false
