@@ -76,6 +76,14 @@ public class GPaltaGUI extends javax.swing.JFrame {
         stopSaveQuit = false;
         
         usePlot = true;
+        
+        if (Config.nonInteractive)
+        {
+            newEvo(true);
+            checkSave.setSelected(true);
+            togStopSaveQuit.doClick();
+            butGoN.doClick();
+        }
     }
     
     /** This method is called from within the constructor to
@@ -479,19 +487,9 @@ public class GPaltaGUI extends javax.swing.JFrame {
             Logger.log("Generating evolution...");
         }
         
-        try
-        {
-            
-            evoThread = new EvolutionThread(this,  fromFile);
-        }
-        catch (IOException e)
-        {
-            //TODO: error when reading evolution file, do something
-        }
-        catch (ClassNotFoundException e)
-        {
-            //TODO: the evo file is probably old and has obsolete class data. Do something
-        }
+        //Exceptions caught inside EvolutionThread:
+        evoThread = new EvolutionThread(this,  fromFile);
+        
         evoThread.start();
         //TODO:  log more information (fitness parameters, etc)
         Logger.log("Initial population info:");

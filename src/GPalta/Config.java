@@ -75,6 +75,8 @@ public class Config
     
     public static boolean usePreviousOutputAsReal = false;
     
+    public static boolean nonInteractive = false;
+    
     public void init(String fileName)
     {
         try

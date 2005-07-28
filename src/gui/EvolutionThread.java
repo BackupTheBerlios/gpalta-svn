@@ -31,7 +31,7 @@ public class EvolutionThread extends Thread
      * @param fromFile Whether the Evolution should continue from a previously saved
      * "evo.bin" file
      */
-    public EvolutionThread(GPaltaGUI gui, boolean fromFile) throws IOException, ClassNotFoundException
+    public EvolutionThread(GPaltaGUI gui, boolean fromFile)
     {
         this.gui = gui;
         e = new Evolution();
@@ -40,8 +40,23 @@ public class EvolutionThread extends Thread
         first = true;
         if (fromFile)
         {
-            e.read(Config.saveFileName);
             first = false;
+            try
+            {
+                e.read(Config.saveFileName);
+            }
+            catch (IOException ex)
+            {
+                Logger.log("Error reading evolution file:");
+                Logger.log(ex.toString());
+                Logger.log("Generating a new one...");
+                e = new Evolution();
+                first = true;
+            }
+            catch (ClassNotFoundException ex)
+            {
+                //TODO: the evo file is probably old and has obsolete class data. Do something
+            }
         }
         /* If we read from file, this will set the gui to the real stats
          * Else, it will set all zeros, and a random chosen tree as the best so far
