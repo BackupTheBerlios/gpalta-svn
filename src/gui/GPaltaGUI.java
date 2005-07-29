@@ -245,7 +245,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelStop.add(togButStopAtNextGen, java.awt.BorderLayout.NORTH);
 
-        togStopSaveQuit.setText("Stop tomorrow at 8:15");
+        togStopSaveQuit.setText("Stop in " + Config.nDaysToRun + " days at 8:15");
         togStopSaveQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 togStopSaveQuitActionPerformed(evt);
@@ -391,10 +391,10 @@ public class GPaltaGUI extends javax.swing.JFrame {
         if (togStopSaveQuit.isSelected())
         {
             timer = new Timer();
-            Calendar tomorrow = Calendar.getInstance();
-            //Set for tomorrow at 8:15:00 AM
+            Calendar tomorrow = Calendar.getInstance();            
+            //Set for Config.nDaysToRun at 8:15:00 AM
             //TODO: This should be customizable
-            tomorrow.add(Calendar.DATE, 1);
+            tomorrow.add(Calendar.DATE, Config.nDaysToRun);
             tomorrow.set(Calendar.HOUR_OF_DAY, 8);
             tomorrow.set(Calendar.MINUTE, 15);
             tomorrow.set(Calendar.SECOND, 0);

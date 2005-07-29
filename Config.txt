@@ -53,3 +53,5 @@ kHR1 = 4
 usePreviousOutputAsReal = false
 
 nonInteractive = false
+
+nDaysToRun = 1

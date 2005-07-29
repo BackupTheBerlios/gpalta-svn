@@ -77,6 +77,8 @@ public class Config
     
     public static boolean nonInteractive = false;
     
+    public static int nDaysToRun = 1;
+    
     public void init(String fileName)
     {
         try
