@@ -21,22 +21,23 @@ import java.util.*;
 public abstract class RealDataHolder
 {
     
-    /* data is a List of double arrays. Each array corresponds to all the
-     * samples for a var
+    /* Every row in data correponds to all the samples for a variable. 
+     * This is done to be able to return all the samples for a certain variable 
+     * as a vector.
      */
-    private static List<double[]> data;
+    private static double[][] data;
     public static int nSamples;
     private static int currentSample;
     public static int nVars;
     
     public static double getData(int whichVar)
     {
-        return data.get(whichVar-1)[currentSample];
+        return data[whichVar-1][currentSample];
     }
     
     public static double[] getDataVect(int whichVar)
     {
-        return data.get(whichVar-1);
+        return data[whichVar-1];
     }
     
     public static void init()
@@ -52,11 +53,7 @@ public abstract class RealDataHolder
             //count samples:
             for (nSamples=1; in.readLine()!=null; nSamples++);
             
-            data = new ArrayList<double[]>();
-            for (int var=0; var<nVars; var++)
-            {
-                data.add(new double[nSamples]);
-            }
+            data = new double[nVars][nSamples];
             
             in = new BufferedReader(new FileReader(dataFile));
             for (int sample=0; sample<nSamples; sample++)
@@ -64,7 +61,7 @@ public abstract class RealDataHolder
                 String[] vars = in.readLine().trim().split("\\s+");
                 for (int var=0; var<nVars; var++)
                 {
-                    data.get(var)[sample] = Double.parseDouble(vars[var]);
+                    data[var][sample] = Double.parseDouble(vars[var]);
                 }
             }
             
