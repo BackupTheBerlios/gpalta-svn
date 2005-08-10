@@ -125,7 +125,7 @@ public class Fitness
         }
     }
     
-    void calculate(Tree tree)
+    public void calculate(Tree tree)
     {
         if (!tree.fitCalculated)
         {
