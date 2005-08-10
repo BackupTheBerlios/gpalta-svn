@@ -20,28 +20,29 @@ import nodes.*;
 public abstract class Types
 {
     
-    public static List<Node> realAny = new ArrayList<Node>();
-    public static List<Node> realFunction = new ArrayList<Node>();
-    public static List<Node> realTerminal = new ArrayList<Node>();
+    public static List<Node> realAny;
+    public static List<Node> realFunction;
+    public static List<Node> realTerminal;
 
-    public static List<Node> logicAny = new ArrayList<Node>();
-    public static List<Node> logicFunction = new ArrayList<Node>();
-    public static List<Node> logicTerminal = new ArrayList<Node>();
+    public static List<Node> logicAny;
+    public static List<Node> logicFunction;
+    public static List<Node> logicTerminal;
     
-    public static List<Node> treeRoot = new ArrayList<Node>();
-    
-    /*public static final int NONE            =-1;
-    public static final int REAL_ANY        = 0;
-    public static final int REAL_FUNCTION   = 1;
-    public static final int REAL_TERMINAL   = 2;
-    public static final int LOGIC_ANY       = 3;
-    public static final int LOGIC_FUNCTION  = 4;
-    public static final int LOGIC_TERMINAL  = 5;
-    public static final int FUNCTION_ANY    = 6;
-    public static final int TERMINAL_ANY    = 7;*/
+    public static List<Node> treeRoot;
     
     public static void define()
     {
+        //Reinitialize Lists every time a new Evolution is created
+        realAny = new ArrayList<Node>();
+        realFunction = new ArrayList<Node>();
+        realTerminal = new ArrayList<Node>();
+
+        logicAny = new ArrayList<Node>();
+        logicFunction = new ArrayList<Node>();
+        logicTerminal = new ArrayList<Node>();
+    
+        treeRoot = new ArrayList<Node>();
+        
         realFunction.add(new Plus());
         realFunction.add(new Minus());
         realFunction.add(new Times());
