@@ -101,7 +101,9 @@ public class Config
                 if (applicationProps.getProperty(fields[i].getName()) == null)
                 {
                     Logger.log("Property " + fields[i].getName() + " not found in " + fileName);
-                    System.exit(-1);
+                    //Do not exit, just warn and continue:
+                    continue;
+                    //System.exit(-1);
                 }
                 
                 if (type.getName().equals("double"))
