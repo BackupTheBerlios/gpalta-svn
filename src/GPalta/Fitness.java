@@ -164,10 +164,19 @@ public class Fitness
         }
     }
     
-    public void calculate(Tree tree)
+    /**
+     * Evaluates the tree in every sample, and then calculates its hr1 and hr0
+     * and its fitness, recording them in the tree.
+     *
+     * @return The output of the Tree for every sample, or null if the Tree isn't
+     * evaluated
+     */
+    public boolean[] calculate(Tree tree)
     {
+        
         if (!tree.fitCalculated)
         {
+            boolean[] results;
             RealDataHolder.reset();
             LogicDataHolder.reset();
             double hits0 = 0;
@@ -176,7 +185,6 @@ public class Fitness
             int sumMaxContinuity = 0;
             boolean previousTarget = false;
             int continuity = 0;
-            boolean[] results;
             if (Config.nPreviousOutput == 0 && Config.useVect)
             {
                 results = tree.evalVect();
@@ -247,7 +255,11 @@ public class Fitness
             tree.fitness = (tree.hr0 + kHR1*tree.hr1)/(kHR1+1);
             tree.fitness -= (double)tree.nSubNodes * sizePenalization;
             tree.fitness -= continuityPenalizacion;
+            return results;
         }
+        
+        //If we don't eval the tree:
+        return null;
     }
     
 }

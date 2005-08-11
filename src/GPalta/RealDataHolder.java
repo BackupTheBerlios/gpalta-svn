@@ -93,7 +93,7 @@ public abstract class RealDataHolder
     }
     
     /**
-     * Initialize the data from the given matrix. Evry row is a variable and
+     * Initialize the data from the given matrix. Every row is a variable and
      * every column is a sample
      */
     public static void init(double[][] data)
