@@ -31,17 +31,26 @@ public class Evolution extends Thread
 
     public EvolutionStats evoStats;
     
-    public Evolution()
+    /**
+     * Creates a new instance of Evolution
+     * 
+     * @param initPop If true, the population is randomly initialized. Else, 
+     * nothing is done (population will be later read from a file)
+     */
+    public Evolution(boolean initPop)
     {
         
         RealDataHolder.init();
         LogicDataHolder.init();
         Types.define();
         
-        population = new ArrayList<Tree>();
+        if (initPop)
+        {
+            population = new ArrayList<Tree>();
         
-        treeBuilder = new TreeBuilder();
-        treeBuilder.build(population);
+            treeBuilder = new TreeBuilder();
+            treeBuilder.build(population);
+        }
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
@@ -99,6 +108,10 @@ public class Evolution extends Thread
         evoStats.bestFitThisGen = bestThisGen.fitness;
     }
     
+    /**
+     * Evolve one generation. Assumes the current population is already evaluated
+     * and doesn't evaluate the evolved one
+     */
     public void evolve()
     {
         List<Tree> nextPop = treeSelector.select(population);
@@ -109,23 +122,29 @@ public class Evolution extends Thread
     
     
     
-    /* TODO: We should do something to check that the saved info is correct.
+    /**
+     * Save Evolution to file.
+     * TODO: We should do something to check that the saved info is correct.
      * Maybe more things should be saved. For instance, if the file was saved
      * with a grater maxDepth than it is now, there would be nodes with larger 
      * depth than current maxDepth, and an attempt to mutate those nodes would
      * result in an error.
+     * 
+     * @param fileName The file to write to
+     * 
+     * @throws IOException if a problem is encountered while writing (controlling
+     * classes should do something about it)
      */
-    //throw exceptions so that controlling classes do something if errors exist
-    public void save(String filename) throws IOException
+    public void save(String fileName) throws IOException
     {
         Logger.log("******************************************");
-        Logger.log("Saving in file " + filename);
+        Logger.log("Saving in file " + fileName);
         Logger.log("Best tree so far:");
         Logger.log("" + evoStats.bestSoFar);
         Logger.log("with fitness: " + evoStats.bestSoFar.fitness);
         
         
-        FileOutputStream fos = new FileOutputStream(filename);
+        FileOutputStream fos = new FileOutputStream(fileName);
         ObjectOutputStream out = new ObjectOutputStream(fos);
 
         out.writeInt(generation);
@@ -138,10 +157,25 @@ public class Evolution extends Thread
         Logger.log("******************************************");
 
     }
-    //throw exceptions so that controlling classes do something if errors exist
-    public void read(String filename) throws IOException, ClassNotFoundException
+    
+    /**
+     * Read Evolution from file.
+     * TODO: We should do something to check that the saved info is correct.
+     * Maybe more things should be saved. For instance, if the file was saved
+     * with a grater maxDepth than it is now, there would be nodes with larger 
+     * depth than current maxDepth, and an attempt to mutate those nodes would
+     * result in an error.
+     * 
+     * @param fileName The file to be read
+     * 
+     * @throws IOException if a problem is encountered while reading (controlling
+     * classes should do something about it)
+     * @throws ClassNotFoundException if class read doesn't match existing classes
+     * (probably old data in file)
+     */
+    public void read(String fileName) throws IOException, ClassNotFoundException
     {
-        FileInputStream fis = new FileInputStream(filename);
+        FileInputStream fis = new FileInputStream(fileName);
         ObjectInputStream in = new ObjectInputStream(fis);
         
         generation = in.readInt();

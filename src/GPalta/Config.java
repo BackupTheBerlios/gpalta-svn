@@ -79,6 +79,12 @@ public class Config
     
     public static int nDaysToRun = 1;
     
+    /**
+     * Reads config from a property file. The file must contain a value for all
+     * the fields in the Config class
+     * 
+     * @param fileName The name of the config file
+     */
     public void init(String fileName)
     {
         try

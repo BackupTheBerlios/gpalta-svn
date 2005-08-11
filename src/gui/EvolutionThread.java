@@ -34,7 +34,7 @@ public class EvolutionThread extends Thread
     public EvolutionThread(GPaltaGUI gui, boolean fromFile)
     {
         this.gui = gui;
-        e = new Evolution();
+        e = new Evolution(!fromFile);
         exit = false;
         nGenerations = 0;
         first = true;
@@ -50,7 +50,7 @@ public class EvolutionThread extends Thread
                 Logger.log("Error reading evolution file:");
                 Logger.log(ex.toString());
                 Logger.log("Generating a new one...");
-                e = new Evolution();
+                e = new Evolution(true);
                 first = true;
             }
             catch (ClassNotFoundException ex)

@@ -14,8 +14,10 @@ import nodes.*;
 import ops.*;
 import java.util.*;
 import java.io.*;
+
 /**
- *
+ * Hold desired outputs for fitness cases, and calculates the fitness for a given 
+ * Tree
  * @author DSP
  */
 public class Fitness

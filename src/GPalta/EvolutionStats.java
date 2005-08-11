@@ -14,7 +14,7 @@ import nodes.*;
 
 
 /**
- *
+ * Holds some statistics about the ongoing Evolution
  * @author neven
  */
 public class EvolutionStats
