@@ -15,7 +15,8 @@ import java.util.*;
 
 /**
  * Holds the problem's data and provides methods to access it
- *
+ * It's abstract in order to be always available, without having to pass an
+ * instance around. Instead of a constructor, use the init method
  * @author neven
  */
 public abstract class RealDataHolder
@@ -40,9 +41,12 @@ public abstract class RealDataHolder
         return data[whichVar-1];
     }
     
-    public static void init()
+    /**
+     * Initialize the data from a file
+     */
+    public static void init(String fileName)
     {
-        File dataFile = new File("data.txt");
+        File dataFile = new File(fileName);
         try
         {
             BufferedReader in = new BufferedReader(new FileReader(dataFile));
@@ -86,6 +90,18 @@ public abstract class RealDataHolder
             System.exit(-1);
         }
 
+    }
+    
+    /**
+     * Initialize the data from the given matrix. Evry row is a variable and
+     * every column is a sample
+     */
+    public static void init(double[][] data)
+    {
+        RealDataHolder.data = data;
+        nVars = data.length;
+        nSamples = data[0].length;
+        currentSample = 0;
     }
     
     public static void reset()

@@ -32,7 +32,7 @@ public class Evolution extends Thread
     public EvolutionStats evoStats;
     
     /**
-     * Creates a new instance of Evolution
+     * Creates a new instance of Evolution, loading data from file
      * 
      * @param initPop If true, the population is randomly initialized. Else, 
      * nothing is done (population will be later read from a file)
@@ -40,7 +40,7 @@ public class Evolution extends Thread
     public Evolution(boolean initPop)
     {
         
-        RealDataHolder.init();
+        RealDataHolder.init("data.txt");
         LogicDataHolder.init();
         Types.define();
         
@@ -54,11 +54,37 @@ public class Evolution extends Thread
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
-        fitness = new Fitness();
+        fitness = new Fitness("class.txt");
 
         evoStats = new EvolutionStats();
-        evoStats.bestSoFar = population.get(0);
+        if (initPop)
+        {
+            evoStats.bestSoFar = population.get(0);
+        }
         
+        
+        generation = 0;
+        
+    }
+    
+    /**
+     * Creates a new instance of Evolution, using the given data, classes and snrs
+     * Used for external evaluation of trees, so the population is not
+     * initialized, as it will be read later from file.
+     */
+    public Evolution(double[][] data, boolean[] classes, double[] snrs)
+    {
+        
+        RealDataHolder.init(data);
+        LogicDataHolder.init();
+        Types.define();
+        
+        treeOp = new TreeOperator();
+        treeSelector = new TreeSelector();
+        fitness = new Fitness(classes,  snrs);
+
+        evoStats = new EvolutionStats();
+
         generation = 0;
         
     }

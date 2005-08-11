@@ -32,12 +32,11 @@ public class Fitness
     private double kHR1;
     private double continuityImportance;
     
-    /** Creates a new instance of Fitness */
-    public Fitness()
+    /** 
+     * Creates a new instance of Fitness, initializing only constants
+     */
+    private Fitness()
     {
-        //TODO: The file should be customizable via constructor or Config class
-        File classFile = new File("class.txt");
-        
         /* How much each SNR is more important than the next one:
          * Must be smaller than 1/3
          */
@@ -47,11 +46,24 @@ public class Fitness
         kHR1 = Config.kHR1;
         
         sizePenalization = 1/ (500*Math.pow(2,Config.maxDepth+1));
-        
+    }
+    
+    /** 
+     * Creates a new instance of Fitness, reading desired outputs from file
+     * 
+     * @param fileName The file to read
+     */
+    public Fitness(String fileName)
+    {
+        // Create a new Fitness, and only init constants:
+        this();
+
+        File classFile = new File(fileName);
+
         classes = new boolean[RealDataHolder.nSamples];
         n0 = 0;
         n1 = 0;
-        
+
         try
         {
             BufferedReader out = new BufferedReader(new FileReader(classFile));
@@ -65,8 +77,8 @@ public class Fitness
                 snrs = new double[RealDataHolder.nSamples];
             }
             out = new BufferedReader(new FileReader(classFile));
-            
-            
+
+
             for (int sample=0; sample<RealDataHolder.nSamples; sample++)
             {
                 line = out.readLine().trim();
@@ -94,7 +106,7 @@ public class Fitness
                     n1++;
                 }
             }
-            
+
             Logger.log("Fitness initialized from file \"class.txt\"");
             Logger.log("\t kHR1:                " + kHR1);
             if (useSNR)
@@ -105,7 +117,7 @@ public class Fitness
             Logger.log("\t Frames:              " + (n0+n1));
             Logger.log("\t N0:                  " + n0);
             Logger.log("\t N1:                  " + n1);
-            
+
         }
         /* TODO: These exceptions shouldn't be catched here, but thrown to the
          * evolution and then to the controller
@@ -124,6 +136,31 @@ public class Fitness
         {
             Logger.log(e);
             System.exit(-1);
+        }
+    }
+    
+    /**
+     * Creates a new instance of Fitness, receiving the desired outputs and
+     * the SNR for each sample. Assumes the size of both parameters is
+     * the same as RealDataHolder.nSamples
+     */
+    public Fitness(boolean[] classes, double[] snrs)
+    {
+        // Create a new Fitness, and only init constants:
+        this();
+        
+        this.classes = classes;
+        this.snrs = snrs;
+        for (int sample=0; sample<RealDataHolder.nSamples; sample++)
+        {
+            if (!classes[sample])
+            {
+                n0++;
+            }
+            else
+            {
+                n1++;
+            }
         }
     }
     
