@@ -20,15 +20,15 @@ public class RealConstant extends RealNode
     
     private double constant;
     
-    public double eval()
+    public double eval(Evolution evo)
     {
         return ( constant );
     }
     
-    public double[] evalVect()
+    public double[] evalVect(Evolution evo)
     {
-        double[] out = new double[RealDataHolder.nSamples];
-        for (int i=0; i < RealDataHolder.nSamples; i++)
+        double[] out = new double[evo.realDataHolder.nSamples];
+        for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
             out[i] = constant;
         }

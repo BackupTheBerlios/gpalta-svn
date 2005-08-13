@@ -19,7 +19,7 @@ import java.io.*;
  * Holds the population and performs evolution
  * @author neven
  */
-public class Evolution extends Thread
+public class Evolution
 {
     
     public TreeBuilder treeBuilder;
@@ -27,6 +27,8 @@ public class Evolution extends Thread
     public TreeOperator treeOp;
     public TreeSelector treeSelector;
     public Fitness fitness;
+    public RealDataHolder realDataHolder;
+    public LogicDataHolder logicDataHolder;
     public int generation;
 
     public EvolutionStats evoStats;
@@ -40,28 +42,26 @@ public class Evolution extends Thread
     public Evolution(boolean initPop)
     {
         
-        RealDataHolder.init("data.txt");
-        LogicDataHolder.init();
-        Types.define();
+        realDataHolder = new RealDataHolder("data.txt");
+        logicDataHolder = new LogicDataHolder();
+        Types.define(this);
         
+        population = new ArrayList<Tree>();
         if (initPop)
         {
-            population = new ArrayList<Tree>();
-        
             treeBuilder = new TreeBuilder();
             treeBuilder.build(population);
         }
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
-        fitness = new Fitness("class.txt");
+        fitness = new Fitness(this, "class.txt");
 
         evoStats = new EvolutionStats();
         if (initPop)
         {
             evoStats.bestSoFar = population.get(0);
         }
-        
         
         generation = 0;
         
@@ -75,13 +75,15 @@ public class Evolution extends Thread
     public Evolution(double[][] data, boolean[] classes, double[] snrs)
     {
         
-        RealDataHolder.init(data);
-        LogicDataHolder.init();
-        Types.define();
+        realDataHolder = new RealDataHolder(data);
+        logicDataHolder = new LogicDataHolder();
+        Types.define(this);
+        
+        population = new ArrayList<Tree>();
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
-        fitness = new Fitness(classes,  snrs);
+        fitness = new Fitness(this, classes,  snrs);
 
         evoStats = new EvolutionStats();
 

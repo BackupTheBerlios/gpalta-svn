@@ -10,6 +10,7 @@
 
 package nodes;
 import java.util.*;
+import GPalta.*;
 
 /**
  *
@@ -33,14 +34,14 @@ public class Tree extends Node
         this.type = type;
     }
     
-    public boolean eval()
+    public boolean eval(Evolution evo)
     {
-        return ((LogicNode)kids[0]).eval();
+        return ((LogicNode)kids[0]).eval(evo);
     }
     
-    public boolean[] evalVect()
+    public boolean[] evalVect(Evolution evo)
     {
-        return ((LogicNode)kids[0]).evalVect();
+        return ((LogicNode)kids[0]).evalVect(evo);
     }
     
     public int nKids()

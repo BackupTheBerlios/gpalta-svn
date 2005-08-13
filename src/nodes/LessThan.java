@@ -19,17 +19,17 @@ import GPalta.*;
 public class LessThan extends LogicNode
 {
 
-    public boolean eval()
+    public boolean eval(Evolution evo)
     {
-        return ( ((RealNode)kids[0]).eval() < ((RealNode)kids[1]).eval() );
+        return ( ((RealNode)kids[0]).eval(evo) < ((RealNode)kids[1]).eval(evo) );
     }
     
-    public boolean[] evalVect()
+    public boolean[] evalVect(Evolution evo)
     {
-        double[] resultKid1 = ((RealNode)kids[0]).evalVect();
-        double[] resultKid2 = ((RealNode)kids[1]).evalVect();
-        boolean[] out = new boolean[RealDataHolder.nSamples];
-        for (int i=0; i < RealDataHolder.nSamples; i++)
+        double[] resultKid1 = ((RealNode)kids[0]).evalVect(evo);
+        double[] resultKid2 = ((RealNode)kids[1]).evalVect(evo);
+        boolean[] out = new boolean[evo.realDataHolder.nSamples];
+        for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
             out[i] = resultKid1[i] < resultKid2[i];
         }

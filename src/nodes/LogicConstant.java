@@ -20,15 +20,15 @@ public class LogicConstant extends LogicNode
     
     private boolean constant;
     
-    public boolean eval()
+    public boolean eval(Evolution evo)
     {
         return ( constant );
     }
     
-    public boolean[] evalVect()
+    public boolean[] evalVect(Evolution evo)
     {
-        boolean[] out = new boolean[RealDataHolder.nSamples];
-        for (int i=0; i < RealDataHolder.nSamples; i++)
+        boolean[] out = new boolean[evo.realDataHolder.nSamples];
+        for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
             out[i] = constant;
         }

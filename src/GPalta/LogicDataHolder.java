@@ -14,13 +14,13 @@ package GPalta;
  *
  * @author DSP
  */
-public abstract class LogicDataHolder 
+public class LogicDataHolder 
 {
-    public static int nDelays;
-    private static boolean[] prevOut;
-    private static int index;
+    public int nDelays;
+    private boolean[] prevOut;
+    private int index;
     
-    public static void init()
+    public LogicDataHolder()
     {
         nDelays = Config.nPreviousOutput;
         prevOut = new boolean[nDelays];
@@ -34,7 +34,7 @@ public abstract class LogicDataHolder
         
     }
     
-    public static void reset()
+    public void reset()
     {
         index = 0;
         for (int i=0; i<nDelays; i++)
@@ -43,7 +43,7 @@ public abstract class LogicDataHolder
         }
     }
     
-    public static void update(boolean currentOut)
+    public void update(boolean currentOut)
     {
         if (nDelays != 0)
         {
@@ -56,7 +56,7 @@ public abstract class LogicDataHolder
         }
     }
     
-    public static boolean getData(int delay)
+    public boolean getData(int delay)
     {
         int tmpIndex = index - (delay - 1);
         if (tmpIndex < 0)

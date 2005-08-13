@@ -10,6 +10,7 @@
 
 package nodes;
 import java.util.*;
+import GPalta.*;
 
 
 
@@ -21,7 +22,7 @@ import java.util.*;
 public abstract class RealNode extends Node
 {
     
-    public abstract double eval();
-    public abstract double[] evalVect();
+    public abstract double eval(Evolution evo);
+    public abstract double[] evalVect(Evolution evo);
 
 }

@@ -25,9 +25,9 @@ public class RealPreviousOutput extends RealNode
         this.delay = delay;
     }
     
-    public double eval()
+    public double eval(Evolution evo)
     {
-        if (LogicDataHolder.getData(delay))
+        if (evo.logicDataHolder.getData(delay))
             return 1;
         else
             return 0;
@@ -37,7 +37,7 @@ public class RealPreviousOutput extends RealNode
      * This should never be called. The whole evalVect was implemented to be
      * used when there are no previous outputs as Nodes
      */
-    public double[] evalVect()
+    public double[] evalVect(Evolution evo)
     {
         //TODO: Maybe throw an exception?
         Logger.log("Error: Should not be calling RealPreviousOutput's evalVect()");

@@ -31,12 +31,14 @@ public class Fitness
     private double deltaSNR;
     private double kHR1;
     private double continuityImportance;
+    private Evolution evo;
     
     /** 
      * Creates a new instance of Fitness, initializing only constants
      */
-    private Fitness()
+    private Fitness(Evolution evo)
     {
+        this.evo = evo;
         /* How much each SNR is more important than the next one:
          * Must be smaller than 1/3
          */
@@ -53,14 +55,14 @@ public class Fitness
      * 
      * @param fileName The file to read
      */
-    public Fitness(String fileName)
+    public Fitness(Evolution evo, String fileName)
     {
         // Create a new Fitness, and only init constants:
-        this();
+        this(evo);
 
         File classFile = new File(fileName);
 
-        classes = new boolean[RealDataHolder.nSamples];
+        classes = new boolean[evo.realDataHolder.nSamples];
         n0 = 0;
         n1 = 0;
 
@@ -74,12 +76,12 @@ public class Fitness
             if (line.split("\\s+").length == 2)
             {
                 useSNR = true;
-                snrs = new double[RealDataHolder.nSamples];
+                snrs = new double[evo.realDataHolder.nSamples];
             }
             out = new BufferedReader(new FileReader(classFile));
 
 
-            for (int sample=0; sample<RealDataHolder.nSamples; sample++)
+            for (int sample=0; sample<evo.realDataHolder.nSamples; sample++)
             {
                 line = out.readLine().trim();
                 if (useSNR)
@@ -142,16 +144,16 @@ public class Fitness
     /**
      * Creates a new instance of Fitness, receiving the desired outputs and
      * the SNR for each sample. Assumes the size of both parameters is
-     * the same as RealDataHolder.nSamples
+     * the same as evo.realDataHolder.nSamples
      */
-    public Fitness(boolean[] classes, double[] snrs)
+    public Fitness(Evolution evo, boolean[] classes, double[] snrs)
     {
         // Create a new Fitness, and only init constants:
-        this();
+        this(evo);
         
         this.classes = classes;
         this.snrs = snrs;
-        for (int sample=0; sample<RealDataHolder.nSamples; sample++)
+        for (int sample=0; sample<evo.realDataHolder.nSamples; sample++)
         {
             if (!classes[sample])
             {
@@ -177,8 +179,8 @@ public class Fitness
         if (!tree.fitCalculated)
         {
             boolean[] results;
-            RealDataHolder.reset();
-            LogicDataHolder.reset();
+            evo.realDataHolder.reset();
+            evo.logicDataHolder.reset();
             double hits0 = 0;
             double hits1 = 0;
             int maxContinuity = 0;
@@ -187,19 +189,19 @@ public class Fitness
             int continuity = 0;
             if (Config.nPreviousOutput == 0 && Config.useVect)
             {
-                results = tree.evalVect();
+                results = tree.evalVect(evo);
             }
             else
             {
-                results = new boolean[RealDataHolder.nSamples];
-                for (int i=0; i<RealDataHolder.nSamples; i++)
+                results = new boolean[evo.realDataHolder.nSamples];
+                for (int i=0; i<evo.realDataHolder.nSamples; i++)
                 {
-                    results[i] = tree.eval();
-                    RealDataHolder.update();
-                    LogicDataHolder.update(results[i]);
+                    results[i] = tree.eval(evo);
+                    evo.realDataHolder.update();
+                    evo.logicDataHolder.update(results[i]);
                 }
             }
-            for (int i=0; i<RealDataHolder.nSamples; i++)
+            for (int i=0; i<evo.realDataHolder.nSamples; i++)
             {
                 if (classes[i]!=previousTarget)
                 {
@@ -249,7 +251,7 @@ public class Fitness
                 }
             }
             sumMaxContinuity += maxContinuity;
-            double continuityPenalizacion = continuityImportance * (RealDataHolder.nSamples - (double)sumMaxContinuity) / RealDataHolder.nSamples;
+            double continuityPenalizacion = continuityImportance * (evo.realDataHolder.nSamples - (double)sumMaxContinuity) / evo.realDataHolder.nSamples;
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
             tree.fitness = (tree.hr0 + kHR1*tree.hr1)/(kHR1+1);

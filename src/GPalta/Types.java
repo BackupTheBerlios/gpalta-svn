@@ -30,7 +30,7 @@ public abstract class Types
     
     public static List<Node> treeRoot;
     
-    public static void define()
+    public static void define(Evolution evo)
     {
         //Reinitialize Lists every time a new Evolution is created
         realAny = new ArrayList<Node>();
@@ -49,14 +49,14 @@ public abstract class Types
 
         realTerminal.add(new RealConstant());
         
-        for (int i=0; i<RealDataHolder.nVars; i++)
+        for (int i=0; i<evo.realDataHolder.nVars; i++)
         {
             realTerminal.add(new RealVar(i+1));
         } 
         
         if (Config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<LogicDataHolder.nDelays; i++)
+            for (int i=0; i<evo.logicDataHolder.nDelays; i++)
             {
                 realTerminal.add(new RealPreviousOutput(i+1));
             }
@@ -79,14 +79,14 @@ public abstract class Types
          */
         if (!Config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<LogicDataHolder.nDelays; i++)
+            for (int i=0; i<evo.logicDataHolder.nDelays; i++)
             {
                 logicTerminal.add(new PreviousOutput(i+1));
             }
         }
         
         //If there aren't any logic terminals, add logic constants for closure:
-        if (Config.usePreviousOutputAsReal || LogicDataHolder.nDelays == 0)
+        if (Config.usePreviousOutputAsReal || evo.logicDataHolder.nDelays == 0)
         {
             logicTerminal.add(new LogicConstant());
         }

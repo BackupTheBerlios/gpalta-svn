@@ -19,17 +19,17 @@ import GPalta.*;
 public class Or extends LogicNode
 {
     
-    public boolean eval()
+    public boolean eval(Evolution evo)
     {
-        return ( ((LogicNode)kids[0]).eval() || ((LogicNode)kids[1]).eval() );
+        return ( ((LogicNode)kids[0]).eval(evo) || ((LogicNode)kids[1]).eval(evo) );
     }
     
-    public boolean[] evalVect()
+    public boolean[] evalVect(Evolution evo)
     {
-        boolean[] resultKid1 = ((LogicNode)kids[0]).evalVect();
-        boolean[] resultKid2 = ((LogicNode)kids[1]).evalVect();
-        boolean[] out = new boolean[RealDataHolder.nSamples];
-        for (int i=0; i < RealDataHolder.nSamples; i++)
+        boolean[] resultKid1 = ((LogicNode)kids[0]).evalVect(evo);
+        boolean[] resultKid2 = ((LogicNode)kids[1]).evalVect(evo);
+        boolean[] out = new boolean[evo.realDataHolder.nSamples];
+        for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
             out[i] = resultKid1[i] || resultKid2[i];
         }

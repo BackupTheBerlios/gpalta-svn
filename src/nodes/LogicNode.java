@@ -10,6 +10,7 @@
 
 package nodes;
 import java.util.*;
+import GPalta.*;
 
 /**
  * Generic Node for all type of logic {@link Node}s
@@ -19,7 +20,7 @@ import java.util.*;
 public abstract class LogicNode extends Node
 {
         
-    public abstract boolean eval();
-    public abstract boolean[] evalVect();
+    public abstract boolean eval(Evolution evo);
+    public abstract boolean[] evalVect(Evolution evo);
 
 }

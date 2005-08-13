@@ -19,17 +19,17 @@ import GPalta.*;
 public class Times extends RealNode
 {
 
-    public double eval()
+    public double eval(Evolution evo)
     {
-        return ( ((RealNode)kids[0]).eval() * ((RealNode)kids[1]).eval() );
+        return ( ((RealNode)kids[0]).eval(evo) * ((RealNode)kids[1]).eval(evo) );
     }
     
-    public double[] evalVect()
+    public double[] evalVect(Evolution evo)
     {
-        double[] resultKid1 = ((RealNode)kids[0]).evalVect();
-        double[] resultKid2 = ((RealNode)kids[1]).evalVect();
-        double[] out = new double[RealDataHolder.nSamples];
-        for (int i=0; i < RealDataHolder.nSamples; i++)
+        double[] resultKid1 = ((RealNode)kids[0]).evalVect(evo);
+        double[] resultKid2 = ((RealNode)kids[1]).evalVect(evo);
+        double[] out = new double[evo.realDataHolder.nSamples];
+        for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
             out[i] = resultKid1[i] * resultKid2[i];
         }
