@@ -14,10 +14,10 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Holds the problem's data and provides methods to access it
+ * Holds the problem's data and provides methods to access it.
  * It's no longer abstract, so an instance must be created and passed around
- * This was done to fix a problen when passing a large matrix from Matlab, the
- * data somehow dissapeared if this class was abstract
+ * This was done to fix a problen when passing a large matrix from Matlab 
+ * (the data sometimes 'dissapeared' if this class was abstract)
  * @author neven
  */
 public class RealDataHolder

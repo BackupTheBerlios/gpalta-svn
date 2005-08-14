@@ -14,7 +14,7 @@ import java.util.*;
 import gpalta.core.*;
 
 /**
- * A Timer Task to schedule the the Evolution to stop at a certain time
+ * A Timer Task to schedule the Evolution to stop at a certain time
  * @author DSP
  */
 public class StopTimer extends TimerTask

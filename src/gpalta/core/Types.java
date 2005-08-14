@@ -13,7 +13,8 @@ import java.util.*;
 import gpalta.nodes.*;
 
 /**
- * Holds information for the {@link Node}s available and provides methods for random {@link Node} creation (modify this class to alter the functions/terminals set)
+ * Holds information for the {@link Node}s available and provides methods for
+ * random {@link Node} creation (modify this class to alter the functions/terminals set)
  *
  * @author neven
  */

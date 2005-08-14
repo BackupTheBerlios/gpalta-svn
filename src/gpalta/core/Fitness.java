@@ -170,7 +170,7 @@ public class Fitness
      * Evaluates the tree in every sample, and then calculates its hr1 and hr0
      * and its fitness, recording them in the tree.
      *
-     * @return The output of the Tree for every sample, or null if the Tree isn't
+     * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
     public boolean[] calculate(Tree tree)

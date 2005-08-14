@@ -113,10 +113,6 @@ public class Evolution
         
         avgFit /= Config.populationSize;
         avgNodes /= Config.populationSize;
-
-        //This should be done by the controlling class:
-        /*System.out.format("Gen %d: best fit %.3f", generation, bestThisGen.fitness);
-        System.out.format(", average %.3f, best so far %.3f\n", avgFit, evoStats.bestSoFar.fitness);*/
         
         evoStats.bestTreeChanged = false;
         if (bestThisGen.fitness > evoStats.bestSoFar.fitness)

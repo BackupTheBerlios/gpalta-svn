@@ -14,7 +14,7 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Holds the GP parameters
+ * Holds the GP parameters.
  * It isn't abstract, to be able to create an instance and modify the static 
  * fields automatically
  * 
