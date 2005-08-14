@@ -4,7 +4,7 @@
  * Created on 25 de mayo de 2005, 07:14 PM
  */
 
-package gui;
+package gpalta.gui;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.util.*;
