@@ -21,16 +21,29 @@ import gpalta.nodes.*;
 public abstract class Types
 {
     
+    /** List of possible Real Nodes, including functions and terminals */
     public static List<Node> realAny;
+    /** List of possible Real function Nodes */
     public static List<Node> realFunction;
+    /** List of possible Real terminal Nodes */
     public static List<Node> realTerminal;
 
+    /** List of possible Logic Nodes, including functions and terminals */
     public static List<Node> logicAny;
+    /** List of possible Logic function Nodes */
     public static List<Node> logicFunction;
+    /** List of possible Logic terminal Nodes */
     public static List<Node> logicTerminal;
     
+    /** List of possible Nodes for the root of a Tree */
     public static List<Node> treeRoot;
     
+    /**
+     * Define the lists of possible Nodes
+     *
+     * @param evo An Evolution with its Real and Logic DataHolders already
+     * initialized, to determine how many variable NSodes to add to the lists
+     */
     public static void define(Evolution evo)
     {
         //Reinitialize Lists every time a new Evolution is created
@@ -99,6 +112,13 @@ public abstract class Types
         
     }
     
+    /**
+     * Obtain a new Node randomly chosen from the given list.
+     * The Node is cloned and initialized, so it can be used separatedly
+     *
+     * @param l The list of Nodes from which to choose
+     * @param currentGlobalDepth The depth of the requested Node in the Tree
+     */
     public static Node newRandomNode(List<Node> l, int currentGlobalDepth)
     {
         int which = Common.globalRandom.nextInt(l.size());
