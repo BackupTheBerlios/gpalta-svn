@@ -25,14 +25,12 @@ public class LogicConstant extends LogicNode
         return ( constant );
     }
     
-    public boolean[] evalVect(Evolution evo)
+    public void evalVect(Evolution evo, boolean[] outVect)
     {
-        boolean[] out = new boolean[evo.realDataHolder.nSamples];
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            out[i] = constant;
+            outVect[i] = constant;
         }
-        return out;
     }
     
     public String name()

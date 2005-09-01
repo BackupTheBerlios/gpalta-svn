@@ -37,11 +37,10 @@ public class RealPreviousOutput extends RealNode
      * This should never be called. The whole evalVect was implemented to be
      * used when there are no previous outputs as Nodes
      */
-    public double[] evalVect(Evolution evo)
+    public void evalVect(Evolution evo, double[] outVect)
     {
         //TODO: Maybe throw an exception?
         Logger.log("Error: Should not be calling RealPreviousOutput's evalVect()");
-        return null;
     }
     
     public String name()

@@ -30,6 +30,11 @@ public class Evolution
     public RealDataHolder realDataHolder;
     public LogicDataHolder logicDataHolder;
     public int generation;
+    
+    public List<double[]> realEvalVectors;
+    public List<boolean[]> logicEvalVectors;
+    private int currentRealEvalVector;
+    private int currentLogicEvalVector;
 
     public EvolutionStats evoStats;
     
@@ -65,6 +70,12 @@ public class Evolution
         
         generation = 0;
         
+        
+        if (Config.nPreviousOutput == 0 && Config.useVect)
+        {
+            initEvalVectors();
+        }
+        
     }
     
     /**
@@ -88,6 +99,11 @@ public class Evolution
         evoStats = new EvolutionStats();
 
         generation = 0;
+        
+        if (Config.nPreviousOutput == 0 && Config.useVect)
+        {
+            initEvalVectors();
+        }
         
     }
     
@@ -209,6 +225,47 @@ public class Evolution
 
         in.close();
 
+    }
+    
+    private void initEvalVectors()
+    {
+        realEvalVectors = new ArrayList<double[]>(0);
+        logicEvalVectors = new ArrayList<boolean[]>(0);
+        currentRealEvalVector = -1;
+        currentLogicEvalVector = -1;
+    }
+    
+    public double[] getRealEvalVector()
+    {
+        currentRealEvalVector++;
+        if (currentRealEvalVector == realEvalVectors.size())
+        {
+            //Logger.log("Adding new realEvalVector, " + currentRealEvalVector);
+            realEvalVectors.add(new double[realDataHolder.nSamples]);
+        }
+        return realEvalVectors.get(currentRealEvalVector);
+    }
+    
+    public boolean[] getLogicEvalVector()
+    {
+        
+        currentLogicEvalVector++;
+        if (currentLogicEvalVector == logicEvalVectors.size())
+        {
+            //Logger.log("Adding new logicEvalVector, " + currentLogicEvalVector);
+            logicEvalVectors.add(new boolean[realDataHolder.nSamples]);
+        }
+        return logicEvalVectors.get(currentLogicEvalVector);
+    }
+    
+    public void releaseRealEvalVector()
+    {
+        currentRealEvalVector--;
+    }
+    
+    public void releaseLogicEvalVector()
+    {
+        currentLogicEvalVector--;
     }
     
 }

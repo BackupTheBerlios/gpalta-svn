@@ -23,6 +23,6 @@ public abstract class RealNode extends Node
 {
     
     public abstract double eval(Evolution evo);
-    public abstract double[] evalVect(Evolution evo);
+    public abstract void evalVect(Evolution evo, double[] outVect);
 
 }

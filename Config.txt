@@ -37,7 +37,7 @@ saveFileName = evo.bin
     
 logFileName = log.txt
     
-useVect = false
+useVect = true
 
 #For fitness:
     

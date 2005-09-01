@@ -35,11 +35,10 @@ public class PreviousOutput extends LogicNode
      * This should never be called. The whole evalVect was implemented to be
      * used when there are no previous outputs as Nodes
      */
-    public boolean[] evalVect(Evolution evo)
+    public void evalVect(Evolution evo, boolean[] outVect)
     {
         //TODO: Maybe throw an exception?
         Logger.log("Error: Should not be calling PreviousOutput's evalVect()");
-        return null;
     }
     
     public String name()

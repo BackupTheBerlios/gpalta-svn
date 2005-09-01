@@ -32,6 +32,7 @@ public class Fitness
     private double kHR1;
     private double continuityImportance;
     private Evolution evo;
+    private boolean[] results;
     
     /** 
      * Creates a new instance of Fitness, initializing only constants
@@ -48,6 +49,8 @@ public class Fitness
         kHR1 = Config.kHR1;
         
         sizePenalization = 1/ (500*Math.pow(2,Config.maxDepth+1));
+        
+        results = new boolean[evo.realDataHolder.nSamples];
     }
     
     /** 
@@ -178,7 +181,6 @@ public class Fitness
         
         if (!tree.fitCalculated)
         {
-            boolean[] results;
             evo.realDataHolder.reset();
             evo.logicDataHolder.reset();
             double hits0 = 0;
@@ -189,11 +191,10 @@ public class Fitness
             int continuity = 0;
             if (Config.nPreviousOutput == 0 && Config.useVect)
             {
-                results = tree.evalVect(evo);
+                tree.evalVect(evo, results);
             }
             else
             {
-                results = new boolean[evo.realDataHolder.nSamples];
                 for (int i=0; i<evo.realDataHolder.nSamples; i++)
                 {
                     results[i] = tree.eval(evo);

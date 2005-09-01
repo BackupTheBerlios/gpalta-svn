@@ -39,9 +39,9 @@ public class Tree extends Node
         return ((LogicNode)kids[0]).eval(evo);
     }
     
-    public boolean[] evalVect(Evolution evo)
+    public void evalVect(Evolution evo, boolean[] outVect)
     {
-        return ((LogicNode)kids[0]).evalVect(evo);
+        ((LogicNode)kids[0]).evalVect(evo, outVect);
     }
     
     public int nKids()

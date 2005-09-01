@@ -24,16 +24,18 @@ public class Times extends RealNode
         return ( ((RealNode)kids[0]).eval(evo) * ((RealNode)kids[1]).eval(evo) );
     }
     
-    public double[] evalVect(Evolution evo)
+    public void evalVect(Evolution evo, double[] outVect)
     {
-        double[] resultKid1 = ((RealNode)kids[0]).evalVect(evo);
-        double[] resultKid2 = ((RealNode)kids[1]).evalVect(evo);
-        double[] out = new double[evo.realDataHolder.nSamples];
+        double[] resultKid1 = evo.getRealEvalVector();
+        ((RealNode)kids[0]).evalVect(evo, resultKid1);
+        double[] resultKid2 = evo.getRealEvalVector();
+        ((RealNode)kids[1]).evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            out[i] = resultKid1[i] * resultKid2[i];
+            outVect[i] = resultKid1[i] * resultKid2[i];
         }
-        return out;
+        evo.releaseRealEvalVector();
+        evo.releaseRealEvalVector();
     }
     
     public int nKids()

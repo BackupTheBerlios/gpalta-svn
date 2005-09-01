@@ -24,16 +24,18 @@ public class And extends LogicNode
         return ( ((LogicNode)kids[0]).eval(evo) && ((LogicNode)kids[1]).eval(evo) );
     }
     
-    public boolean[] evalVect(Evolution evo)
+    public void evalVect(Evolution evo, boolean[] outVect)
     {
-        boolean[] resultKid1 = ((LogicNode)kids[0]).evalVect(evo);
-        boolean[] resultKid2 = ((LogicNode)kids[1]).evalVect(evo);
-        boolean[] out = new boolean[evo.realDataHolder.nSamples];
+        boolean[] resultKid1 = evo.getLogicEvalVector();
+        ((LogicNode)kids[0]).evalVect(evo, resultKid1);
+        boolean[] resultKid2 = evo.getLogicEvalVector();
+        ((LogicNode)kids[1]).evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            out[i] = resultKid1[i] && resultKid2[i];
+            outVect[i] = resultKid1[i] && resultKid2[i];
         }
-        return out;
+        evo.releaseLogicEvalVector();
+        evo.releaseLogicEvalVector();
     }
     
     public int nKids()

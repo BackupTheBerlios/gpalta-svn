@@ -21,6 +21,6 @@ public abstract class LogicNode extends Node
 {
         
     public abstract boolean eval(Evolution evo);
-    public abstract boolean[] evalVect(Evolution evo);
+    public abstract void evalVect(Evolution evo, boolean[] outVect);
 
 }
