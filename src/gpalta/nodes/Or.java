@@ -26,15 +26,13 @@ public class Or extends LogicNode
 
     public void evalVect(Evolution evo, boolean[] outVect)
     {
-        boolean[] resultKid1 = evo.getLogicEvalVector();
-        ((LogicNode)kids[0]).evalVect(evo, resultKid1);
+        ((LogicNode)kids[0]).evalVect(evo, outVect);
         boolean[] resultKid2 = evo.getLogicEvalVector();
         ((LogicNode)kids[1]).evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            outVect[i] = resultKid1[i] || resultKid2[i];
+            outVect[i] = outVect[i] || resultKid2[i];
         }
-        evo.releaseLogicEvalVector();
         evo.releaseLogicEvalVector();
     }
     

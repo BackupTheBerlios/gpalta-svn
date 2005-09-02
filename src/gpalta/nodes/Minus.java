@@ -26,15 +26,13 @@ public class Minus extends RealNode
     
     public void evalVect(Evolution evo, double[] outVect)
     {
-        double[] resultKid1 = evo.getRealEvalVector();
-        ((RealNode)kids[0]).evalVect(evo, resultKid1);
+        ((RealNode)kids[0]).evalVect(evo, outVect);
         double[] resultKid2 = evo.getRealEvalVector();
         ((RealNode)kids[1]).evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            outVect[i] = resultKid1[i] - resultKid2[i];
+            outVect[i] = outVect[i] - resultKid2[i];
         }
-        evo.releaseRealEvalVector();
         evo.releaseRealEvalVector();
     }
     
