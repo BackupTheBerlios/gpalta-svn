@@ -130,17 +130,14 @@ public class Fitness
         catch (FileNotFoundException e)
         {
             Logger.log(e);
-            System.exit(-1);
         }
         catch (IOException e)
         {
             Logger.log(e);
-            System.exit(-1);
         }
         catch (NumberFormatException e)
         {
             Logger.log(e);
-            System.exit(-1);
         }
     }
     

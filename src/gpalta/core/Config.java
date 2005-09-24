@@ -103,7 +103,6 @@ public class Config
                     Logger.log("Property " + fields[i].getName() + " not found in " + fileName);
                     //Do not exit, just warn and continue:
                     continue;
-                    //System.exit(-1);
                 }
                 
                 if (type.getName().equals("double"))
