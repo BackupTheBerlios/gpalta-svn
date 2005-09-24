@@ -34,11 +34,7 @@ public class RealVar extends RealNode
     
     public void evalVect(Evolution evo, double[] outVect)
     {
-        double[] values = evo.realDataHolder.getDataVect(whichVar);
-        for (int i=0; i < evo.realDataHolder.nSamples; i++)
-        {
-            outVect[i] = values[i];
-        }
+        System.arraycopy(evo.realDataHolder.getDataVect(whichVar), 0, outVect, 0, evo.realDataHolder.nSamples);
     }
     
     public String name()
