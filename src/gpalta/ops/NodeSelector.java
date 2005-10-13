@@ -24,11 +24,11 @@ public class NodeSelector {
         List<Node> l = new ArrayList<Node>();
         if (type <= Config.upLimitProbSelectTerminal)
         {
-            getTerminalAnyNodes(l, tree.kids[0]);
+            getTerminalNodes(l, tree.kids[0]);
         }
         else if (type <= Config.upLimitProbSelectNonTerminal)
         {
-            getFunctionAnyNodes(l, tree.kids[0]);
+            getFunctionNodes(l, tree.kids[0]);
             /* If there aren't function nodes, this is a tree with a terminal at its root
              * (Shoudn't we stop this from happening?)
              */
@@ -58,44 +58,18 @@ public class NodeSelector {
     {
         double type = Common.globalRandom.nextDouble();
         List<Node> l = new ArrayList<Node>();
-        if (node instanceof RealNode)
+
+        if (type <= Config.upLimitProbSelectTerminal)
         {
-            if (type <= Config.upLimitProbSelectTerminal)
-            {
-                getRealTerminalNodes(l, tree.kids[0]);
-            }
-            else if (type <= Config.upLimitProbSelectNonTerminal)
-            {
-                getRealFunctionNodes(l, tree.kids[0]);
-            }
-            else
-            {
-                getRealAnyNodes(l, tree.kids[0]);
-            }
+            getNodes(l, tree.kids[0], node.parent.typeOfTerminalKids());
         }
-        else if (node instanceof LogicNode)
+        else if (type <= Config.upLimitProbSelectNonTerminal)
         {
-            if (type <= Config.upLimitProbSelectTerminal)
-            {
-                getLogicTerminalNodes(l, tree.kids[0]);
-            }
-            else if (type <= Config.upLimitProbSelectNonTerminal)
-            {
-                getLogicFunctionNodes(l, tree.kids[0]);
-            }
-            else if (type <= Config.upLimitProbSelectRoot)
-            {
-                return tree.kids[0];
-            }
-            else
-            {
-                getLogicAnyNodes(l, tree.kids[0]);
-            }
+            getNodes(l, tree.kids[0], node.parent.typeOfFunctionKids());
         }
         else
         {
-            Logger.log("Warning in pickRandomNode: Unrecognized Node type");
-            return null;
+            getNodes(l, tree.kids[0], node.parent.typeOfKids());
         }
         //TODO: what should we do if we don't find any node?
         if (l.size() == 0)
@@ -106,6 +80,18 @@ public class NodeSelector {
         return l.get(which);
     }
     
+    private void getNodes(List<Node> l, Node node, List<Node> types)
+    {
+        if (Types.isInList(node, types))
+        {
+            l.add(node);
+        }
+        for (int i=0; i<node.nKids(); i++)
+        {
+            getNodes(l, node.kids[i], types);
+        }
+    }
+    
     /**
      * Picks any node of any kind within the tree. O(logn)
      */
@@ -113,10 +99,10 @@ public class NodeSelector {
     {
         int which = Common.globalRandom.nextInt(tree.nSubNodes);
         currentNodeSearched = 0;
-        return pickNode(tree.kids[0],which);
+        return getNode(tree.kids[0],which);
     }
     
-    private Node pickNode(Node node, int which)
+    private Node getNode(Node node, int which)
     {
         if (currentNodeSearched == which)
         {
@@ -131,7 +117,7 @@ public class NodeSelector {
             else
             {
                 currentNodeSearched++;
-                return pickNode(node.kids[i], which);
+                return getNode(node.kids[i], which);
             }
         }
         //we should never get here:
@@ -139,34 +125,7 @@ public class NodeSelector {
         return null;
     }
     
-    /* Better implemented through several methods to avoid checking each time
-     * what kind of node we're looking for
-     */
-    private void getRealAnyNodes(List<Node> l, Node node)
-    {
-        if (node instanceof RealNode)
-        {
-            l.add(node);
-        }
-        for (int i=0; i<node.nKids(); i++)
-        {
-            getRealAnyNodes(l, node.kids[i]);
-        }
-    }
-    
-    private void getLogicAnyNodes(List<Node> l, Node node)
-    {
-        if (node instanceof LogicNode)
-        {
-            l.add(node);
-        }
-        for (int i=0; i<node.nKids(); i++)
-        {
-            getLogicAnyNodes(l, node.kids[i]);
-        }
-    }
-    
-    private void getTerminalAnyNodes(List<Node> l, Node node)
+    private void getTerminalNodes(List<Node> l, Node node)
     {
         if (node.nKids() == 0)
         {
@@ -174,11 +133,11 @@ public class NodeSelector {
         }
         for (int i=0; i<node.nKids(); i++)
         {
-            getTerminalAnyNodes(l, node.kids[i]);
+            getTerminalNodes(l, node.kids[i]);
         }
     }
     
-    private void getFunctionAnyNodes(List<Node> l, Node node)
+    private void getFunctionNodes(List<Node> l, Node node)
     {
         if (node.nKids() > 0)
         {
@@ -186,56 +145,8 @@ public class NodeSelector {
         }
         for (int i=0; i<node.nKids(); i++)
         {
-            getFunctionAnyNodes(l, node.kids[i]);
+            getFunctionNodes(l, node.kids[i]);
         }
     }
     
-    private void getRealTerminalNodes(List<Node> l, Node node)
-    {
-        if (node instanceof RealNode && node.nKids()==0)
-        {
-            l.add(node);
-        }
-        for (int i=0; i<node.nKids(); i++)
-        {
-            getRealTerminalNodes(l, node.kids[i]);
-        }
-    }
-    
-    private void getRealFunctionNodes(List<Node> l, Node node)
-    {
-        if (node instanceof RealNode && node.nKids()>0)
-        {
-            l.add(node);
-        }
-        for (int i=0; i<node.nKids(); i++)
-        {
-            getRealFunctionNodes(l, node.kids[i]);
-        }
-    }
-    
-    private void getLogicTerminalNodes(List<Node> l, Node node)
-    {
-        if (node instanceof LogicNode && node.nKids()==0)
-        {
-            l.add(node);
-        }
-        for (int i=0; i<node.nKids(); i++)
-        {
-            getLogicTerminalNodes(l, node.kids[i]);
-        }
-    }
-    
-    private void getLogicFunctionNodes(List<Node> l, Node node)
-    {
-        if (node instanceof LogicNode && node.nKids()>0)
-        {
-            l.add(node);
-        }
-        for (int i=0; i<node.nKids(); i++)
-        {
-            getLogicFunctionNodes(l, node.kids[i]);
-        }
-    }
-        
 }

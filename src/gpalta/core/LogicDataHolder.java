@@ -17,16 +17,16 @@ package gpalta.core;
 public class LogicDataHolder 
 {
     public int nDelays;
-    private boolean[] prevOut;
+    private double[] prevOut;
     private int index;
     
     public LogicDataHolder()
     {
         nDelays = Config.nPreviousOutput;
-        prevOut = new boolean[nDelays];
+        prevOut = new double[nDelays];
         for (int i=0; i<nDelays; i++)
         {
-            prevOut[i] = false;
+            prevOut[i] = 0;
         }
         index = 0;
 
@@ -39,11 +39,11 @@ public class LogicDataHolder
         index = 0;
         for (int i=0; i<nDelays; i++)
         {
-            prevOut[i] = false;
+            prevOut[i] = 0;
         }
     }
     
-    public void update(boolean currentOut)
+    public void update(double currentOut)
     {
         if (nDelays != 0)
         {
@@ -56,7 +56,7 @@ public class LogicDataHolder
         }
     }
     
-    public boolean getData(int delay)
+    public double getData(int delay)
     {
         int tmpIndex = index - (delay - 1);
         if (tmpIndex < 0)

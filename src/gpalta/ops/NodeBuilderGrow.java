@@ -50,24 +50,15 @@ public class NodeBuilderGrow extends NodeBuilder
         int maxDepthOfKids = 0;
         for (Integer i : listOfKids)
         {
-            List<Node> globalTypeOfKids = node.typeOfKids();
-
             //If maxDepth = 1, we need terminals as kids:
             if (maxDepth == 1)
             {
-                if (globalTypeOfKids.get(0) instanceof RealNode)
-                {
-                    node.kids[i] = Types.newRandomNode(Types.realTerminal, currentGlobalDepth + 1);
-                }
-                else if (globalTypeOfKids.get(0) instanceof LogicNode)
-                {
-                    node.kids[i] = Types.newRandomNode(Types.logicTerminal, currentGlobalDepth + 1);
-                }
+                node.kids[i] = Types.newRandomNode(node.typeOfTerminalKids(), currentGlobalDepth + 1);
                 node.nSubNodes += 1;
             }
             else
             {
-                node.kids[i] = Types.newRandomNode(globalTypeOfKids, currentGlobalDepth + 1);
+                node.kids[i] = Types.newRandomNode(node.typeOfKids(), currentGlobalDepth + 1);
                 build(node.kids[i], -1, maxDepth-1);
                 
                 /* If we are building only one child, these will be wrong for the 

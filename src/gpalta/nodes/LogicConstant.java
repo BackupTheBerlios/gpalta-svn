@@ -15,17 +15,17 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class LogicConstant extends LogicNode
+public class LogicConstant extends Node
 {
     
-    private boolean constant;
+    private double constant;
     
-    public boolean eval(Evolution evo)
+    public double eval(Evolution evo)
     {
         return ( constant );
     }
     
-    public void evalVect(Evolution evo, boolean[] outVect)
+    public void evalVect(Evolution evo, double[] outVect)
     {
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
@@ -40,11 +40,7 @@ public class LogicConstant extends LogicNode
     
     public void init()
     {
-        int bit = Common.globalRandom.nextInt(2);
-        if (bit == 0)
-            constant = false;
-        else
-            constant = true;
+        constant = Common.globalRandom.nextInt(2);
     }
     
 }

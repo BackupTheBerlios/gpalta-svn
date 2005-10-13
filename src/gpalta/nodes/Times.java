@@ -16,24 +16,24 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class Times extends RealNode
+public class Times extends Node
 {
 
     public double eval(Evolution evo)
     {
-        return ( ((RealNode)kids[0]).eval(evo) * ((RealNode)kids[1]).eval(evo) );
+        return ( kids[0].eval(evo) * kids[1].eval(evo) );
     }
     
     public void evalVect(Evolution evo, double[] outVect)
     {
-        ((RealNode)kids[0]).evalVect(evo, outVect);
-        double[] resultKid2 = evo.getRealEvalVector();
-        ((RealNode)kids[1]).evalVect(evo, resultKid2);
+        kids[0].evalVect(evo, outVect);
+        double[] resultKid2 = evo.getEvalVector();
+        kids[1].evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
             outVect[i] = outVect[i] * resultKid2[i];
         }
-        evo.releaseRealEvalVector();
+        evo.releaseEvalVector();
     }
     
     public int nKids()
@@ -44,6 +44,14 @@ public class Times extends RealNode
     public List<Node> typeOfKids()
     {
         return Types.realAny;
+    }
+    public List<Node> typeOfTerminalKids()
+    {
+        return Types.realTerminal;
+    }
+    public List<Node> typeOfFunctionKids()
+    {
+        return Types.realFunction;
     }
     
     public String name()

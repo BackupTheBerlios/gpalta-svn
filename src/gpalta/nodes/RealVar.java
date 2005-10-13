@@ -17,7 +17,7 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class RealVar extends RealNode
+public class RealVar extends Node
 {
     public int whichVar;
     

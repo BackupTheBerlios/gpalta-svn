@@ -1,7 +1,7 @@
 #---No Comment---
 #Mon Jul 18 11:21:09 CLT 2005
 
-populationSize = 500
+populationSize = 10
 nGenerations = 10000
     
 tournamentSize = 2

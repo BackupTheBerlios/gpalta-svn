@@ -34,14 +34,14 @@ public class Tree extends Node
         this.type = type;
     }
     
-    public boolean eval(Evolution evo)
+    public double eval(Evolution evo)
     {
-        return ((LogicNode)kids[0]).eval(evo);
+        return kids[0].eval(evo);
     }
     
-    public void evalVect(Evolution evo, boolean[] outVect)
+    public void evalVect(Evolution evo, double[] outVect)
     {
-        ((LogicNode)kids[0]).evalVect(evo, outVect);
+        kids[0].evalVect(evo, outVect);
     }
     
     public int nKids()
@@ -52,6 +52,16 @@ public class Tree extends Node
     public List<Node> typeOfKids()
     {
         return type;
+    }
+    public List<Node> typeOfTerminalKids()
+    {
+        Logger.log("Error: Should not be calling Tree's typeOfTerminalKids()");
+        return null;
+    }
+    public List<Node> typeOfFunctionKids()
+    {
+        Logger.log("Error: Should not be calling Tree's typeOfFunctionKids");
+        return null;
     }
     
     public String toString()

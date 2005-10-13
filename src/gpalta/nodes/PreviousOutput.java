@@ -16,7 +16,7 @@ import gpalta.core.*;
  *
  * @author DSP
  */
-public class PreviousOutput extends LogicNode
+public class PreviousOutput extends Node
 {
 
     private int delay;
@@ -26,7 +26,7 @@ public class PreviousOutput extends LogicNode
     }
     
     
-    public boolean eval(Evolution evo)
+    public double eval(Evolution evo)
     {
         return evo.logicDataHolder.getData(delay);
     }
@@ -35,7 +35,7 @@ public class PreviousOutput extends LogicNode
      * This should never be called. The whole evalVect was implemented to be
      * used when there are no previous outputs as Nodes
      */
-    public void evalVect(Evolution evo, boolean[] outVect)
+    public void evalVect(Evolution evo, double[] outVect)
     {
         //TODO: Maybe throw an exception?
         Logger.log("Error: Should not be calling PreviousOutput's evalVect()");

@@ -72,7 +72,7 @@ public abstract class Types
         {
             for (int i=0; i<evo.logicDataHolder.nDelays; i++)
             {
-                realTerminal.add(new RealPreviousOutput(i+1));
+                realTerminal.add(new PreviousOutput(i+1));
             }
         }
 
@@ -139,4 +139,13 @@ public abstract class Types
         return outNode;
     }
     
+    public static boolean isInList(Node node, List<Node> l)
+    {
+        for (Node n : l)
+        {
+            if (n.getClass() == node.getClass())
+                return true;
+        }
+        return false;
+    }
 }

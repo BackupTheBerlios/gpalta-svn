@@ -16,26 +16,26 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class GreaterThan extends LogicNode
+public class GreaterThan extends Node
 {
 
-    public boolean eval(Evolution evo)
+    public double eval(Evolution evo)
     {
-        return ( ((RealNode)kids[0]).eval(evo) > ((RealNode)kids[1]).eval(evo) );
+        return ( kids[0].eval(evo) > kids[1].eval(evo) ? 1:0 );
     }
     
-    public void evalVect(Evolution evo, boolean[] outVect)
+    public void evalVect(Evolution evo, double[] outVect)
     {
-        double[] resultKid1 = evo.getRealEvalVector();
-        ((RealNode)kids[0]).evalVect(evo, resultKid1);
-        double[] resultKid2 = evo.getRealEvalVector();
-        ((RealNode)kids[1]).evalVect(evo, resultKid2);
+        double[] resultKid1 = evo.getEvalVector();
+        kids[0].evalVect(evo, resultKid1);
+        double[] resultKid2 = evo.getEvalVector();
+        kids[1].evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            outVect[i] = resultKid1[i] > resultKid2[i];
+            outVect[i] = ( resultKid1[i] > resultKid2[i] ? 1:0 );
         }
-        evo.releaseRealEvalVector();
-        evo.releaseRealEvalVector();
+        evo.releaseEvalVector();
+        evo.releaseEvalVector();
     }
     
     public int nKids()
@@ -46,6 +46,14 @@ public class GreaterThan extends LogicNode
     public List<Node> typeOfKids()
     {
         return Types.realAny;
+    }
+    public List<Node> typeOfTerminalKids()
+    {
+        return Types.realTerminal;
+    }
+    public List<Node> typeOfFunctionKids()
+    {
+        return Types.realFunction;
     }
     
     public String name()

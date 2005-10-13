@@ -15,7 +15,7 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class RealConstant extends RealNode
+public class RealConstant extends Node
 {
     
     private double constant;

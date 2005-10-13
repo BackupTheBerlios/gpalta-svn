@@ -16,24 +16,24 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class Or extends LogicNode
+public class Or extends Node
 {
     
-    public boolean eval(Evolution evo)
+    public double eval(Evolution evo)
     {
-        return ( ((LogicNode)kids[0]).eval(evo) || ((LogicNode)kids[1]).eval(evo) );
+        return ( kids[0].eval(evo)!=0 || kids[1].eval(evo)!=0 ? 1:0 );
     }
 
-    public void evalVect(Evolution evo, boolean[] outVect)
+    public void evalVect(Evolution evo, double[] outVect)
     {
-        ((LogicNode)kids[0]).evalVect(evo, outVect);
-        boolean[] resultKid2 = evo.getLogicEvalVector();
-        ((LogicNode)kids[1]).evalVect(evo, resultKid2);
+        kids[0].evalVect(evo, outVect);
+        double[] resultKid2 = evo.getEvalVector();
+        kids[1].evalVect(evo, resultKid2);
         for (int i=0; i < evo.realDataHolder.nSamples; i++)
         {
-            outVect[i] = outVect[i] || resultKid2[i];
+            outVect[i] = ( outVect[i]!=0 || resultKid2[i]!=0 ? 1:0 );
         }
-        evo.releaseLogicEvalVector();
+        evo.releaseEvalVector();
     }
     
     public int nKids()
@@ -44,6 +44,14 @@ public class Or extends LogicNode
     public List<Node> typeOfKids()
     {
         return Types.logicAny;
+    }
+    public List<Node> typeOfTerminalKids()
+    {
+        return Types.logicTerminal;
+    }
+    public List<Node> typeOfFunctionKids()
+    {
+        return Types.logicFunction;
     }
     
     public String name()

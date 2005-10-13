@@ -31,10 +31,8 @@ public class Evolution
     public LogicDataHolder logicDataHolder;
     public int generation;
     
-    public List<double[]> realEvalVectors;
-    public List<boolean[]> logicEvalVectors;
-    private int currentRealEvalVector;
-    private int currentLogicEvalVector;
+    public List<double[]> evalVectors;
+    private int currentEvalVector;
 
     public EvolutionStats evoStats;
     
@@ -60,7 +58,8 @@ public class Evolution
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
-        fitness = new Fitness(this, "class.txt");
+        fitness = new FitnessClassifier();
+        fitness.init(this, "class.txt");
 
         evoStats = new EvolutionStats();
         if (initPop)
@@ -83,7 +82,7 @@ public class Evolution
      * Used for external evaluation of trees, so the population is not
      * initialized, as it will be read later from file.
      */
-    public Evolution(double[][] data, boolean[] classes, double[] snrs)
+    public Evolution(double[][] data, double[] desiredOutputs, double[] weights)
     {
         
         realDataHolder = new RealDataHolder(data);
@@ -94,7 +93,8 @@ public class Evolution
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
-        fitness = new Fitness(this, classes,  snrs);
+        fitness = new FitnessClassifier();
+        fitness.init(this, desiredOutputs,  weights);
 
         evoStats = new EvolutionStats();
 
@@ -229,43 +229,24 @@ public class Evolution
     
     private void initEvalVectors()
     {
-        realEvalVectors = new ArrayList<double[]>(0);
-        logicEvalVectors = new ArrayList<boolean[]>(0);
-        currentRealEvalVector = -1;
-        currentLogicEvalVector = -1;
+        evalVectors = new ArrayList<double[]>(0);
+        currentEvalVector = -1;
     }
     
-    public double[] getRealEvalVector()
+    public double[] getEvalVector()
     {
-        currentRealEvalVector++;
-        if (currentRealEvalVector == realEvalVectors.size())
+        currentEvalVector++;
+        if (currentEvalVector == evalVectors.size())
         {
             //Logger.log("Adding new realEvalVector, " + currentRealEvalVector);
-            realEvalVectors.add(new double[realDataHolder.nSamples]);
+            evalVectors.add(new double[realDataHolder.nSamples]);
         }
-        return realEvalVectors.get(currentRealEvalVector);
+        return evalVectors.get(currentEvalVector);
     }
-    
-    public boolean[] getLogicEvalVector()
+            
+    public void releaseEvalVector()
     {
-        
-        currentLogicEvalVector++;
-        if (currentLogicEvalVector == logicEvalVectors.size())
-        {
-            //Logger.log("Adding new logicEvalVector, " + currentLogicEvalVector);
-            logicEvalVectors.add(new boolean[realDataHolder.nSamples]);
-        }
-        return logicEvalVectors.get(currentLogicEvalVector);
-    }
-    
-    public void releaseRealEvalVector()
-    {
-        currentRealEvalVector--;
-    }
-    
-    public void releaseLogicEvalVector()
-    {
-        currentLogicEvalVector--;
+        currentEvalVector--;
     }
     
 }
