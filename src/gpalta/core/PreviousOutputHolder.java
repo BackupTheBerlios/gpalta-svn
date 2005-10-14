@@ -14,13 +14,13 @@ package gpalta.core;
  *
  * @author DSP
  */
-public class LogicDataHolder 
+public class PreviousOutputHolder 
 {
     public int nDelays;
     private double[] prevOut;
     private int index;
     
-    public LogicDataHolder()
+    public PreviousOutputHolder()
     {
         nDelays = Config.nPreviousOutput;
         prevOut = new double[nDelays];

@@ -41,19 +41,11 @@ public class Times extends Node
         return 2;
     }
     
-    public List<Node> typeOfKids()
+    public NodeType typeOfKids()
     {
-        return Types.realAny;
+        return Types.real;
     }
-    public List<Node> typeOfTerminalKids()
-    {
-        return Types.realTerminal;
-    }
-    public List<Node> typeOfFunctionKids()
-    {
-        return Types.realFunction;
-    }
-    
+ 
     public String name()
     {
         return "times";

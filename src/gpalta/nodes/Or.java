@@ -41,19 +41,11 @@ public class Or extends Node
         return 2;
     }
     
-    public List<Node> typeOfKids()
+    public NodeType typeOfKids()
     {
-        return Types.logicAny;
+        return Types.logic;
     }
-    public List<Node> typeOfTerminalKids()
-    {
-        return Types.logicTerminal;
-    }
-    public List<Node> typeOfFunctionKids()
-    {
-        return Types.logicFunction;
-    }
-    
+
     public String name()
     {
         return "or";

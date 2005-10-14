@@ -27,8 +27,8 @@ public class Evolution
     public TreeOperator treeOp;
     public TreeSelector treeSelector;
     public Fitness fitness;
-    public RealDataHolder realDataHolder;
-    public LogicDataHolder logicDataHolder;
+    public DataHolder realDataHolder;
+    public PreviousOutputHolder logicDataHolder;
     public int generation;
     
     public List<double[]> evalVectors;
@@ -45,8 +45,8 @@ public class Evolution
     public Evolution(boolean initPop)
     {
         
-        realDataHolder = new RealDataHolder("data.txt");
-        logicDataHolder = new LogicDataHolder();
+        realDataHolder = new DataHolder("data.txt");
+        logicDataHolder = new PreviousOutputHolder();
         Types.define(this);
         
         population = new ArrayList<Tree>();
@@ -78,25 +78,33 @@ public class Evolution
     }
     
     /**
-     * Creates a new instance of Evolution, using the given data, classes and snrs
-     * Used for external evaluation of trees, so the population is not
-     * initialized, as it will be read later from file.
+     * Creates a new instance of Evolution, using the given data, desiredOutputs and weights
      */
-    public Evolution(double[][] data, double[] desiredOutputs, double[] weights)
+    public Evolution(double[][] data, double[] desiredOutputs, double[] weights, boolean initPop)
     {
         
-        realDataHolder = new RealDataHolder(data);
-        logicDataHolder = new LogicDataHolder();
+        realDataHolder = new DataHolder(data);
+        logicDataHolder = new PreviousOutputHolder();
         Types.define(this);
         
         population = new ArrayList<Tree>();
+        if (initPop)
+        {
+            treeBuilder = new TreeBuilder();
+            treeBuilder.build(population);
+        }
         
         treeOp = new TreeOperator();
         treeSelector = new TreeSelector();
-        fitness = new FitnessClassifier();
+        fitness = new FitnessClassic();
         fitness.init(this, desiredOutputs,  weights);
 
         evoStats = new EvolutionStats();
+        
+        if (initPop)
+        {
+            evoStats.bestSoFar = population.get(0);
+        }
 
         generation = 0;
         

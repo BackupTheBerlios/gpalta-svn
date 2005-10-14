@@ -20,7 +20,7 @@ import java.util.*;
  * (the data sometimes 'dissapeared' if this class was abstract)
  * @author neven
  */
-public class RealDataHolder
+public class DataHolder
 {
     
     /* Every row in data correponds to all the samples for a variable. 
@@ -45,7 +45,7 @@ public class RealDataHolder
     /**
      * Initialize the data from a file
      */
-    public RealDataHolder(String fileName)
+    public DataHolder(String fileName)
     {
         File dataFile = new File(fileName);
         try
@@ -94,7 +94,7 @@ public class RealDataHolder
      * Initialize the data from the given matrix. Every row is a variable and
      * every column is a sample
      */
-    public RealDataHolder(double[][] data)
+    public DataHolder(double[][] data)
     {
         this.data = data;
         nVars = data.length;

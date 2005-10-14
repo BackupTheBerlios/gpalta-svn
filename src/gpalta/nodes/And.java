@@ -41,17 +41,9 @@ public class And extends Node
         return 2;
     }
     
-    public List<Node> typeOfKids()
+    public NodeType typeOfKids()
     {
-        return Types.logicAny;
-    }
-    public List<Node> typeOfTerminalKids()
-    {
-        return Types.logicTerminal;
-    }
-    public List<Node> typeOfFunctionKids()
-    {
-        return Types.logicFunction;
+        return Types.logic;
     }
     
     public String name()

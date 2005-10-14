@@ -21,22 +21,10 @@ import gpalta.nodes.*;
 public abstract class Types
 {
     
-    /** List of possible Real Nodes, including functions and terminals */
-    public static List<Node> realAny;
-    /** List of possible Real function Nodes */
-    public static List<Node> realFunction;
-    /** List of possible Real terminal Nodes */
-    public static List<Node> realTerminal;
-
-    /** List of possible Logic Nodes, including functions and terminals */
-    public static List<Node> logicAny;
-    /** List of possible Logic function Nodes */
-    public static List<Node> logicFunction;
-    /** List of possible Logic terminal Nodes */
-    public static List<Node> logicTerminal;
+    public static NodeType real;
+    public static NodeType logic;
     
-    /** List of possible Nodes for the root of a Tree */
-    public static List<Node> treeRoot;
+    public static NodeType treeRoot;
     
     /**
      * Define the lists of possible Nodes
@@ -47,45 +35,39 @@ public abstract class Types
     public static void define(Evolution evo)
     {
         //Reinitialize Lists every time a new Evolution is created
-        realAny = new ArrayList<Node>();
-        realFunction = new ArrayList<Node>();
-        realTerminal = new ArrayList<Node>();
-
-        logicAny = new ArrayList<Node>();
-        logicFunction = new ArrayList<Node>();
-        logicTerminal = new ArrayList<Node>();
-    
-        treeRoot = new ArrayList<Node>();
+        real = new NodeType();
         
-        realFunction.add(new Plus());
-        realFunction.add(new Minus());
-        realFunction.add(new Times());
+        logic = new NodeType();
 
-        realTerminal.add(new RealConstant());
+        treeRoot = new NodeType();
+        
+        real.functions.add(new Plus());
+        real.functions.add(new Minus());
+        real.functions.add(new Times());
+
+        real.terminals.add(new RealConstant());
         
         for (int i=0; i<evo.realDataHolder.nVars; i++)
         {
-            realTerminal.add(new RealVar(i+1));
+            real.terminals.add(new RealVar(i+1));
         } 
         
         if (Config.usePreviousOutputAsReal)
         {
             for (int i=0; i<evo.logicDataHolder.nDelays; i++)
             {
-                realTerminal.add(new PreviousOutput(i+1));
+                real.terminals.add(new PreviousOutput(i+1));
             }
         }
 
-        realAny.addAll(realFunction);
-        realAny.addAll(realTerminal);
+        real.all.addAll(real.functions);
+        real.all.addAll(real.terminals);
         
 
-        logicFunction.add(new And());
-        logicFunction.add(new Or());
-        logicFunction.add(new GreaterThan());
-        logicFunction.add(new LessThan());
-
-        //logicTerminal.add(new LogicConstant());
+        logic.functions.add(new And());
+        logic.functions.add(new Or());
+        logic.functions.add(new GreaterThan());
+        logic.functions.add(new LessThan());
 
         /* TODO: Important: this could add many terminals if nDelays is too large
          * Maybe we could add a single PreviousOutput and create an init() method
@@ -95,20 +77,20 @@ public abstract class Types
         {
             for (int i=0; i<evo.logicDataHolder.nDelays; i++)
             {
-                logicTerminal.add(new PreviousOutput(i+1));
+                logic.terminals.add(new PreviousOutput(i+1));
             }
         }
         
         //If there aren't any logic terminals, add logic constants for closure:
         if (Config.usePreviousOutputAsReal || evo.logicDataHolder.nDelays == 0)
         {
-            logicTerminal.add(new LogicConstant());
+            logic.terminals.add(new LogicConstant());
         }
 
-        logicAny.addAll(logicFunction);
-        logicAny.addAll(logicTerminal);
+        logic.all.addAll(logic.functions);
+        logic.all.addAll(logic.terminals);
         
-        treeRoot = logicAny;
+        treeRoot = real;
         
     }
     

@@ -41,17 +41,9 @@ public class Minus extends Node
         return 2;
     }
     
-    public List<Node> typeOfKids()
+    public NodeType typeOfKids()
     {
-        return Types.realAny;
-    }
-    public List<Node> typeOfTerminalKids()
-    {
-        return Types.realTerminal;
-    }
-    public List<Node> typeOfFunctionKids()
-    {
-        return Types.realFunction;
+        return Types.real;
     }
     
     public String name()

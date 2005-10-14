@@ -38,22 +38,10 @@ public abstract class Node implements Cloneable, Serializable
     public abstract double eval(Evolution evo);
     public abstract void evalVect(Evolution evo, double[] outVect);
     
-    public List<Node> typeOfKids()
+    public NodeType typeOfKids()
     {
         Logger.log("This shouldn' happen. A class that extends Node must implement" +
                 "its own typeOfKids() if it has any");
-        return null;
-    }
-    public List<Node> typeOfTerminalKids()
-    {
-        Logger.log("This shouldn' happen. A class that extends Node must implement" +
-                "its own typeOfTerminalKids() if it has any");
-        return null;
-    }
-    public List<Node> typeOfFunctionKids()
-    {
-        Logger.log("This shouldn' happen. A class that extends Node must implement" +
-                "its own typeOfFunctionKids() if it has any");
         return null;
     }
     
