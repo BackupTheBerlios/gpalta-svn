@@ -30,7 +30,8 @@ public class PreviousOutputHolder
         }
         index = 0;
 
-        Logger.log("Using " + Config.nPreviousOutput + " previous outputs as " + (Config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
+        if (nDelays > 0)
+            Logger.log("Using " + Config.nPreviousOutput + " previous outputs as " + (Config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
         
     }
     
