@@ -29,12 +29,12 @@ public class RealVar extends Node
     
     public double eval(Evolution evo)
     {
-        return evo.realDataHolder.getData(whichVar);
+        return evo.dataHolder.getData(whichVar);
     }
     
     public void evalVect(Evolution evo, double[] outVect)
     {
-        System.arraycopy(evo.realDataHolder.getDataVect(whichVar), 0, outVect, 0, evo.realDataHolder.nSamples);
+        System.arraycopy(evo.dataHolder.getDataVect(whichVar), 0, outVect, 0, evo.dataHolder.nSamples);
     }
     
     public String name()

@@ -50,7 +50,7 @@ public class FitnessClassifier implements Fitness
         
         sizePenalization = 1/ (500*Math.pow(2,Config.maxDepth+1));
         
-        results = new double[evo.realDataHolder.nSamples];
+        results = new double[evo.dataHolder.nSamples];
     }
     
     /** 
@@ -65,7 +65,7 @@ public class FitnessClassifier implements Fitness
 
         File classFile = new File(fileName);
 
-        desiredOutputs = new double[evo.realDataHolder.nSamples];
+        desiredOutputs = new double[evo.dataHolder.nSamples];
         n0 = 0;
         n1 = 0;
 
@@ -79,12 +79,12 @@ public class FitnessClassifier implements Fitness
             if (line.split("\\s+").length == 2)
             {
                 useWeight = true;
-                weights = new double[evo.realDataHolder.nSamples];
+                weights = new double[evo.dataHolder.nSamples];
             }
             out = new BufferedReader(new FileReader(classFile));
 
 
-            for (int sample=0; sample<evo.realDataHolder.nSamples; sample++)
+            for (int sample=0; sample<evo.dataHolder.nSamples; sample++)
             {
                 line = out.readLine().trim();
                 if (useWeight)
@@ -150,7 +150,7 @@ public class FitnessClassifier implements Fitness
         
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
-        for (int sample=0; sample<evo.realDataHolder.nSamples; sample++)
+        for (int sample=0; sample<evo.dataHolder.nSamples; sample++)
         {
             if (desiredOutputs[sample] == 0)
             {
@@ -175,8 +175,8 @@ public class FitnessClassifier implements Fitness
         
         if (!tree.fitCalculated)
         {
-            evo.realDataHolder.reset();
-            evo.logicDataHolder.reset();
+            evo.dataHolder.reset();
+            evo.previousOutputHolder.reset();
             double hits0 = 0;
             double hits1 = 0;
             int maxContinuity = 0;
@@ -189,14 +189,14 @@ public class FitnessClassifier implements Fitness
             }
             else
             {
-                for (int i=0; i<evo.realDataHolder.nSamples; i++)
+                for (int i=0; i<evo.dataHolder.nSamples; i++)
                 {
                     results[i] = tree.eval(evo);
-                    evo.realDataHolder.update();
-                    evo.logicDataHolder.update(results[i]);
+                    evo.dataHolder.update();
+                    evo.previousOutputHolder.update(results[i]);
                 }
             }
-            for (int i=0; i<evo.realDataHolder.nSamples; i++)
+            for (int i=0; i<evo.dataHolder.nSamples; i++)
             {
                 if (desiredOutputs[i]!=previousTarget)
                 {
@@ -246,7 +246,7 @@ public class FitnessClassifier implements Fitness
                 }
             }
             sumMaxContinuity += maxContinuity;
-            double continuityPenalizacion = continuityImportance * (evo.realDataHolder.nSamples - (double)sumMaxContinuity) / evo.realDataHolder.nSamples;
+            double continuityPenalizacion = continuityImportance * (evo.dataHolder.nSamples - (double)sumMaxContinuity) / evo.dataHolder.nSamples;
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
             tree.fitness = (tree.hr0 + kHR1*tree.hr1)/(kHR1+1);

@@ -27,8 +27,8 @@ public class Evolution
     public TreeOperator treeOp;
     public TreeSelector treeSelector;
     public Fitness fitness;
-    public DataHolder realDataHolder;
-    public PreviousOutputHolder logicDataHolder;
+    public DataHolder dataHolder;
+    public PreviousOutputHolder previousOutputHolder;
     public int generation;
     
     public List<double[]> evalVectors;
@@ -45,8 +45,8 @@ public class Evolution
     public Evolution(boolean initPop)
     {
         
-        realDataHolder = new DataHolder("data.txt");
-        logicDataHolder = new PreviousOutputHolder();
+        dataHolder = new DataHolder("data.txt");
+        previousOutputHolder = new PreviousOutputHolder();
         Types.define(this);
         
         population = new ArrayList<Tree>();
@@ -83,8 +83,8 @@ public class Evolution
     public Evolution(double[][] data, double[] desiredOutputs, double[] weights, boolean initPop)
     {
         
-        realDataHolder = new DataHolder(data);
-        logicDataHolder = new PreviousOutputHolder();
+        dataHolder = new DataHolder(data);
+        previousOutputHolder = new PreviousOutputHolder();
         Types.define(this);
         
         population = new ArrayList<Tree>();
@@ -118,25 +118,25 @@ public class Evolution
     /**
      * Evaluate the current population.
      */
-    public void eval()
+    public synchronized void eval()
     {
         Tree bestThisGen = population.get(0);
-        double avgFit = 0;
-        double avgNodes = 0;
+        evoStats.avgFit = 0;
+        evoStats.avgNodes = 0;
         
         for (Tree t : population)
         {
             fitness.calculate(t);
-            avgFit += t.fitness;
-            avgNodes += t.nSubNodes;
+            evoStats.avgFit += t.fitness;
+            evoStats.avgNodes += t.nSubNodes;
             if (t.fitness > bestThisGen.fitness)
             {
                 bestThisGen = t;
             }
         }
         
-        avgFit /= Config.populationSize;
-        avgNodes /= Config.populationSize;
+        evoStats.avgFit /= Config.populationSize;
+        evoStats.avgNodes /= Config.populationSize;
         
         evoStats.bestTreeChanged = false;
         if (bestThisGen.fitness > evoStats.bestSoFar.fitness)
@@ -144,14 +144,7 @@ public class Evolution
             evoStats.bestSoFar = (Tree)bestThisGen.deepClone(-1);
             evoStats.bestTreeChanged = true;
         }
-        
-        /* This is done here to ensure that evoStats fields are not modified until
-         * the next gen is fully evaluated. This is to give time for other methods to
-         * read the fields.
-         * TODO: This is clearly not the best solution
-         */
-        evoStats.avgFit = avgFit;
-        evoStats.avgNodes = avgNodes;
+
         evoStats.generation = generation;
         evoStats.bestFitThisGen = bestThisGen.fitness;
     }
@@ -160,7 +153,7 @@ public class Evolution
      * Evolve one generation. Assumes the current population is already evaluated
      * and doesn't evaluate the evolved one
      */
-    public void evolve()
+    public synchronized void evolve()
     {
         List<Tree> nextPop = treeSelector.select(population);
         treeOp.operate(nextPop);
@@ -183,7 +176,7 @@ public class Evolution
      * @throws IOException if a problem is encountered while writing (controlling
      * classes should do something about it)
      */
-    public void save(String fileName) throws IOException
+    public synchronized void save(String fileName) throws IOException
     {
         Logger.log("******************************************");
         Logger.log("Saving in file " + fileName);
@@ -221,7 +214,7 @@ public class Evolution
      * @throws ClassNotFoundException if class read doesn't match existing classes
      * (probably old data in file)
      */
-    public void read(String fileName) throws IOException, ClassNotFoundException
+    public synchronized void read(String fileName) throws IOException, ClassNotFoundException
     {
         FileInputStream fis = new FileInputStream(fileName);
         ObjectInputStream in = new ObjectInputStream(fis);
@@ -235,24 +228,24 @@ public class Evolution
 
     }
     
-    private void initEvalVectors()
+    private synchronized void initEvalVectors()
     {
         evalVectors = new ArrayList<double[]>(0);
         currentEvalVector = -1;
     }
     
-    public double[] getEvalVector()
+    public synchronized double[] getEvalVector()
     {
         currentEvalVector++;
         if (currentEvalVector == evalVectors.size())
         {
             //Logger.log("Adding new realEvalVector, " + currentRealEvalVector);
-            evalVectors.add(new double[realDataHolder.nSamples]);
+            evalVectors.add(new double[dataHolder.nSamples]);
         }
         return evalVectors.get(currentEvalVector);
     }
             
-    public void releaseEvalVector()
+    public synchronized void releaseEvalVector()
     {
         currentEvalVector--;
     }

@@ -29,7 +29,7 @@ public class Minus extends Node
         kids[0].evalVect(evo, outVect);
         double[] resultKid2 = evo.getEvalVector();
         kids[1].evalVect(evo, resultKid2);
-        for (int i=0; i < evo.realDataHolder.nSamples; i++)
+        for (int i=0; i < evo.dataHolder.nSamples; i++)
         {
             outVect[i] = outVect[i] - resultKid2[i];
         }

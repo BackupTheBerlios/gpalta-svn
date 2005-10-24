@@ -27,7 +27,7 @@ public class RealConstant extends Node
     
     public void evalVect(Evolution evo, double[] outVect)
     {
-        for (int i=0; i < evo.realDataHolder.nSamples; i++)
+        for (int i=0; i < evo.dataHolder.nSamples; i++)
         {
             outVect[i] = constant;
         }

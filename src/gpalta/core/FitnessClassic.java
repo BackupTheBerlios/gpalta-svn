@@ -31,28 +31,28 @@ public class FitnessClassic implements Fitness
         this.evo = evo;
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
-        results = new double[evo.realDataHolder.nSamples];
+        results = new double[evo.dataHolder.nSamples];
     }
 
     public double[] calculate(Tree tree)
     {
         double error = 0;
-        evo.realDataHolder.reset();
-        evo.logicDataHolder.reset();
+        evo.dataHolder.reset();
+        evo.previousOutputHolder.reset();
         if (Config.nPreviousOutput == 0 && Config.useVect)
         {
             tree.evalVect(evo, results);
         }
         else
         {
-            for (int i=0; i<evo.realDataHolder.nSamples; i++)
+            for (int i=0; i<evo.dataHolder.nSamples; i++)
             {
                 results[i] = tree.eval(evo);
-                evo.realDataHolder.update();
-                evo.logicDataHolder.update(results[i]);
+                evo.dataHolder.update();
+                evo.previousOutputHolder.update(results[i]);
             }
         }
-        for (int i=0; i<evo.realDataHolder.nSamples; i++)
+        for (int i=0; i<evo.dataHolder.nSamples; i++)
         {
             error += Math.pow (results[i] - desiredOutputs[i], 2);
         }

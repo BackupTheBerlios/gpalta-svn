@@ -134,10 +134,9 @@ public class EvolutionThread extends Thread
                         Logger.log(e);
                     }
                 }
-                
-                /* TODO: learn if this thread gets stuck waiting for this
-                 * instruction to complete or if it continues, as the gui runs
-                 * in a separate thread:
+                /* The thread will stop here until the next call returns, so there is
+                 * no way the next e.evolve() would modify e.evoStats before the gui 
+                 * has time to update 
                  */
                 gui.updateStats(e.evoStats);
             }

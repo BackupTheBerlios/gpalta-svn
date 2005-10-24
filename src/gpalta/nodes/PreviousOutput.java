@@ -28,7 +28,7 @@ public class PreviousOutput extends Node
     
     public double eval(Evolution evo)
     {
-        return evo.logicDataHolder.getData(delay);
+        return evo.previousOutputHolder.getData(delay);
     }
     
     /**

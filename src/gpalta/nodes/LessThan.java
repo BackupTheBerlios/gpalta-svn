@@ -30,7 +30,7 @@ public class LessThan extends Node
         kids[0].evalVect(evo, resultKid1);
         double[] resultKid2 = evo.getEvalVector();
         kids[1].evalVect(evo, resultKid2);
-        for (int i=0; i < evo.realDataHolder.nSamples; i++)
+        for (int i=0; i < evo.dataHolder.nSamples; i++)
         {
             outVect[i] = ( resultKid1[i] < resultKid2[i] ? 1:0 );
         }

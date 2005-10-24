@@ -47,14 +47,14 @@ public abstract class Types
 
         real.terminals.add(new RealConstant());
         
-        for (int i=0; i<evo.realDataHolder.nVars; i++)
+        for (int i=0; i<evo.dataHolder.nVars; i++)
         {
             real.terminals.add(new RealVar(i+1));
         } 
         
         if (Config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<evo.logicDataHolder.nDelays; i++)
+            for (int i=0; i<evo.previousOutputHolder.nDelays; i++)
             {
                 real.terminals.add(new PreviousOutput(i+1));
             }
@@ -75,14 +75,14 @@ public abstract class Types
          */
         if (!Config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<evo.logicDataHolder.nDelays; i++)
+            for (int i=0; i<evo.previousOutputHolder.nDelays; i++)
             {
                 logic.terminals.add(new PreviousOutput(i+1));
             }
         }
         
         //If there aren't any logic terminals, add logic constants for closure:
-        if (Config.usePreviousOutputAsReal || evo.logicDataHolder.nDelays == 0)
+        if (Config.usePreviousOutputAsReal || evo.previousOutputHolder.nDelays == 0)
         {
             logic.terminals.add(new LogicConstant());
         }
