@@ -41,7 +41,7 @@ public class Times extends Node
         return 2;
     }
     
-    public NodeType typeOfKids()
+    public NodeType typeOfKids(int whichKid)
     {
         return Types.real;
     }

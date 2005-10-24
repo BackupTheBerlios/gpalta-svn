@@ -38,7 +38,7 @@ public abstract class Node implements Cloneable, Serializable
     public abstract double eval(Evolution evo);
     public abstract void evalVect(Evolution evo, double[] outVect);
     
-    public NodeType typeOfKids()
+    public NodeType typeOfKids(int whichKid)
     {
         Logger.log("This shouldn' happen. A class that extends Node must implement" +
                 "its own typeOfKids() if it has any");

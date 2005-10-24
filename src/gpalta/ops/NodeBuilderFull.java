@@ -61,12 +61,12 @@ public class NodeBuilderFull extends NodeBuilder
             //If maxDepth = 1, we need terminals as kids:
             if (maxDepth == 1)
             {
-                node.kids[i] = Types.newRandomNode(node.typeOfKids().terminals, currentGlobalDepth + 1);
+                node.kids[i] = Types.newRandomNode(node.typeOfKids(i).terminals, currentGlobalDepth + 1);
                 node.nSubNodes += 1;
             }
             else
             {
-                node.kids[i] = Types.newRandomNode(node.typeOfKids().functions, currentGlobalDepth + 1);
+                node.kids[i] = Types.newRandomNode(node.typeOfKids(i).functions, currentGlobalDepth + 1);
                 build(node.kids[i], -1, maxDepth-1);
                 
                 /* If we are building only one child, these will be wrong for the 

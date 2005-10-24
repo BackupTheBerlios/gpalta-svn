@@ -75,7 +75,7 @@ public class TreeBuilder
     {
         tree.currentDepth = -1;
         tree.kids = new Node[1];
-        tree.kids[0] = Types.newRandomNode(tree.typeOfKids().all, 0);
+        tree.kids[0] = Types.newRandomNode(tree.typeOfKids(0).all, 0);
         tree.kids[0].init();
         
         if (Common.globalRandom.nextDouble() <= Config.probGrowBuild)

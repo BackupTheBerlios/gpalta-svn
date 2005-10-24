@@ -41,7 +41,7 @@ public class Minus extends Node
         return 2;
     }
     
-    public NodeType typeOfKids()
+    public NodeType typeOfKids(int whichKid)
     {
         return Types.real;
     }

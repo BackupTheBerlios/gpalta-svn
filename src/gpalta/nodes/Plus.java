@@ -41,7 +41,7 @@ public class Plus extends Node
         return 2;
     }
     
-    public NodeType typeOfKids()
+    public NodeType typeOfKids(int whichKid)
     {
         return Types.real;
     }

@@ -49,7 +49,7 @@ public class Tree extends Node
         return 1;
     }
     
-    public NodeType typeOfKids()
+    public NodeType typeOfKids(int whichKid)
     {
         return type;
     }
