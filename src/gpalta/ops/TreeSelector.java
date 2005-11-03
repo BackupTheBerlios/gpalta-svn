@@ -19,6 +19,14 @@ import gpalta.core.*;
  */
 public class TreeSelector
 {
+    
+    private Config config;
+    
+    public TreeSelector(Config config)
+    {
+        this.config = config;
+    }
+    
     /**
      * Performs the selection
      * 
@@ -39,18 +47,18 @@ public class TreeSelector
         double maxFit;
         int indMaxFit;
         //For every pass:
-        for (int i=0; i<Config.tournamentSize; i++)
+        for (int i=0; i<config.tournamentSize; i++)
         {
-            int[] perm = Common.randPerm(Config.populationSize);
+            int[] perm = Common.randPerm(config.populationSize);
             
             //For every tournament:
-            for (int j=0; j<Config.populationSize; j+= Config.tournamentSize)
+            for (int j=0; j<config.populationSize; j+= config.tournamentSize)
             {
                 maxFit = population.get(perm[j]).fitness;
                 indMaxFit = j;
                 
                 //For every tree in the tournament:
-                for (int k=j+1; k<j+Config.tournamentSize; k++)
+                for (int k=j+1; k<j+config.tournamentSize; k++)
                 {
                     if (population.get(perm[k]).fitness > maxFit)
                     {

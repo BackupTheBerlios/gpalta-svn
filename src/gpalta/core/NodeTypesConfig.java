@@ -18,13 +18,15 @@ import gpalta.nodes.*;
  *
  * @author neven
  */
-public abstract class Types
+public class NodeTypesConfig
 {
     
-    public static NodeType real;
-    public static NodeType logic;
+    public NodeType real;
+    public NodeType logic;
     
-    public static NodeType treeRoot;
+    public NodeType treeRoot;
+    
+    private Evolution evo;
     
     /**
      * Define the lists of possible Nodes
@@ -32,9 +34,10 @@ public abstract class Types
      * @param evo An Evolution with its Real and Logic DataHolders already
      * initialized, to determine how many variable NSodes to add to the lists
      */
-    public static void define(Evolution evo)
+    public NodeTypesConfig(Evolution evo)
     {
-        //Reinitialize Lists every time a new Evolution is created
+        this.evo = evo;
+        
         real = new NodeType();
         
         logic = new NodeType();
@@ -52,7 +55,7 @@ public abstract class Types
             real.terminals.add(new RealVar(i+1));
         } 
         
-        if (Config.usePreviousOutputAsReal)
+        if (evo.config.usePreviousOutputAsReal)
         {
             for (int i=0; i<evo.previousOutputHolder.nDelays; i++)
             {
@@ -73,7 +76,7 @@ public abstract class Types
          * Maybe we could add a single PreviousOutput and create an init() method
          * that randomly defines every copy's delay
          */
-        if (!Config.usePreviousOutputAsReal)
+        if (!evo.config.usePreviousOutputAsReal)
         {
             for (int i=0; i<evo.previousOutputHolder.nDelays; i++)
             {
@@ -82,7 +85,7 @@ public abstract class Types
         }
         
         //If there aren't any logic terminals, add logic constants for closure:
-        if (Config.usePreviousOutputAsReal || evo.previousOutputHolder.nDelays == 0)
+        if (evo.config.usePreviousOutputAsReal || evo.previousOutputHolder.nDelays == 0)
         {
             logic.terminals.add(new LogicConstant());
         }
@@ -101,7 +104,7 @@ public abstract class Types
      * @param l The list of Nodes from which to choose
      * @param currentGlobalDepth The depth of the requested Node in the Tree
      */
-    public static Node newRandomNode(List<Node> l, int currentGlobalDepth)
+    public Node newRandomNode(List<Node> l, int currentGlobalDepth)
     {
         int which = Common.globalRandom.nextInt(l.size());
         Node outNode = null;
@@ -116,7 +119,7 @@ public abstract class Types
         {
             Logger.log(e);
         }
-        outNode.init();
+        outNode.init(evo.config);
         outNode.currentDepth = currentGlobalDepth;     
         return outNode;
     }

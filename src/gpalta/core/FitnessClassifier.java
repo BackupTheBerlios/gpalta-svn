@@ -43,12 +43,12 @@ public class FitnessClassifier implements Fitness
         /* How much each SNR is more important than the next one:
          * Must be smaller than 1/3
          */
-        deltaSNR = Config.deltaSNR;
-        continuityImportance = Config.continuityImportance;
+        deltaSNR = evo.config.deltaSNR;
+        continuityImportance = evo.config.continuityImportance;
         //How much important is voice over silence:
-        kHR1 = Config.kHR1;
+        kHR1 = evo.config.kHR1;
         
-        sizePenalization = 1/ (500*Math.pow(2,Config.maxDepth+1));
+        sizePenalization = 1/ (500*Math.pow(2,evo.config.maxDepth+1));
         
         results = new double[evo.dataHolder.nSamples];
     }
@@ -183,7 +183,7 @@ public class FitnessClassifier implements Fitness
             int sumMaxContinuity = 0;
             double previousTarget = 0;
             int continuity = 0;
-            if (Config.nPreviousOutput == 0 && Config.useVect)
+            if (evo.config.nPreviousOutput == 0 && evo.config.useVect)
             {
                 tree.evalVect(evo, results);
             }

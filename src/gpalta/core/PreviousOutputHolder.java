@@ -19,10 +19,12 @@ public class PreviousOutputHolder
     public int nDelays;
     private double[] prevOut;
     private int index;
+    private Config config;
     
-    public PreviousOutputHolder()
+    public PreviousOutputHolder(Config config)
     {
-        nDelays = Config.nPreviousOutput;
+        this.config = config;
+        nDelays = config.nPreviousOutput;
         prevOut = new double[nDelays];
         for (int i=0; i<nDelays; i++)
         {
@@ -31,7 +33,7 @@ public class PreviousOutputHolder
         index = 0;
 
         if (nDelays > 0)
-            Logger.log("Using " + Config.nPreviousOutput + " previous outputs as " + (Config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
+            Logger.log("Using " + config.nPreviousOutput + " previous outputs as " + (config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
         
     }
     

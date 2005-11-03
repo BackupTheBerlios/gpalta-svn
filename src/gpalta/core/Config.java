@@ -15,69 +15,66 @@ import java.util.*;
 
 /**
  * Holds the GP parameters.
- * It isn't abstract, to be able to create an instance and modify the static 
- * fields automatically
- * 
  */
 public class Config 
 {
     
-    public static int populationSize = 500;
-    public static int nGenerations = 1000;
+    public int populationSize = 500;
+    public int nGenerations = 1000;
     
-    public static int tournamentSize = 2;
+    public int tournamentSize = 2;
     
-    public static int maxDepth = 9;
-    public static int initialMinDepth = 3;
+    public int maxDepth = 9;
+    public int initialMinDepth = 3;
 
     /* Upper limits for the probability regions of the tree operations. This means:
      * probability of crossover = upLimitProbCrossOver - 0
      * probability of mutation = upLimitProbMutation - upLimitProbCrossOver
      * probability of reproduction = 1 - upLimitProbMutation
      */
-    public static double upLimitProbCrossOver = 0.85;
-    public static double upLimitProbMutation = 0.9;
+    public double upLimitProbCrossOver = 0.85;
+    public double upLimitProbMutation = 0.9;
     //The rest is for reproduction
     
-    public static double constLowLimit = -100;
-    public static double constUpLimit = 100;
+    public double constLowLimit = -100;
+    public double constUpLimit = 100;
     
-    public static int maxCrossoverTries = 10;
+    public int maxCrossoverTries = 10;
     
-    public static double upLimitProbSelectTerminal = .1;
-    public static double upLimitProbSelectNonTerminal = 1;
-    public static double upLimitProbSelectRoot = 0;
+    public double upLimitProbSelectTerminal = .1;
+    public double upLimitProbSelectNonTerminal = 1;
+    public double upLimitProbSelectRoot = 0;
     //The rest is for select any node
     
-    public static double probGrowBuild = .5;
+    public double probGrowBuild = .5;
     //The rest is for Full Build
     
-    public static int nPreviousOutput = 0;
+    public int nPreviousOutput = 0;
 
-    public static String saveFileName = "evo.bin";
+    public String saveFileName = "evo.bin";
     
     public static String logFileName = "log.txt";
     
-    public static boolean useVect = false;
+    public boolean useVect = false;
     
     //For fitness:
     
     /* How much each SNR is more important than the next one:
      * Must be smaller than 1/3
      */
-    public static double deltaSNR = 0.05;
+    public double deltaSNR = 0.05;
     
     
-    public static double continuityImportance = 0.001;
+    public double continuityImportance = 0.001;
     
     //How much important is voice over silence:
-    public static double kHR1 = 4;
+    public double kHR1 = 4;
     
-    public static boolean usePreviousOutputAsReal = false;
+    public boolean usePreviousOutputAsReal = false;
     
-    public static boolean nonInteractive = false;
+    public boolean nonInteractive = false;
     
-    public static int nDaysToRun = 1;
+    public int nDaysToRun = 1;
     
     /**
      * Reads config from a property file. The file must contain a value for all

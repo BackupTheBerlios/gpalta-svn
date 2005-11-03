@@ -41,9 +41,9 @@ public class Or extends Node
         return 2;
     }
     
-    public NodeType typeOfKids(int whichKid)
+    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
     {
-        return Types.logic;
+        return types.logic;
     }
 
     public String name()

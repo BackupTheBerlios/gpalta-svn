@@ -23,7 +23,9 @@ public class FitnessClassic implements Fitness
     private double[] results;
     private Evolution evo;
 
-    public void init(Evolution evo, String fileName) {
+    public void init(Evolution evo, String fileName) 
+    {
+        //TODO: implement this
     }
 
     public void init(Evolution evo, double[] desiredOutputs, double[] weights) 
@@ -39,7 +41,7 @@ public class FitnessClassic implements Fitness
         double error = 0;
         evo.dataHolder.reset();
         evo.previousOutputHolder.reset();
-        if (Config.nPreviousOutput == 0 && Config.useVect)
+        if (evo.config.nPreviousOutput == 0 && evo.config.useVect)
         {
             tree.evalVect(evo, results);
         }

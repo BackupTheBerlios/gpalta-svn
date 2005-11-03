@@ -30,7 +30,7 @@ public abstract class Node implements Cloneable, Serializable
     public int currentDepth;
     public int maxDepthFromHere;
     
-    public void init()
+    public void init(Config config)
     {
 
     }
@@ -38,7 +38,7 @@ public abstract class Node implements Cloneable, Serializable
     public abstract double eval(Evolution evo);
     public abstract void evalVect(Evolution evo, double[] outVect);
     
-    public NodeType typeOfKids(int whichKid)
+    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
     {
         Logger.log("This shouldn' happen. A class that extends Node must implement" +
                 "its own typeOfKids() if it has any");

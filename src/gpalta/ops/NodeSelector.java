@@ -17,16 +17,24 @@ import gpalta.core.*;
 public class NodeSelector {
     
     private int currentNodeSearched;
+    private Config config;
+    private NodeTypesConfig types;
+    
+    public NodeSelector(Config config, NodeTypesConfig types)
+    {
+        this.config = config;
+        this.types = types;
+    }
    
     public Node pickRandomNode(Tree tree)
     {
         double type = Common.globalRandom.nextDouble();
         List<Node> l = new ArrayList<Node>();
-        if (type <= Config.upLimitProbSelectTerminal)
+        if (type <= config.upLimitProbSelectTerminal)
         {
             getTerminalNodes(l, tree.kids[0]);
         }
-        else if (type <= Config.upLimitProbSelectNonTerminal)
+        else if (type <= config.upLimitProbSelectNonTerminal)
         {
             getFunctionNodes(l, tree.kids[0]);
             /* If there aren't function nodes, this is a tree with a terminal at its root
@@ -37,7 +45,7 @@ public class NodeSelector {
                 return tree.kids[0];
             }
         }
-        else if (type <= Config.upLimitProbSelectRoot)
+        else if (type <= config.upLimitProbSelectRoot)
         {
             return tree.kids[0];
         }
@@ -59,17 +67,17 @@ public class NodeSelector {
         double type = Common.globalRandom.nextDouble();
         List<Node> l = new ArrayList<Node>();
 
-        if (type <= Config.upLimitProbSelectTerminal)
+        if (type <= config.upLimitProbSelectTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).terminals);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(types, node.whichKidOfParent).terminals);
         }
-        else if (type <= Config.upLimitProbSelectNonTerminal)
+        else if (type <= config.upLimitProbSelectNonTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).functions);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(types, node.whichKidOfParent).functions);
         }
         else
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).all);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(types, node.whichKidOfParent).all);
         }
         //TODO: what should we do if we don't find any node?
         if (l.size() == 0)
@@ -82,7 +90,7 @@ public class NodeSelector {
     
     private void getNodes(List<Node> l, Node node, List<Node> types)
     {
-        if (Types.isInList(node, types))
+        if (NodeTypesConfig.isInList(node, types))
         {
             l.add(node);
         }

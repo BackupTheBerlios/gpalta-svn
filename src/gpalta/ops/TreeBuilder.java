@@ -21,16 +21,21 @@ import gpalta.core.*;
 public class TreeBuilder
 {
     
-    public NodeBuilder nodeBuilderGrow;
-    public NodeBuilder nodeBuilderFull;
-    public int[] nTreesEachDepth;
+    private NodeBuilder nodeBuilderGrow;
+    private NodeBuilder nodeBuilderFull;
+    private int[] nTreesEachDepth;
+    private Config config;
+    private NodeTypesConfig types;
     
     /** Creates a new instance of TreeBuilder */
-    public TreeBuilder() 
+    public TreeBuilder(Config config, NodeTypesConfig types) 
     {
-        nodeBuilderGrow = new NodeBuilderGrow();
-        nodeBuilderFull = new NodeBuilderFull();
-        nTreesEachDepth = new int[Config.maxDepth - Config.initialMinDepth + 1];
+        this.config = config;
+        this.types = types;
+        
+        nodeBuilderGrow = new NodeBuilderGrow(types);
+        nodeBuilderFull = new NodeBuilderFull(types);
+        nTreesEachDepth = new int[config.maxDepth - config.initialMinDepth + 1];
         /* nTreesEachDepth will contain the number of trees created for each
          * depth from initialMinDepth to maxDepth
          * ie:
@@ -39,31 +44,31 @@ public class TreeBuilder
          * and so on
          * This is done from greater to lower depth in order to favor larger trees.
          */
-        int depth = Config.maxDepth;
-        for (int i=0; i<Config.populationSize; i++)
+        int depth = config.maxDepth;
+        for (int i=0; i<config.populationSize; i++)
         {
-            if (depth == Config.initialMinDepth - 1)
+            if (depth == config.initialMinDepth - 1)
             {
-                depth = Config.maxDepth;
+                depth = config.maxDepth;
             }
-            nTreesEachDepth[depth - Config.initialMinDepth]++;
+            nTreesEachDepth[depth - config.initialMinDepth]++;
             depth--;
         }
     }
     
     public void build (List<Tree> population)
     {
-        int depth = Config.initialMinDepth;
+        int depth = config.initialMinDepth;
         Tree tree;
         int treesDoneThisDepth = 0;
-        for (int i=0; i<Config.populationSize; i++)
+        for (int i=0; i<config.populationSize; i++)
         {
-            tree = new Tree(Types.treeRoot);
+            tree = new Tree(types.treeRoot);
             build(tree, depth);
             population.add(tree);
             
             treesDoneThisDepth++;
-            if (treesDoneThisDepth == nTreesEachDepth[depth - Config.initialMinDepth])
+            if (treesDoneThisDepth == nTreesEachDepth[depth - config.initialMinDepth])
             {
                 depth++;
                 treesDoneThisDepth = 0;
@@ -75,10 +80,9 @@ public class TreeBuilder
     {
         tree.currentDepth = -1;
         tree.kids = new Node[1];
-        tree.kids[0] = Types.newRandomNode(tree.typeOfKids(0).all, 0);
-        tree.kids[0].init();
+        tree.kids[0] = types.newRandomNode(tree.typeOfKids(null, 0).all, 0);
         
-        if (Common.globalRandom.nextDouble() <= Config.probGrowBuild)
+        if (Common.globalRandom.nextDouble() <= config.probGrowBuild)
         {
             nodeBuilderGrow.build(tree.kids[0], maxDepth);
         }

@@ -20,28 +20,31 @@ import gpalta.core.*;
 public class TreeOperator 
 {
 
-    NodeSelector selector;
-    NodeBuilder nodeBuilder;
+    private NodeSelector selector;
+    private NodeBuilder nodeBuilder;
+    private Config config;
     
-    public TreeOperator()
+    public TreeOperator(Config config, NodeTypesConfig types)
     {
-        selector = new NodeSelector();
-        nodeBuilder = new NodeBuilderGrow();
+        this.config = config;
+        selector = new NodeSelector(config, types);
+        nodeBuilder = new NodeBuilderGrow(types);
     }
     
     public void operate(List<Tree> population)
     {
-        int[] perm = Common.randPerm(Config.populationSize);
+        int[] perm = Common.randPerm(config.populationSize);
         double op;
-        for (int i=0; i< Config.populationSize; i+=2)
+        for (int i=0; i< config.populationSize; i+=2)
         {
             op = Common.globalRandom.nextDouble();
-            if (op <= Config.upLimitProbCrossOver)
+            if (op <= config.upLimitProbCrossOver)
             {
                 crossOver(population.get(perm[i]), population.get(perm[i+1]));
             }
-            else if (op <= Config.upLimitProbMutation)
+            else if (op <= config.upLimitProbMutation)
             {
+                //TODO: shouldn't we mutate the other one too?
                 mutateBuild(population.get(perm[i]));
             }
             else
@@ -54,8 +57,8 @@ public class TreeOperator
     private void mutateBuild(Tree tree)
     {
         Node tmp = selector.pickRandomNode(tree);
-        //Choose a random depth between 1 and (Config.maxDepth - currentDepth)
-        int depthFromHere = 1 + Common.globalRandom.nextInt(Config.maxDepth - tmp.currentDepth + 1);
+        //Choose a random depth between 1 and (config.maxDepth - currentDepth)
+        int depthFromHere = 1 + Common.globalRandom.nextInt(config.maxDepth - tmp.currentDepth + 1);
         //System.out.println("Mut: " + tmp.currentDepth + " " + depthFromHere);
         nodeBuilder.build(tmp.parent, tmp.whichKidOfParent, depthFromHere);
         updateParents(tmp);
@@ -66,14 +69,14 @@ public class TreeOperator
         Node node1;
         Node node2;
         
-        for (int i=0; i<Config.maxCrossoverTries; i++)
+        for (int i=0; i<config.maxCrossoverTries; i++)
         {
             node1 = selector.pickRandomNode(tree1);
             node2 = selector.pickRandomNode(tree2, node1);
             if (node2 != null)
             {
-                if (node1.currentDepth + node2.maxDepthFromHere <= Config.maxDepth  &&
-                    node2.currentDepth + node1.maxDepthFromHere <= Config.maxDepth)
+                if (node1.currentDepth + node2.maxDepthFromHere <= config.maxDepth  &&
+                    node2.currentDepth + node1.maxDepthFromHere <= config.maxDepth)
                 {
                     //System.out.println("CO: " + node1.currentDepth + " " + node2.currentDepth);
                     
@@ -101,7 +104,7 @@ public class TreeOperator
                 }
             }
         }
-        //System.out.println("Crossover failed after " + Config.maxCrossoverTries + " tries");
+        //System.out.println("Crossover failed after " + config.maxCrossoverTries + " tries");
     }
     
     /**

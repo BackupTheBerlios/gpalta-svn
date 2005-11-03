@@ -22,14 +22,16 @@ import java.io.*;
 public class Evolution
 {
     
-    public TreeBuilder treeBuilder;
+    private TreeBuilder treeBuilder;
     public List<Tree> population;
-    public TreeOperator treeOp;
-    public TreeSelector treeSelector;
+    private TreeOperator treeOp;
+    private TreeSelector treeSelector;
     public Fitness fitness;
     public DataHolder dataHolder;
     public PreviousOutputHolder previousOutputHolder;
     public int generation;
+    public Config config;
+    public NodeTypesConfig types;
     
     public List<double[]> evalVectors;
     private int currentEvalVector;
@@ -42,22 +44,23 @@ public class Evolution
      * @param initPop If true, the population is randomly initialized. Else, 
      * nothing is done (population will be later read from a file)
      */
-    public Evolution(boolean initPop)
+    public Evolution(Config config, boolean initPop)
     {
+        this.config = config;
         
         dataHolder = new DataHolder("data.txt");
-        previousOutputHolder = new PreviousOutputHolder();
-        Types.define(this);
+        previousOutputHolder = new PreviousOutputHolder(config);
+        types = new NodeTypesConfig(this);
         
         population = new ArrayList<Tree>();
         if (initPop)
         {
-            treeBuilder = new TreeBuilder();
+            treeBuilder = new TreeBuilder(config, types);
             treeBuilder.build(population);
         }
         
-        treeOp = new TreeOperator();
-        treeSelector = new TreeSelector();
+        treeOp = new TreeOperator(config, types);
+        treeSelector = new TreeSelector(config);
         fitness = new FitnessClassifier();
         fitness.init(this, "class.txt");
 
@@ -70,7 +73,7 @@ public class Evolution
         generation = 0;
         
         
-        if (Config.nPreviousOutput == 0 && Config.useVect)
+        if (config.nPreviousOutput == 0 && config.useVect)
         {
             initEvalVectors();
         }
@@ -80,24 +83,25 @@ public class Evolution
     /**
      * Creates a new instance of Evolution, using the given data, desiredOutputs and weights
      */
-    public Evolution(double[][] data, double[] desiredOutputs, double[] weights, boolean initPop)
+    public Evolution(Config config, double[][] data, double[] desiredOutputs, double[] weights, boolean initPop)
     {
+        this.config = config;
         
         dataHolder = new DataHolder(data);
-        previousOutputHolder = new PreviousOutputHolder();
-        Types.define(this);
+        previousOutputHolder = new PreviousOutputHolder(config);
+        types = new NodeTypesConfig(this);
         
         population = new ArrayList<Tree>();
         if (initPop)
         {
-            treeBuilder = new TreeBuilder();
+            treeBuilder = new TreeBuilder(config, types);
             treeBuilder.build(population);
         }
         
-        treeOp = new TreeOperator();
-        treeSelector = new TreeSelector();
+        treeOp = new TreeOperator(config, types);
+        treeSelector = new TreeSelector(config);
         fitness = new FitnessClassic();
-        fitness.init(this, desiredOutputs,  weights);
+        fitness.init(this, desiredOutputs, weights);
 
         evoStats = new EvolutionStats();
         
@@ -108,7 +112,7 @@ public class Evolution
 
         generation = 0;
         
-        if (Config.nPreviousOutput == 0 && Config.useVect)
+        if (config.nPreviousOutput == 0 && config.useVect)
         {
             initEvalVectors();
         }
@@ -135,8 +139,8 @@ public class Evolution
             }
         }
         
-        evoStats.avgFit /= Config.populationSize;
-        evoStats.avgNodes /= Config.populationSize;
+        evoStats.avgFit /= config.populationSize;
+        evoStats.avgNodes /= config.populationSize;
         
         evoStats.bestTreeChanged = false;
         if (bestThisGen.fitness > evoStats.bestSoFar.fitness)

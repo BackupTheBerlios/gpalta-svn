@@ -38,9 +38,9 @@ public class RealConstant extends Node
         return ("" + constant);
     }
     
-    public void init()
+    public void init(Config config)
     {
         double random01 = Common.globalRandom.nextDouble();
-        this.constant = Config.constLowLimit + (Config.constUpLimit-Config.constLowLimit)*random01;
+        this.constant = config.constLowLimit + (config.constUpLimit-config.constLowLimit)*random01;
     }
 }

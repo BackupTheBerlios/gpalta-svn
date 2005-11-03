@@ -19,6 +19,13 @@ import gpalta.core.*;
  */
 public class NodeBuilderFull extends NodeBuilder
 {
+    private NodeTypesConfig types;
+    
+    public NodeBuilderFull (NodeTypesConfig types)
+    {
+        this.types = types;
+    }
+    
     public void build (Node node, int maxDepth)
     {
         build (node, -1, maxDepth);
@@ -61,12 +68,12 @@ public class NodeBuilderFull extends NodeBuilder
             //If maxDepth = 1, we need terminals as kids:
             if (maxDepth == 1)
             {
-                node.kids[i] = Types.newRandomNode(node.typeOfKids(i).terminals, currentGlobalDepth + 1);
+                node.kids[i] = types.newRandomNode(node.typeOfKids(types, i).terminals, currentGlobalDepth + 1);
                 node.nSubNodes += 1;
             }
             else
             {
-                node.kids[i] = Types.newRandomNode(node.typeOfKids(i).functions, currentGlobalDepth + 1);
+                node.kids[i] = types.newRandomNode(node.typeOfKids(types, i).functions, currentGlobalDepth + 1);
                 build(node.kids[i], -1, maxDepth-1);
                 
                 /* If we are building only one child, these will be wrong for the 

@@ -29,6 +29,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
     private boolean usePlot;
     public boolean stopSaveQuit;
     private Timer timer;
+    public Config config;
     
     
     /**
@@ -37,7 +38,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
     public GPaltaGUI()
     {
         //First thing to do is read config from file
-        Config config = new Config();
+        config = new Config();
         config.init("Config.txt");
         
         initComponents();
@@ -77,7 +78,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
         
         usePlot = true;
         
-        if (Config.nonInteractive)
+        if (config.nonInteractive)
         {
             newEvo(true);
             checkSave.setSelected(true);
@@ -155,7 +156,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelEvolution.setLayout(new java.awt.BorderLayout(0, 3));
 
-        panelEvolution.setBorder(new javax.swing.border.TitledBorder("New Evolution"));
+        panelEvolution.setBorder(javax.swing.BorderFactory.createTitledBorder("New Evolution"));
         butNewFromScratch.setText("Create new");
         butNewFromScratch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -178,7 +179,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelSaving.setLayout(new java.awt.BorderLayout(0, 3));
 
-        panelSaving.setBorder(new javax.swing.border.TitledBorder("Saving"));
+        panelSaving.setBorder(javax.swing.BorderFactory.createTitledBorder("Saving"));
         butSaveNow.setText("Save now");
         butSaveNow.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,7 +206,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelGo.setLayout(new java.awt.BorderLayout(0, 3));
 
-        panelGo.setBorder(new javax.swing.border.TitledBorder("Go"));
+        panelGo.setBorder(javax.swing.BorderFactory.createTitledBorder("Go"));
         butGo1.setText("Go 1");
         butGo1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -217,7 +218,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
 
-        spinGoN.setValue(Config.nGenerations);
+        spinGoN.setValue(config.nGenerations);
         jPanel4.add(spinGoN);
 
         butGoN.setText("Go N");
@@ -235,7 +236,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelStop.setLayout(new java.awt.BorderLayout(0, 3));
 
-        panelStop.setBorder(new javax.swing.border.TitledBorder("Stop"));
+        panelStop.setBorder(javax.swing.BorderFactory.createTitledBorder("Stop"));
         togButStopAtNextGen.setText("Stop at next gen");
         togButStopAtNextGen.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -245,7 +246,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelStop.add(togButStopAtNextGen, java.awt.BorderLayout.NORTH);
 
-        togStopSaveQuit.setText("Stop in " + Config.nDaysToRun + " days at 8:15");
+        togStopSaveQuit.setText("Stop in " + config.nDaysToRun + " days at 8:15");
         togStopSaveQuit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 togStopSaveQuitActionPerformed(evt);
@@ -260,7 +261,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelStats.setLayout(new java.awt.BorderLayout());
 
-        panelStats.setBorder(new javax.swing.border.TitledBorder("Statistics"));
+        panelStats.setBorder(javax.swing.BorderFactory.createTitledBorder("Statistics"));
         panelBestSoFar.setLayout(new java.awt.BorderLayout(5, 0));
 
         jLabel3.setText("Best tree so far:");
@@ -368,7 +369,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
 
         panelBottom.setLayout(new java.awt.BorderLayout());
 
-        panelBottom.setBorder(new javax.swing.border.TitledBorder("Status"));
+        panelBottom.setBorder(javax.swing.BorderFactory.createTitledBorder("Status"));
         labInfo.setText("Stopped");
         panelBottom.add(labInfo, java.awt.BorderLayout.CENTER);
 
@@ -392,9 +393,9 @@ public class GPaltaGUI extends javax.swing.JFrame {
         {
             timer = new Timer();
             Calendar tomorrow = Calendar.getInstance();            
-            //Set for Config.nDaysToRun at 8:15:00 AM
+            //Set for config.nDaysToRun at 8:15:00 AM
             //TODO: This should be customizable
-            tomorrow.add(Calendar.DATE, Config.nDaysToRun);
+            tomorrow.add(Calendar.DATE, config.nDaysToRun);
             tomorrow.set(Calendar.HOUR_OF_DAY, 8);
             tomorrow.set(Calendar.MINUTE, 15);
             tomorrow.set(Calendar.SECOND, 0);
@@ -493,8 +494,8 @@ public class GPaltaGUI extends javax.swing.JFrame {
         evoThread.start();
         //TODO:  log more information (fitness parameters, etc)
         Logger.log("Initial population info:");
-        Logger.log("\t Population Size:     " + Config.populationSize);
-        Logger.log("\t Maximun Depth:       " + Config.maxDepth);
+        Logger.log("\t Population Size:     " + config.populationSize);
+        Logger.log("\t Maximun Depth:       " + config.maxDepth);
         
         
         setEnabledAll(disableAtStart, true);
@@ -511,14 +512,15 @@ public class GPaltaGUI extends javax.swing.JFrame {
     private void go(int n)
     {
         Logger.log("Starting evolution for " + n + " generations");
-        evoThread.go(n);
+        setEnabledAll(disableWhenRunning, false);
+        setEnabledAll(disableWhenNotRunning, true);
         progressBar.setMaximum(n);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
         progressBar.setString("0/" + n);
         nGenDone = 0;
-        setEnabledAll(disableWhenRunning, false);
-        setEnabledAll(disableWhenNotRunning, true);
+        //This need to go at last in case the evoThread is too quick
+        evoThread.go(n);
     }
     
     private void save()
