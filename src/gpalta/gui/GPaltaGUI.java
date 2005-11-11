@@ -645,7 +645,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
         if (evoStats.bestSoFar.fitness > config.stopFitness)
         {
             stopAtNextGen = true;
-            Logger.log("Fitness reached " + config.stopFitness);
+            Logger.log("Fitness reached " + config.stopFitness + " at generation " + evoStats.generation);
         }
     }
     
