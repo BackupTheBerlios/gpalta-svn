@@ -39,6 +39,9 @@ logFileName = log.txt
     
 useVect = true
 
+problemType = generic
+#problemType = classifier
+
 #For fitness:
     
 #How much each SNR is more important than the next one:
