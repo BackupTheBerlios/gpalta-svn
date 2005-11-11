@@ -56,8 +56,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
     public GPaltaGUI()
     {
         //First thing to do is read config from file
-        config = new Config();
-        config.init("Config.txt");
+        config = new Config("Config.txt");
         
         initComponents();
         
@@ -473,20 +472,30 @@ public class GPaltaGUI extends javax.swing.JFrame {
     
     private void plotInit()
     {
+        if (plot!=null)
+        {
+            panelPlot.remove(plot);
+        }
         plot = new Plot();
         
-        plot.setTitle("Hit Rate");
         //plot.setSize(200, 10);
         plot.setYRange(0, 1);
         plot.setXRange(0, 50);
         plot.setXLabel("Generation");
         //plot.setYLabel("Fitness");
-        plot.addLegend(1, "HR0");
-        plot.addLegend(2, "HR1");
+        if (config.problemType.equals("classifier"))
+        {
+            plot.setTitle("Hit Rate");
+            plot.addLegend(1, "HR0");
+            plot.addLegend(2, "HR1");
+        }
+        else
+        {
+            plot.setTitle("Fitness");
+        }
         //Fake points to set ranges correctly when loading from evo file
         plot.addPoint(3, 0, 0, false);
         plot.addPoint(3, 0, 1, false);
-        //TODO: problems occur when the plot has already been created:
         panelPlot.add(plot);
     }
     
@@ -598,8 +607,15 @@ public class GPaltaGUI extends javax.swing.JFrame {
         }
         if (usePlot)
         {
-            plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.hr0, !first);
-            plot.addPoint(2, (double)evoStats.generation, evoStats.bestSoFar.hr1, !first);
+            if (config.problemType.equals("classifier"))
+            {
+                plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.hr0, !first);
+                plot.addPoint(2, (double)evoStats.generation, evoStats.bestSoFar.hr1, !first);
+            }
+            else
+            {
+                plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.fitness, !first);
+            }
             if (evoStats.generation > plot.getXRange()[1])
             {
                 plot.addPoint(3, plot.getXRange()[1] +50, 1, false);

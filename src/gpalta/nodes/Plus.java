@@ -33,21 +33,21 @@ import gpalta.core.*;
 public class Plus extends Node
 {
 
-    public double eval(Evolution evo)
+    public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return ( kids[0].eval(evo) + kids[1].eval(evo) );
+        return ( kids[0].eval(data, prev) + kids[1].eval(data, prev) );
     }
     
-    public void evalVect(Evolution evo, double[] outVect)
+    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        kids[0].evalVect(evo, outVect);
-        double[] resultKid2 = evo.getEvalVector();
-        kids[1].evalVect(evo, resultKid2);
-        for (int i=0; i < evo.dataHolder.nSamples; i++)
+        kids[0].evalVect(outVect, evalVectors, data, prev);
+        double[] resultKid2 = evalVectors.get();
+        kids[1].evalVect(resultKid2, evalVectors, data, prev);
+        for (int i=0; i < data.nSamples; i++)
         {
             outVect[i] = outVect[i] + resultKid2[i];
         }
-        evo.releaseEvalVector();
+        evalVectors.release();
     }
     
     public int nKids()

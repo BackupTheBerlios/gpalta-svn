@@ -48,14 +48,14 @@ public class Tree extends Node
         this.type = type;
     }
     
-    public double eval(Evolution evo)
+    public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return kids[0].eval(evo);
+        return kids[0].eval(data, prev);
     }
     
-    public void evalVect(Evolution evo, double[] outVect)
+    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        kids[0].evalVect(evo, outVect);
+        kids[0].evalVect(outVect, evalVectors, data, prev);
     }
     
     public int nKids()

@@ -49,8 +49,8 @@ public abstract class Node implements Cloneable, Serializable
 
     }
     
-    public abstract double eval(Evolution evo);
-    public abstract void evalVect(Evolution evo, double[] outVect);
+    public abstract double eval(DataHolder data, PreviousOutputHolder prev);
+    public abstract void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
     public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
     {

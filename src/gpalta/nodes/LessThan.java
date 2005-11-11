@@ -33,23 +33,21 @@ import gpalta.core.*;
 public class LessThan extends Node
 {
 
-    public double eval(Evolution evo)
+    public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return ( kids[0].eval(evo) < kids[1].eval(evo) ? 1:0 );
+        return ( kids[0].eval(data, prev) < kids[1].eval(data, prev) ? 1:0 );
     }
     
-    public void evalVect(Evolution evo, double[] outVect)
+    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        double[] resultKid1 = evo.getEvalVector();
-        kids[0].evalVect(evo, resultKid1);
-        double[] resultKid2 = evo.getEvalVector();
-        kids[1].evalVect(evo, resultKid2);
-        for (int i=0; i < evo.dataHolder.nSamples; i++)
+        kids[0].evalVect(outVect, evalVectors, data, prev);
+        double[] resultKid2 = evalVectors.get();
+        kids[1].evalVect(resultKid2, evalVectors, data, prev);
+        for (int i=0; i < data.nSamples; i++)
         {
-            outVect[i] = ( resultKid1[i] < resultKid2[i] ? 1:0 );
+            outVect[i] = ( outVect[i] < resultKid2[i] ? 1:0 );
         }
-        evo.releaseEvalVector();
-        evo.releaseEvalVector();
+        evalVectors.release();
     }
     
     public int nKids()

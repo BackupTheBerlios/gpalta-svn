@@ -45,26 +45,26 @@ public class FitnessClassifier implements Fitness
     private double deltaSNR;
     private double kHR1;
     private double continuityImportance;
-    private Evolution evo;
     private double[] results;
+    private Config config;
     
     /** 
      * Creates a new instance of Fitness, initializing only constants
      */
-    private void init (Evolution evo)
+    private void init (Config config, DataHolder data)
     {
-        this.evo = evo;
+        this.config = config;
         /* How much each SNR is more important than the next one:
          * Must be smaller than 1/3
          */
-        deltaSNR = evo.config.deltaSNR;
-        continuityImportance = evo.config.continuityImportance;
+        deltaSNR = config.deltaSNR;
+        continuityImportance = config.continuityImportance;
         //How much important is voice over silence:
-        kHR1 = evo.config.kHR1;
+        kHR1 = config.kHR1;
         
-        sizePenalization = 1/ (500*Math.pow(2,evo.config.maxDepth+1));
+        sizePenalization = 1/ (500*Math.pow(2, config.maxDepth+1));
         
-        results = new double[evo.dataHolder.nSamples];
+        results = new double[data.nSamples];
     }
     
     /** 
@@ -72,14 +72,14 @@ public class FitnessClassifier implements Fitness
      * 
      * @param fileName The file to read
      */
-    public void init(Evolution evo, String fileName)
+    public void init(Config config, DataHolder data, String fileName)
     {
         // Create a new Fitness, and only init constants:
-        init(evo);
+        init(config, data);
 
         File classFile = new File(fileName);
 
-        desiredOutputs = new double[evo.dataHolder.nSamples];
+        desiredOutputs = new double[data.nSamples];
         n0 = 0;
         n1 = 0;
 
@@ -93,12 +93,12 @@ public class FitnessClassifier implements Fitness
             if (line.split("\\s+").length == 2)
             {
                 useWeight = true;
-                weights = new double[evo.dataHolder.nSamples];
+                weights = new double[data.nSamples];
             }
             out = new BufferedReader(new FileReader(classFile));
 
 
-            for (int sample=0; sample<evo.dataHolder.nSamples; sample++)
+            for (int sample=0; sample<data.nSamples; sample++)
             {
                 line = out.readLine().trim();
                 if (useWeight)
@@ -122,8 +122,9 @@ public class FitnessClassifier implements Fitness
                     n1++;
                 }
             }
-
-            Logger.log("Fitness initialized from file \"class.txt\"");
+            
+            Logger.log("Using classifier fitness");
+            Logger.log("Fitness initialized from file \"" + fileName + "\"");
             Logger.log("\t kHR1:                " + kHR1);
             if (useWeight)
             {
@@ -157,14 +158,14 @@ public class FitnessClassifier implements Fitness
      * the SNR for each sample. Assumes the size of both parameters is
      * the same as evo.realDataHolder.nSamples
      */
-    public void init (Evolution evo, double[] desiredOutputs, double[] weights)
+    public void init (Config config, DataHolder data, double[] desiredOutputs, double[] weights)
     {
         // Create a new Fitness, and only init constants:
-        init(evo);
+        init(config, data);
         
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
-        for (int sample=0; sample<evo.dataHolder.nSamples; sample++)
+        for (int sample=0; sample<data.nSamples; sample++)
         {
             if (desiredOutputs[sample] == 0)
             {
@@ -184,33 +185,33 @@ public class FitnessClassifier implements Fitness
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
-    public double[] calculate(Tree tree)
+    public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         
         if (!tree.fitCalculated)
         {
-            evo.dataHolder.reset();
-            evo.previousOutputHolder.reset();
+            data.reset();
+            prev.reset();
             double hits0 = 0;
             double hits1 = 0;
             int maxContinuity = 0;
             int sumMaxContinuity = 0;
             double previousTarget = 0;
             int continuity = 0;
-            if (evo.config.nPreviousOutput == 0 && evo.config.useVect)
+            if (config.nPreviousOutput == 0 && config.useVect)
             {
-                tree.evalVect(evo, results);
+                tree.evalVect(results, evalVectors, data, prev);
             }
             else
             {
-                for (int i=0; i<evo.dataHolder.nSamples; i++)
+                for (int i=0; i<data.nSamples; i++)
                 {
-                    results[i] = tree.eval(evo);
-                    evo.dataHolder.update();
-                    evo.previousOutputHolder.update(results[i]);
+                    results[i] = tree.eval(data, prev);
+                    data.update();
+                    prev.update(results[i]);
                 }
             }
-            for (int i=0; i<evo.dataHolder.nSamples; i++)
+            for (int i=0; i<data.nSamples; i++)
             {
                 if (desiredOutputs[i]!=previousTarget)
                 {
@@ -260,7 +261,7 @@ public class FitnessClassifier implements Fitness
                 }
             }
             sumMaxContinuity += maxContinuity;
-            double continuityPenalizacion = continuityImportance * (evo.dataHolder.nSamples - (double)sumMaxContinuity) / evo.dataHolder.nSamples;
+            double continuityPenalizacion = continuityImportance * (data.nSamples - (double)sumMaxContinuity) / data.nSamples;
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
             tree.fitness = (tree.hr0 + kHR1*tree.hr1)/(kHR1+1);

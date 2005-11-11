@@ -25,6 +25,7 @@
 package gpalta.core;
 
 import gpalta.nodes.Tree;
+import java.io.*;
 
 /**
  *
@@ -36,40 +37,103 @@ public class FitnessClassic implements Fitness
     private double[] desiredOutputs;
     private double[] weights;
     private double[] results;
-    private Evolution evo;
+    private Config config;
 
-    public void init(Evolution evo, String fileName) 
+    public void init(Config config, DataHolder data, String fileName) 
     {
-        //TODO: implement this
+        this.config = config;
+        results = new double[data.nSamples];
+        
+        File classFile = new File(fileName);
+
+        desiredOutputs = new double[data.nSamples];
+
+        try
+        {
+            BufferedReader out = new BufferedReader(new FileReader(classFile));
+
+            //Find out if we are using snr info:
+            boolean useWeight = false;
+            String line = out.readLine().trim();
+            if (line.split("\\s+").length == 2)
+            {
+                useWeight = true;
+                weights = new double[data.nSamples];
+            }
+            out = new BufferedReader(new FileReader(classFile));
+
+
+            for (int sample=0; sample<data.nSamples; sample++)
+            {
+                line = out.readLine().trim();
+                if (useWeight)
+                {
+                    String[] vals = line.split("\\s+");
+                    //First comes the desiredOutput:
+                    desiredOutputs[sample] = Double.parseDouble(vals[0]);
+                    //Then the weight:
+                    weights[sample] = Double.parseDouble(vals[1]);
+                }
+                else
+                {
+                    desiredOutputs[sample] = Double.parseDouble(line);
+                }
+            }
+            
+            Logger.log("Using classic (generic) fitness");
+            Logger.log("Fitness initialized from file \"" + fileName + "\"");
+            if (useWeight)
+            {
+                Logger.log("\t Using weight data");
+            }
+            Logger.log("\t Samples:              " + data.nSamples);
+
+        }
+        
+        /* TODO: These exceptions shouldn't be catched here, but thrown to the
+         * evolution and then to the controller
+         */
+        catch (FileNotFoundException e)
+        {
+            Logger.log(e);
+        }
+        catch (IOException e)
+        {
+            Logger.log(e);
+        }
+        catch (NumberFormatException e)
+        {
+            Logger.log(e);
+        }
     }
 
-    public void init(Evolution evo, double[] desiredOutputs, double[] weights) 
+    public void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights) 
     {
-        this.evo = evo;
+        this.config = config;
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
-        results = new double[evo.dataHolder.nSamples];
+        results = new double[data.nSamples];
     }
 
-    public double[] calculate(Tree tree)
+    public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         double error = 0;
-        evo.dataHolder.reset();
-        evo.previousOutputHolder.reset();
-        if (evo.config.nPreviousOutput == 0 && evo.config.useVect)
+        data.reset();
+        prev.reset();
+        if (config.nPreviousOutput == 0 && config.useVect)
         {
-            tree.evalVect(evo, results);
+            tree.evalVect(results, evalVectors, data, prev);
         }
         else
         {
-            for (int i=0; i<evo.dataHolder.nSamples; i++)
+            for (int i=0; i<data.nSamples; i++)
             {
-                results[i] = tree.eval(evo);
-                evo.dataHolder.update();
-                evo.previousOutputHolder.update(results[i]);
+                results[i] = tree.eval(data, prev);
+                data.update();
+                prev.update(results[i]);
             }
         }
-        for (int i=0; i<evo.dataHolder.nSamples; i++)
+        for (int i=0; i<data.nSamples; i++)
         {
             error += Math.pow (results[i] - desiredOutputs[i], 2);
         }

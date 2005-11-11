@@ -71,6 +71,8 @@ public class Config
     
     public boolean useVect = false;
     
+    public String problemType = "generic";
+    
     //For fitness:
     
     /* How much each SNR is more important than the next one:
@@ -96,7 +98,7 @@ public class Config
      * 
      * @param fileName The name of the config file
      */
-    public void init(String fileName)
+    public Config(String fileName)
     {
         try
         {

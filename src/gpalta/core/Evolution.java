@@ -41,16 +41,13 @@ public class Evolution
     private TreeOperator treeOp;
     private TreeSelector treeSelector;
     public Fitness fitness;
-    public DataHolder dataHolder;
-    public PreviousOutputHolder previousOutputHolder;
+    private DataHolder dataHolder;
+    private PreviousOutputHolder previousOutputHolder;
     public int generation;
     public Config config;
-    public NodeTypesConfig types;
-    
-    public List<double[]> evalVectors;
-    private int currentEvalVector;
-
+    private NodeTypesConfig types;
     public EvolutionStats evoStats;
+    private EvalVectors evalVectors;
     
     /**
      * Creates a new instance of Evolution, loading data from file
@@ -64,7 +61,7 @@ public class Evolution
         
         dataHolder = new DataHolder("data.txt");
         previousOutputHolder = new PreviousOutputHolder(config);
-        types = new NodeTypesConfig(this);
+        types = new NodeTypesConfig(config, dataHolder, previousOutputHolder);
         
         population = new ArrayList<Tree>();
         if (initPop)
@@ -75,8 +72,17 @@ public class Evolution
         
         treeOp = new TreeOperator(config, types);
         treeSelector = new TreeSelector(config);
-        fitness = new FitnessClassifier();
-        fitness.init(this, "class.txt");
+        
+        if (config.problemType.equals("classifier"))
+        {
+            fitness = new FitnessClassifier();
+        }
+        else
+        {
+            fitness = new FitnessClassic();
+        }
+        
+        fitness.init(config, dataHolder, "class.txt");
 
         evoStats = new EvolutionStats();
         if (initPop)
@@ -89,7 +95,7 @@ public class Evolution
         
         if (config.nPreviousOutput == 0 && config.useVect)
         {
-            initEvalVectors();
+            evalVectors = new EvalVectors(dataHolder.nSamples);
         }
         
     }
@@ -103,7 +109,7 @@ public class Evolution
         
         dataHolder = new DataHolder(data);
         previousOutputHolder = new PreviousOutputHolder(config);
-        types = new NodeTypesConfig(this);
+        types = new NodeTypesConfig(config, dataHolder, previousOutputHolder);
         
         population = new ArrayList<Tree>();
         if (initPop)
@@ -114,8 +120,15 @@ public class Evolution
         
         treeOp = new TreeOperator(config, types);
         treeSelector = new TreeSelector(config);
-        fitness = new FitnessClassic();
-        fitness.init(this, desiredOutputs, weights);
+        if (config.problemType.equals("classifier"))
+        {
+            fitness = new FitnessClassifier();
+        }
+        else
+        {
+            fitness = new FitnessClassic();
+        }
+        fitness.init(config, dataHolder, desiredOutputs, weights);
 
         evoStats = new EvolutionStats();
         
@@ -128,7 +141,7 @@ public class Evolution
         
         if (config.nPreviousOutput == 0 && config.useVect)
         {
-            initEvalVectors();
+            evalVectors = new EvalVectors(dataHolder.nSamples);
         }
         
     }
@@ -144,7 +157,7 @@ public class Evolution
         
         for (Tree t : population)
         {
-            fitness.calculate(t);
+            fitness.calculate(t, evalVectors, dataHolder, previousOutputHolder);
             evoStats.avgFit += t.fitness;
             evoStats.avgNodes += t.nSubNodes;
             if (t.fitness > bestThisGen.fitness)
@@ -244,28 +257,6 @@ public class Evolution
 
         in.close();
 
-    }
-    
-    private synchronized void initEvalVectors()
-    {
-        evalVectors = new ArrayList<double[]>(0);
-        currentEvalVector = -1;
-    }
-    
-    public synchronized double[] getEvalVector()
-    {
-        currentEvalVector++;
-        if (currentEvalVector == evalVectors.size())
-        {
-            //Logger.log("Adding new realEvalVector, " + currentRealEvalVector);
-            evalVectors.add(new double[dataHolder.nSamples]);
-        }
-        return evalVectors.get(currentEvalVector);
-    }
-            
-    public synchronized void releaseEvalVector()
-    {
-        currentEvalVector--;
     }
     
 }

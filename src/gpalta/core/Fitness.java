@@ -39,7 +39,7 @@ public interface Fitness
      * 
      * @param fileName The file to read
      */
-    void init(Evolution evo, String fileName);
+    void init(Config config, DataHolder data, String fileName);
     
     
     /**
@@ -47,7 +47,7 @@ public interface Fitness
      * the SNR for each sample. Assumes the size of both parameters is
      * the same as evo.realDataHolder.nSamples
      */
-    void init(Evolution evo, double[] desiredOutputs, double[] weights);
+    void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights);
     
     /**
      * Evaluates the tree in every sample, and then calculates its hr1 and hr0
@@ -56,6 +56,6 @@ public interface Fitness
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
-    double[] calculate(Tree tree);
+    double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
 }

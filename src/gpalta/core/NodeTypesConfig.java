@@ -40,7 +40,7 @@ public class NodeTypesConfig
     
     public NodeType treeRoot;
     
-    private Evolution evo;
+    private Config config;
     
     /**
      * Define the lists of possible Nodes
@@ -48,9 +48,9 @@ public class NodeTypesConfig
      * @param evo An Evolution with its Real and Logic DataHolders already
      * initialized, to determine how many variable NSodes to add to the lists
      */
-    public NodeTypesConfig(Evolution evo)
+    public NodeTypesConfig(Config config, DataHolder data, PreviousOutputHolder prev)
     {
-        this.evo = evo;
+        this.config = config;
         
         real = new NodeType();
         
@@ -64,14 +64,14 @@ public class NodeTypesConfig
 
         real.terminals.add(new RealConstant());
         
-        for (int i=0; i<evo.dataHolder.nVars; i++)
+        for (int i=0; i<data.nVars; i++)
         {
             real.terminals.add(new RealVar(i+1));
         } 
         
-        if (evo.config.usePreviousOutputAsReal)
+        if (config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<evo.previousOutputHolder.nDelays; i++)
+            for (int i=0; i<prev.nDelays; i++)
             {
                 real.terminals.add(new PreviousOutput(i+1));
             }
@@ -90,16 +90,16 @@ public class NodeTypesConfig
          * Maybe we could add a single PreviousOutput and create an init() method
          * that randomly defines every copy's delay
          */
-        if (!evo.config.usePreviousOutputAsReal)
+        if (!config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<evo.previousOutputHolder.nDelays; i++)
+            for (int i=0; i<prev.nDelays; i++)
             {
                 logic.terminals.add(new PreviousOutput(i+1));
             }
         }
         
         //If there aren't any logic terminals, add logic constants for closure:
-        if (evo.config.usePreviousOutputAsReal || evo.previousOutputHolder.nDelays == 0)
+        if (config.usePreviousOutputAsReal || prev.nDelays == 0)
         {
             logic.terminals.add(new LogicConstant());
         }
@@ -107,7 +107,14 @@ public class NodeTypesConfig
         logic.all.addAll(logic.functions);
         logic.all.addAll(logic.terminals);
         
-        treeRoot = real;
+        if (config.problemType.equals("classifier"))
+        {
+            treeRoot = logic;
+        }
+        else
+        {
+            treeRoot = real;
+        }
         
     }
     
@@ -133,7 +140,7 @@ public class NodeTypesConfig
         {
             Logger.log(e);
         }
-        outNode.init(evo.config);
+        outNode.init(config);
         outNode.currentDepth = currentGlobalDepth;     
         return outNode;
     }

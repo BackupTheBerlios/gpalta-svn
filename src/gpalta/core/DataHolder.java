@@ -85,6 +85,9 @@ public class DataHolder
             }
             
             currentSample = 0;
+            
+            Logger.log("Finished reading " + nSamples + " samples from file \"" + fileName + "\"");
+            
         }
         /* TODO: These exceptions shouldn't be catched here, but thrown to the
          * evolution and then to the controller

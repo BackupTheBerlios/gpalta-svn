@@ -40,16 +40,16 @@ public class PreviousOutput extends Node
     }
     
     
-    public double eval(Evolution evo)
+    public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return evo.previousOutputHolder.getData(delay);
+        return prev.getData(delay);
     }
     
     /**
      * This should never be called. The whole evalVect was implemented to be
      * used when there are no previous outputs as Nodes
      */
-    public void evalVect(Evolution evo, double[] outVect)
+    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         //TODO: Maybe throw an exception?
         Logger.log("Error: Should not be calling PreviousOutput's evalVect()");
