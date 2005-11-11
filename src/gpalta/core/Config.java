@@ -73,6 +73,8 @@ public class Config
     
     public String problemType = "generic";
     
+    public double stopFitness = 0.99;
+    
     //For fitness:
     
     /* How much each SNR is more important than the next one:

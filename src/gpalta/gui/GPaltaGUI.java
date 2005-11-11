@@ -641,6 +641,12 @@ public class GPaltaGUI extends javax.swing.JFrame {
         labelAvgNodesValue.setText("   " + String.format("%.1f",evoStats.avgNodes));
         labelBestFitThisValue.setText("   " + String.format("%.3f",evoStats.bestFitThisGen));
         labelGenValue.setText("   " + evoStats.generation);
+        
+        if (evoStats.bestSoFar.fitness > config.stopFitness)
+        {
+            stopAtNextGen = true;
+            Logger.log("Fitness reached " + config.stopFitness);
+        }
     }
     
     public boolean saveEnabled()

@@ -61,6 +61,7 @@ public class NodeTypesConfig
         real.functions.add(new Plus());
         real.functions.add(new Minus());
         real.functions.add(new Times());
+        real.functions.add(new Divide());
 
         real.terminals.add(new RealConstant());
         
