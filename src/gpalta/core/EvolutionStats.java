@@ -28,7 +28,7 @@ import gpalta.nodes.*;
 
 
 /**
- * Holds some statistics about the ongoing Evolution
+ * Simple class that holds some statistics about the ongoing Evolution
  * @author neven
  */
 public class EvolutionStats

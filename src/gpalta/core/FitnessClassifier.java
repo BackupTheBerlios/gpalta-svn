@@ -30,7 +30,7 @@ import java.util.*;
 import java.io.*;
 
 /**
- *
+ * Fitness suitable for classifiers
  * @author DSP
  */
 public class FitnessClassifier implements Fitness
@@ -49,7 +49,7 @@ public class FitnessClassifier implements Fitness
     private Config config;
     
     /** 
-     * Creates a new instance of Fitness, initializing only constants
+     * Initializes only constants (to avoid duplicating code)
      */
     private void init (Config config, DataHolder data)
     {
@@ -67,14 +67,9 @@ public class FitnessClassifier implements Fitness
         results = new double[data.nSamples];
     }
     
-    /** 
-     * Creates a new instance of Fitness, reading desired outputs from file
-     * 
-     * @param fileName The file to read
-     */
     public void init(Config config, DataHolder data, String fileName)
     {
-        // Create a new Fitness, and only init constants:
+        // only init constants:
         init(config, data);
 
         File classFile = new File(fileName);
@@ -153,14 +148,9 @@ public class FitnessClassifier implements Fitness
         }
     }
     
-    /**
-     * Creates a new instance of Fitness, receiving the desired outputs and
-     * the SNR for each sample. Assumes the size of both parameters is
-     * the same as evo.realDataHolder.nSamples
-     */
     public void init (Config config, DataHolder data, double[] desiredOutputs, double[] weights)
     {
-        // Create a new Fitness, and only init constants:
+        // only init constants:
         init(config, data);
         
         this.desiredOutputs = desiredOutputs;
@@ -178,13 +168,6 @@ public class FitnessClassifier implements Fitness
         }
     }
     
-    /**
-     * Evaluates the tree in every sample, and then calculates its hr1 and hr0
-     * and its fitness, recording them in the tree.
-     *
-     * @return The output of the Tree for every sample, or null if the Tree wasn't
-     * evaluated
-     */
     public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         

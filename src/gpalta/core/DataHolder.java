@@ -119,11 +119,19 @@ public class DataHolder
         currentSample = 0;
     }
     
+    /**
+     * reset() must be called every time a new tree is being evaluated
+     * (when using eval() instead of evalVect() )
+     */
     public void reset()
     {
         currentSample = 0;
     }
     
+    /**
+     * update() must be called every time a new sample is required
+     * (when using eval() instead of evalVect() )
+     */
     public void update()
     {
         currentSample++;

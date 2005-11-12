@@ -28,7 +28,7 @@ import gpalta.nodes.Tree;
 import java.io.*;
 
 /**
- *
+ * Implementation of the classic fitness used in GP
  * @author neven
  */
 public class FitnessClassic implements Fitness

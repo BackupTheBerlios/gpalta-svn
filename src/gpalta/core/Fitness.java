@@ -35,23 +35,32 @@ public interface Fitness
 {
     
     /** 
-     * Creates a new instance of Fitness, reading desired outputs from file
+     * Initializes the Fitness, reading desired outputs from file
      * 
+     * @param config The evolution config, might be needed inside the Fitness
+     * @param data The current problem's data, might also be needed (for
+     * instance to know the numer of samples used)
      * @param fileName The file to read
      */
     void init(Config config, DataHolder data, String fileName);
     
     
     /**
-     * Creates a new instance of Fitness, receiving the desired outputs and
-     * the SNR for each sample. Assumes the size of both parameters is
-     * the same as evo.realDataHolder.nSamples
+     * Initializes the Fitness, receiving the desired outputs and
+     * the wheights (importance) for each sample.
+     *
+     * @param config The evolution config, might be needed inside the Fitness
+     * @param data The current problem's data, might also be needed (for
+     * instance to know the numer of samples used)
+     * @param desiredOutputs The desired outputs
+     * @param weights The weight (importance) of each sample
      */
     void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights);
     
     /**
-     * Evaluates the tree in every sample, and then calculates its hr1 and hr0
-     * and its fitness, recording them in the tree.
+     * Evaluates the tree in every sample, and then calculates its fitness
+     * (and maybe some other stats, like hr0 and hr1 for classifiers),
+     * recording them in the tree.
      *
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated

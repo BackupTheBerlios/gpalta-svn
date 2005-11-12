@@ -45,10 +45,10 @@ public class NodeTypesConfig
     /**
      * Define the lists of possible Nodes
      *
-     * @param evo An Evolution with its Real and Logic DataHolders already
-     * initialized, to determine how many variable NSodes to add to the lists
+     * @param config The evolution configuration, to determine some options
+     * @param data The problem's data, to know how many variables there are
      */
-    public NodeTypesConfig(Config config, DataHolder data, PreviousOutputHolder prev)
+    public NodeTypesConfig(Config config, DataHolder data)
     {
         this.config = config;
         
@@ -72,7 +72,7 @@ public class NodeTypesConfig
         
         if (config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<prev.nDelays; i++)
+            for (int i=0; i<config.nPreviousOutput; i++)
             {
                 real.terminals.add(new PreviousOutput(i+1));
             }
@@ -93,14 +93,14 @@ public class NodeTypesConfig
          */
         if (!config.usePreviousOutputAsReal)
         {
-            for (int i=0; i<prev.nDelays; i++)
+            for (int i=0; i<config.nPreviousOutput; i++)
             {
                 logic.terminals.add(new PreviousOutput(i+1));
             }
         }
         
         //If there aren't any logic terminals, add logic constants for closure:
-        if (config.usePreviousOutputAsReal || prev.nDelays == 0)
+        if (config.usePreviousOutputAsReal || config.nPreviousOutput == 0)
         {
             logic.terminals.add(new LogicConstant());
         }

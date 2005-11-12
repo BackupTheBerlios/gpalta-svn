@@ -52,6 +52,7 @@ public class Evolution
     /**
      * Creates a new instance of Evolution, loading data from file
      * 
+     * @param config The evolution configuration
      * @param initPop If true, the population is randomly initialized. Else, 
      * nothing is done (population will be later read from a file)
      */
@@ -61,7 +62,7 @@ public class Evolution
         
         dataHolder = new DataHolder("data.txt");
         previousOutputHolder = new PreviousOutputHolder(config);
-        types = new NodeTypesConfig(config, dataHolder, previousOutputHolder);
+        types = new NodeTypesConfig(config, dataHolder);
         
         population = new ArrayList<Tree>();
         if (initPop)
@@ -101,7 +102,16 @@ public class Evolution
     }
     
     /**
-     * Creates a new instance of Evolution, using the given data, desiredOutputs and weights
+     * Creates a new instance of Evolution, using the given data, desiredOutputs
+     * and weights
+     *
+     * @param config The evolution configuration
+     * @param data The current problem's data, where every row correponds to all
+     * the samples for a variable.
+     * @param desiredOutputs The desired outputs
+     * @param weights The weight (importance) of each sample
+     * @param initPop If true, the population is randomly initialized. Else, 
+     * nothing is done (population will be later read from a file)
      */
     public Evolution(Config config, double[][] data, double[] desiredOutputs, double[] weights, boolean initPop)
     {
@@ -109,7 +119,7 @@ public class Evolution
         
         dataHolder = new DataHolder(data);
         previousOutputHolder = new PreviousOutputHolder(config);
-        types = new NodeTypesConfig(config, dataHolder, previousOutputHolder);
+        types = new NodeTypesConfig(config, dataHolder);
         
         population = new ArrayList<Tree>();
         if (initPop)

@@ -27,6 +27,9 @@ package gpalta.core;
 import java.util.*;
 
 /**
+ * Hold vectors in which the nodes will be evaluated (when using evalVect)
+ * This is done to avoid allocating memory every time a node is evaluated,
+ * greatly improving execution speed with large data sets
  *
  * @author neven
  */
@@ -36,7 +39,9 @@ public class EvalVectors {
     private int currentEvalVector;
     private int vectorSize;
     
-    /** Creates a new instance of EvalVectors */
+    /** Creates a new instance of EvalVectors
+     * @param vectorSize The size of each array (number of samples)
+     */
     public EvalVectors(int vectorSize) 
     {
         this.vectorSize = vectorSize;
@@ -44,6 +49,10 @@ public class EvalVectors {
         currentEvalVector = -1;
     }
 
+    /**
+     * Get a new vector. If previously allocated arrays are available, it will
+     * return one of them. Else, it will allocate memory for a new one
+     */
     public synchronized double[] get()
     {
         currentEvalVector++;
@@ -54,7 +63,14 @@ public class EvalVectors {
         }
         return vectors.get(currentEvalVector);
     }
-            
+    
+    /**
+     * Tell that the latest requested vector is no longer needed by the Node.
+     * The Node that requested an array must release it inmediately after
+     * stopping using it, or every time a node of that kind is evaluated,
+     * an array will be created and never released, leading to HUGE
+     * MEMORY LEAKS. 
+     */
     public synchronized void release()
     {
         currentEvalVector--;
