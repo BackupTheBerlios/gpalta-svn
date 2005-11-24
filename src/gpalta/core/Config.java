@@ -63,19 +63,25 @@ public class Config
     public double probGrowBuild = .5;
     //The rest is for Full Build
     
+    //include previous outputs as inputs (how many)
     public int nPreviousOutput = 0;
+    //wheter previous outputs are real or logic nodes
+    public boolean usePreviousOutputAsReal = false;
 
     public String saveFileName = "evo.bin";
     
     public static String logFileName = "log.txt";
     
+    //use vectorial evaluation (much faster with large databases)
     public boolean useVect = false;
     
+    //generic or classifier
     public String problemType = "generic";
     
+    //stop if fitness reaches this value:
     public double stopFitness = 0.99;
     
-    //For fitness:
+    //For the classifier fitness::
     
     /* How much each SNR is more important than the next one:
      * Must be smaller than 1/3
@@ -88,10 +94,8 @@ public class Config
     //How much important is voice over silence:
     public double kHR1 = 4;
     
-    public boolean usePreviousOutputAsReal = false;
-    
-    public boolean nonInteractive = false;
-    
+    //These two for non interactive mode
+    public boolean nonInteractive = false;    
     public int nDaysToRun = 1;
     
     /**

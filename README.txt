@@ -1,11 +1,42 @@
 This is GPalta, a Genetic Programming Toolbox written in Java
 
+To start the graphical evolution process, use run.bat on windows or
+run.sh on unix/linux
+
+Fitness cases must be provided this way:
+
+data.txt, inputs:
+
+x1(1) x2(1)...
+x1(2) x2(2)...
+x1(3) x2(3)...
+...
+(every row is a sample and every column is an input variable)
+
+class.txt, desired outputs:
+
+y(1)
+y(2)
+y(3)
+...
+
+The included data.txt and class.txt files contain random samples with
+the form:
+
+y = x2*x1^2 + x2*x1 + x2
+
+GPalta should solve this problem easily
+
+See the console (or log.txt file) for debugging output if any errors occur
+
 For more details, see:
 http://hayabusa.die.uchile.cl/~nboric/gpalta
 
 If that page is unavailable, you can contact the author by e-mail:
 
 Neven Boric <nboric@gmail.com>
+
+
 
 Legal Notice:
 
