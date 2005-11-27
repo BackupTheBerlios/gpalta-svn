@@ -191,6 +191,14 @@ public class Evolution
     }
     
     /**
+     * Evaluate a single tree
+     */
+    public synchronized double[] eval(Tree tree)
+    {
+        return fitness.calculate(tree, evalVectors, dataHolder, previousOutputHolder);
+    }
+    
+    /**
      * Evolve one generation. Assumes the current population is already evaluated
      * and doesn't evaluate the evolved one
      */

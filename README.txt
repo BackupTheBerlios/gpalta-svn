@@ -3,6 +3,8 @@ This is GPalta, a Genetic Programming Toolbox written in Java
 To start the graphical evolution process, use run.bat on windows or
 run.sh on unix/linux
 
+GPalta requires java version 1.5 or later (J2SE 5.0 as Sun likes to call it)
+
 Fitness cases must be provided this way:
 
 data.txt, inputs:
