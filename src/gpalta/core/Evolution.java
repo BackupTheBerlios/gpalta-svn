@@ -40,7 +40,7 @@ public class Evolution
     public List<Tree> population;
     private TreeOperator treeOp;
     private TreeSelector treeSelector;
-    public Fitness fitness;
+    private Fitness fitness;
     private DataHolder dataHolder;
     private PreviousOutputHolder previousOutputHolder;
     public int generation;
@@ -192,6 +192,9 @@ public class Evolution
     
     /**
      * Evaluate a single tree
+     * 
+     * The output of the Tree for every sample, or null if the Tree wasn't
+     * evaluated
      */
     public synchronized double[] eval(Tree tree)
     {
