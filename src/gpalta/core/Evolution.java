@@ -193,7 +193,7 @@ public class Evolution
     /**
      * Evaluate a single tree
      * 
-     * The output of the Tree for every sample, or null if the Tree wasn't
+     * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
     public synchronized double[] eval(Tree tree)
