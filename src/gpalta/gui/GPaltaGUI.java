@@ -515,17 +515,17 @@ public class GPaltaGUI extends javax.swing.JFrame {
             Logger.log("Generating evolution...");
         }
         
-        /* We must not create an EvolutionThread every time, as the old one
-         * will remain in wait state and stay in memory forever!!!
-         */
-        
         //Exceptions caught inside EvolutionThread:
-        if (evoThread == null)
+        
+        /* Tell the old thread to terminate, or it will
+         * remain in wait state and stay in memory forever!!!
+         */
+        if (evoThread != null)
         {
-            evoThread = new EvolutionThread();
-            evoThread.start();
+            evoThread.exit();
         }
-        evoThread.restart(this,  fromFile);
+        evoThread = new EvolutionThread(this,  fromFile);
+        evoThread.start();
 
         //TODO:  log more information (fitness parameters, etc)
         Logger.log("Initial population info:");
