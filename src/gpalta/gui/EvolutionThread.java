@@ -40,12 +40,12 @@ public class EvolutionThread extends Thread
     private boolean first;
     
     /** 
-     * Creates a new instance of EvolutionThread
+     * Restarts the  EvolutionThread
      * @param gui The GPaltaGUI that controls this EvoThread
      * @param fromFile Whether the Evolution should continue from a previously saved
      * "evo.bin" file
      */
-    public EvolutionThread(GPaltaGUI gui, boolean fromFile)
+    public synchronized void restart(GPaltaGUI gui, boolean fromFile)
     {
         this.gui = gui;
         e = new Evolution(gui.config, !fromFile);
@@ -93,7 +93,7 @@ public class EvolutionThread extends Thread
     /**
      * Save inmediatelly (not threaded)
      */
-    public void save() throws IOException
+    public synchronized void save() throws IOException
     {
         e.save(e.config.saveFileName);
     }
