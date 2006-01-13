@@ -120,5 +120,70 @@ public abstract class Node implements Cloneable, Serializable
         return out;
     }
 
+    public static String parse(String expression, Node parent, int whichKid, NodeTypesConfig types)
+    {
+        java.util.regex.Pattern op = java.util.regex.Pattern.compile("[a-zA-Z_0-9\\.]+");
+        java.util.regex.Matcher matcher = op.matcher(expression);
+        if (matcher.find())
+        {
+            parent.kids[whichKid] = types.newNode(matcher.group(), parent.currentDepth+1);
+            parent.kids[whichKid].parent = parent;
+        }
+        else
+        {
+            //error
+        }
+        
+        expression = expression.substring(matcher.end()+1).trim();
+        
+        int nKidsDone = 0;
+        while (expression.length() != 0)
+        {
+            if(expression.startsWith(")"))
+            {
+                expression = expression.substring(1);
+                if (nKidsDone < parent.kids[whichKid].nKids())
+                {
+                    //error
+                }
+                break;
+            }
+            else
+            {
+                if (nKidsDone == 0)
+                    parent.kids[whichKid].kids = new Node[parent.kids[whichKid].nKids()];
+                if (expression.startsWith("("))
+                {
+                    expression = parse(expression, parent.kids[whichKid], nKidsDone, types).trim();
+                }
+                else
+                {
+                    matcher = op.matcher(expression);
+                    if (matcher.find())
+                    {
+                        parent.kids[whichKid].kids[nKidsDone] = types.newNode(matcher.group(), parent.kids[whichKid].currentDepth+1);
+                        parent.kids[whichKid].kids[nKidsDone].parent = parent.kids[whichKid];
+                        parent.kids[whichKid].nSubNodes += 1;
+                        parent.kids[whichKid].maxDepthFromHere = Math.max(parent.kids[whichKid].maxDepthFromHere, 1);
+                    }
+                    else
+                    {
+                        //error
+                    }
+                    expression = expression.substring(matcher.end()).trim();
+                }
+            }
+            nKidsDone++;
+        }
+        if (nKidsDone < parent.kids[whichKid].nKids())
+        {
+            //error
+        }
+        
+        parent.nSubNodes = 1 + parent.kids[whichKid].nSubNodes;
+        parent.maxDepthFromHere = Math.max(parent.maxDepthFromHere, 1 + parent.kids[whichKid].maxDepthFromHere);
+        
+        return expression;
+    }
     
 }

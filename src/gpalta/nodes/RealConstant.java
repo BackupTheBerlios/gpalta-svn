@@ -34,6 +34,16 @@ public class RealConstant extends Node
     
     private double constant;
     
+    public RealConstant()
+    {
+        
+    }
+    
+    public RealConstant(double constant) 
+    {
+        this.constant = constant;
+    }
+    
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         return ( constant );

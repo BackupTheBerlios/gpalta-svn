@@ -78,4 +78,15 @@ public class Tree extends Node
         return "TREE";
     }
     
+    public Tree (String expression, NodeType type, NodeTypesConfig types)
+    {
+        this.type = type;
+        currentDepth = -1;
+        kids = new Node[1];
+        Node.parse(expression, this, 0, types);
+        kids[0].parent = this;
+        nSubNodes = 1 + kids[0].nSubNodes;
+        maxDepthFromHere = 1 + kids[0].maxDepthFromHere;
+    }
+    
 }

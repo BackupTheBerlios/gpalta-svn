@@ -155,4 +155,49 @@ public class NodeTypesConfig
         }
         return false;
     }
+    
+    public Node newNode(String name, int currentGlobalDepth) 
+    {
+        System.out.println(name);
+        Node outNode = null;
+        if (name.startsWith("X"))
+        {
+            outNode = new RealVar(Integer.parseInt(name.substring(1)));
+        }
+        else if (name.substring(0,1).matches("\\d"))
+        {
+            outNode = new RealConstant(Double.parseDouble(name));
+        }
+        else if (name.equals("true"))
+        {
+            outNode = new LogicConstant(1);
+        }
+        else if (name.equals("false"))
+        {
+            outNode = new LogicConstant(0);
+        }
+        else
+        {
+            List<Node> all = real.all;
+            all.addAll(logic.all);
+            for (Node n : all)
+            {
+                if (name.equals(n.name()))
+                {
+                    try
+                    {
+                        outNode = (Node)n.clone();
+                    }
+                    catch (CloneNotSupportedException e)
+                    {
+                        Logger.log(e);
+                    }
+                    break;
+                }
+            }
+        }
+        outNode.currentDepth = currentGlobalDepth;
+        return outNode;
+    }
+    
 }

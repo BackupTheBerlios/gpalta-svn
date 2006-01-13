@@ -34,6 +34,16 @@ public class LogicConstant extends Node
     
     private double constant;
     
+    public LogicConstant()
+    {
+        
+    }
+    
+    public LogicConstant(double constant) 
+    {
+        this.constant = constant;
+    }
+    
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         return ( constant );
@@ -49,7 +59,10 @@ public class LogicConstant extends Node
     
     public String name()
     {
-        return ("" + constant);
+        if (constant == 0)
+            return("false");
+        else
+            return ("true");
     }
     
     public void init(Evolution evo)
