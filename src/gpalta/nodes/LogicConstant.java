@@ -46,7 +46,7 @@ public class LogicConstant extends Node
     
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return ( constant );
+        return constant;
     }
     
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
@@ -59,10 +59,7 @@ public class LogicConstant extends Node
     
     public String name()
     {
-        if (constant == 0)
-            return("false");
-        else
-            return ("true");
+        return (constant != 0 ? "true" : "false");
     }
     
     public void init(Evolution evo)

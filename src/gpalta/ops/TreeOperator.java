@@ -49,16 +49,17 @@ public class TreeOperator
     {
         int[] perm = Common.randPerm(config.populationSize);
         double op;
-        for (int i=0; i< config.populationSize; i+=2)
+        for (int i=0; i< config.populationSize; i++)
         {
             op = Common.globalRandom.nextDouble();
             if (op <= config.upLimitProbCrossOver)
             {
-                crossOver(population.get(perm[i]), population.get(perm[i+1]));
+                //Do cross over, except for the last tree:
+                if (i != config.populationSize-1)
+                    crossOver(population.get(perm[i]), population.get(perm[++i]));
             }
             else if (op <= config.upLimitProbMutation)
             {
-                //TODO: shouldn't we mutate the other one too?
                 mutateBuild(population.get(perm[i]));
             }
             else
