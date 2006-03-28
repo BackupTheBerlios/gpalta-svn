@@ -75,6 +75,13 @@ public class Config
     //use vectorial evaluation (much faster with large databases)
     public boolean useVect = false;
     
+    /* If true, trees that haven't changed from the past generation will remember
+     * their fitness and won't be evaluated again.
+     * WARNING: do not use if some values change between generations (e.g. cicling
+     * fitness cases, random components in terminals, etc.)
+     */
+    public boolean rememberLastEval = false;
+    
     //generic or classifier
     public String problemType = "generic";
     

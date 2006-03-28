@@ -44,6 +44,12 @@ logFileName = log.txt
 #much faster with large databases
 useVect = true
 
+#If true, trees that haven't changed from the past generation will remember
+#their fitness and won't be evaluated again.
+#WARNING: do not use if some values change between generations (e.g. cicling
+#fitness cases, random components in terminals, etc.)
+rememberLastEval = false
+
 problemType = generic
 #problemType = classifier
 

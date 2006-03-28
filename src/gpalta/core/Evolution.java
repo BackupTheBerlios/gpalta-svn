@@ -80,7 +80,7 @@ public class Evolution
         }
         else if (config.problemType.equals("clustering"))
         {
-            fitness = new FitnessClustering();
+            //fitness = new FitnessClustering();
         }
         else
         {
@@ -140,7 +140,7 @@ public class Evolution
         }
         else if (config.problemType.equals("clustering"))
         {
-            fitness = new FitnessClustering();
+            //fitness = new FitnessClustering();
         }
         else
         {
@@ -175,7 +175,11 @@ public class Evolution
         
         for (Tree t : population)
         {
-            fitness.calculate(t, evalVectors, dataHolder, previousOutputHolder);
+            if (!config.rememberLastEval || !t.fitCalculated)
+            {
+                fitness.calculate(t, evalVectors, dataHolder, previousOutputHolder);
+                t.fitCalculated = true;
+            }
             evoStats.avgFit += t.fitness;
             evoStats.avgNodes += t.nSubNodes;
             if (t.fitness > bestThisGen.fitness)

@@ -56,10 +56,15 @@ public class TreeOperator
             {
                 //Do cross over, except for the last tree:
                 if (i != config.populationSize-1)
+                {
+                    population.get(perm[i]).fitCalculated = false;
+                    population.get(perm[i+1]).fitCalculated = false;
                     crossOver(population.get(perm[i]), population.get(perm[++i]));
+                }
             }
             else if (op <= config.upLimitProbMutation)
             {
+                population.get(perm[i]).fitCalculated = false;
                 mutateBuild(population.get(perm[i]));
             }
             else
@@ -119,6 +124,8 @@ public class TreeOperator
                 }
             }
         }
+        //neither tree was modified:
+        tree1.fitCalculated = tree2.fitCalculated = true;
         //System.out.println("Crossover failed after " + config.maxCrossoverTries + " tries");
     }
     
