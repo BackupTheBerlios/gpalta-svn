@@ -528,6 +528,9 @@ public class GPaltaGUI extends javax.swing.JFrame {
         evoThread.start();
 
         //TODO:  log more information (fitness parameters, etc)
+        if (config.rememberLastEval)
+            Logger.log("WARNING: \t rememberLastEval should not be used if test" +
+                    "\n\t\t cases change their values between generations");
         Logger.log("Initial population info:");
         Logger.log("\t Population Size:     " + config.populationSize);
         Logger.log("\t Maximun Depth:       " + config.maxDepth);

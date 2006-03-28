@@ -110,6 +110,11 @@ public class NodeTypesConfig
         logic.all.addAll(logic.functions);
         logic.all.addAll(logic.terminals);
         
+        /* Little hack to avoid so many logic terminals:
+         * TODO: fix this (maybe asigning probabilities to each node type)
+         */
+        logic.all.addAll(logic.functions);
+        
         if (config.problemType.equals("classifier"))
         {
             treeRoot = logic;
