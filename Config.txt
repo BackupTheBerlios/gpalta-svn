@@ -50,6 +50,10 @@ problemType = generic
 #stop if fitness reaches this value:
 stopFitness = 0.99
 
+#For the clustering fitness:
+nClasses = 5
+useSoftPertenence = false
+
 #For the classifier fitness:
     
 #How much each SNR is more important than the next one:

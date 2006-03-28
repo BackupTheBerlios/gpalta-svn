@@ -78,6 +78,10 @@ public class Evolution
         {
             fitness = new FitnessClassifier();
         }
+        else if (config.problemType.equals("clustering"))
+        {
+            fitness = new FitnessClustering();
+        }
         else
         {
             fitness = new FitnessClassic();
@@ -133,6 +137,10 @@ public class Evolution
         if (config.problemType.equals("classifier"))
         {
             fitness = new FitnessClassifier();
+        }
+        else if (config.problemType.equals("clustering"))
+        {
+            fitness = new FitnessClustering();
         }
         else
         {

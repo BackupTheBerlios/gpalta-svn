@@ -82,6 +82,4 @@ public abstract class Common
         return permutation;
     }
     
-
-
 }

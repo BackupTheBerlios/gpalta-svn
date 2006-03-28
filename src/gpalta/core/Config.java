@@ -94,6 +94,10 @@ public class Config
     //How much important is voice over silence:
     public double kHR1 = 4;
     
+    //For the clustering fitness:
+    public int nClasses = 5;
+    public boolean useSoftPertenence = false;
+    
     //These two for non interactive mode
     public boolean nonInteractive = false;    
     public int nDaysToRun = 1;
