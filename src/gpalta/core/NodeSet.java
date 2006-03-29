@@ -31,16 +31,18 @@ import gpalta.nodes.*;
  *
  * @author neven
  */
-public class NodeType 
+public class NodeSet 
 {
     
     public List<Node> all;
     public List<Node> terminals;
     public List<Node> functions;
+    public String name;
     
     /** Creates a new instance of NodeType */
-    public NodeType() 
+    public NodeSet(String name) 
     {
+        this.name = name;
         all = new ArrayList<Node>();
         terminals = new ArrayList<Node>();
         functions = new ArrayList<Node>();

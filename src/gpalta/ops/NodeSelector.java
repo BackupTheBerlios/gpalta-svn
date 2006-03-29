@@ -32,12 +32,12 @@ public class NodeSelector {
     
     private int currentNodeSearched;
     private Config config;
-    private NodeTypesConfig types;
+    private NodeFactory nodeFactory;
     
-    public NodeSelector(Config config, NodeTypesConfig types)
+    public NodeSelector(Config config, NodeFactory nodeFactory)
     {
         this.config = config;
-        this.types = types;
+        this.nodeFactory = nodeFactory;
     }
    
     public Node pickRandomNode(Tree tree)
@@ -83,15 +83,15 @@ public class NodeSelector {
 
         if (type <= config.upLimitProbSelectTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(types, node.whichKidOfParent).terminals);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).terminals);
         }
         else if (type <= config.upLimitProbSelectNonTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(types, node.whichKidOfParent).functions);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).functions);
         }
         else
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(types, node.whichKidOfParent).all);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).all);
         }
         //TODO: what should we do if we don't find any node?
         if (l.size() == 0)
@@ -104,7 +104,7 @@ public class NodeSelector {
     
     private void getNodes(List<Node> l, Node node, List<Node> types)
     {
-        if (NodeTypesConfig.isInList(node, types))
+        if (NodeFactory.isInList(node, types))
         {
             l.add(node);
         }

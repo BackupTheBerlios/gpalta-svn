@@ -50,12 +50,7 @@ public class Not extends Node
     {
         return 1;
     }
-    
-    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
-    {
-        return types.logic;
-    }
-    
+
     public String name()
     {
         return "not";

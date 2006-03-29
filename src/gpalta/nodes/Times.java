@@ -54,12 +54,7 @@ public class Times extends Node
     {
         return 2;
     }
-    
-    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
-    {
-        return types.real;
-    }
- 
+
     public String name()
     {
         return "times";

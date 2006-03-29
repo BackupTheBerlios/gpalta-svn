@@ -44,6 +44,8 @@ public abstract class Node implements Cloneable, Serializable
     public int currentDepth;
     public int maxDepthFromHere;
     
+    private NodeSet[] kidsType;
+    
     public void init(Config config)
     {
 
@@ -52,11 +54,16 @@ public abstract class Node implements Cloneable, Serializable
     public abstract double eval(DataHolder data, PreviousOutputHolder prev);
     public abstract void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
-    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
+    public void setTypeOfKids(int whichKid, NodeSet t)
     {
-        Logger.log("This shouldn' happen. A class that extends Node must implement" +
-                "its own typeOfKids() if it has any");
-        return null;
+        if (kidsType == null)
+            kidsType = new NodeSet[nKids()];
+        kidsType[whichKid] = t;
+    }
+    
+    public NodeSet typeOfKids(int whichKid)
+    {
+        return kidsType[whichKid];
     }
     
     public int nKids()
@@ -120,13 +127,13 @@ public abstract class Node implements Cloneable, Serializable
         return out;
     }
 
-    public static String parse(String expression, Node parent, int whichKid, NodeTypesConfig types)
+    public static String parse(String expression, Node parent, int whichKid, NodeFactory nodeFactory)
     {
         java.util.regex.Pattern op = java.util.regex.Pattern.compile("[a-zA-Z_0-9\\.]+");
         java.util.regex.Matcher matcher = op.matcher(expression);
         if (matcher.find())
         {
-            parent.kids[whichKid] = types.newNode(matcher.group(), parent.currentDepth+1);
+            parent.kids[whichKid] = nodeFactory.newNode(matcher.group(), parent.currentDepth+1);
             parent.kids[whichKid].parent = parent;
         }
         else
@@ -154,14 +161,14 @@ public abstract class Node implements Cloneable, Serializable
                     parent.kids[whichKid].kids = new Node[parent.kids[whichKid].nKids()];
                 if (expression.startsWith("("))
                 {
-                    expression = parse(expression, parent.kids[whichKid], nKidsDone, types).trim();
+                    expression = parse(expression, parent.kids[whichKid], nKidsDone, nodeFactory).trim();
                 }
                 else
                 {
                     matcher = op.matcher(expression);
                     if (matcher.find())
                     {
-                        parent.kids[whichKid].kids[nKidsDone] = types.newNode(matcher.group(), parent.kids[whichKid].currentDepth+1);
+                        parent.kids[whichKid].kids[nKidsDone] = nodeFactory.newNode(matcher.group(), parent.kids[whichKid].currentDepth+1);
                         parent.kids[whichKid].kids[nKidsDone].parent = parent.kids[whichKid];
                         parent.kids[whichKid].nSubNodes += 1;
                         parent.kids[whichKid].maxDepthFromHere = Math.max(parent.kids[whichKid].maxDepthFromHere, 1);

@@ -37,7 +37,9 @@ nPreviousOutput = 0
 usePreviousOutputAsReal = false
 
 saveFileName = evo.bin
-    
+
+NodeConfigFileName = NodeConfig.txt
+
 logFileName = log.txt
     
 #use vectorial evaluation

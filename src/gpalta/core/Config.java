@@ -70,6 +70,8 @@ public class Config
 
     public String saveFileName = "evo.bin";
     
+    public String NodeConfigFileName = "NodeConfig.txt";
+    
     public static String logFileName = "log.txt";
     
     //use vectorial evaluation (much faster with large databases)

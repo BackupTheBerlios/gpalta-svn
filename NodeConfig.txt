@@ -1,0 +1,16 @@
+sets = real, logic
+
+realFunctions = Plus, Minus, Times, Divide, IfThenElse
+realTerminals = RealConstant, RealVar
+
+logicFunctions = And, Or, Not, GreaterThan, LessThan, Equals
+logicTerminals = LogicConstant
+
+treeRoot = real
+
+#By default, all kids are from the same set. Put here the exceptions:
+
+kidsIfThenElse = logic, real, real
+kidsGreaterThan = real, real
+kidsLessThan = real, real
+kidsEquals = real, real

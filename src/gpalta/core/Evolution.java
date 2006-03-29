@@ -45,7 +45,7 @@ public class Evolution
     private PreviousOutputHolder previousOutputHolder;
     public int generation;
     public Config config;
-    private NodeTypesConfig types;
+    private NodeFactory nodeFactory;
     public EvolutionStats evoStats;
     private EvalVectors evalVectors;
     
@@ -62,16 +62,16 @@ public class Evolution
         
         dataHolder = new DataHolder("data.txt");
         previousOutputHolder = new PreviousOutputHolder(config);
-        types = new NodeTypesConfig(config, dataHolder);
+        nodeFactory = new NodeFactory(config, dataHolder);
         
         population = new ArrayList<Tree>();
         if (initPop)
         {
-            treeBuilder = new TreeBuilder(config, types);
+            treeBuilder = new TreeBuilder(config, nodeFactory);
             treeBuilder.build(population);
         }
         
-        treeOp = new TreeOperator(config, types);
+        treeOp = new TreeOperator(config, nodeFactory);
         treeSelector = new TreeSelector(config);
         
         if (config.problemType.equals("classifier"))
@@ -123,16 +123,16 @@ public class Evolution
         
         dataHolder = new DataHolder(data);
         previousOutputHolder = new PreviousOutputHolder(config);
-        types = new NodeTypesConfig(config, dataHolder);
+        nodeFactory = new NodeFactory(config, dataHolder);
         
         population = new ArrayList<Tree>();
         if (initPop)
         {
-            treeBuilder = new TreeBuilder(config, types);
+            treeBuilder = new TreeBuilder(config, nodeFactory);
             treeBuilder.build(population);
         }
         
-        treeOp = new TreeOperator(config, types);
+        treeOp = new TreeOperator(config, nodeFactory);
         treeSelector = new TreeSelector(config);
         if (config.problemType.equals("classifier"))
         {

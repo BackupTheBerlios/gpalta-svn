@@ -38,11 +38,11 @@ public class TreeOperator
     private NodeBuilder nodeBuilder;
     private Config config;
     
-    public TreeOperator(Config config, NodeTypesConfig types)
+    public TreeOperator(Config config, NodeFactory nodeFactory)
     {
         this.config = config;
-        selector = new NodeSelector(config, types);
-        nodeBuilder = new NodeBuilderGrow(types);
+        selector = new NodeSelector(config, nodeFactory);
+        nodeBuilder = new NodeBuilderGrow(nodeFactory);
     }
     
     public void operate(List<Tree> population)

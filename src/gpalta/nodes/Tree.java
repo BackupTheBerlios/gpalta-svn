@@ -38,12 +38,12 @@ public class Tree extends Node
     public double hr1;
     public boolean fitCalculated;
     public boolean isOnPop;
-    NodeType type;
+    NodeSet type;
     
     /**
      * Creates a new instance of Tree 
      */
-    public Tree(NodeType type)
+    public Tree(NodeSet type)
     {
         this.type = type;
     }
@@ -63,7 +63,7 @@ public class Tree extends Node
         return 1;
     }
     
-    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
+    public NodeSet typeOfKids(int whichKid)
     {
         return type;
     }
@@ -78,12 +78,12 @@ public class Tree extends Node
         return "TREE";
     }
     
-    public Tree (String expression, NodeType type, NodeTypesConfig types)
+    public Tree (String expression, NodeSet type, NodeFactory nodeFactory)
     {
         this.type = type;
         currentDepth = -1;
         kids = new Node[1];
-        Node.parse(expression, this, 0, types);
+        Node.parse(expression, this, 0, nodeFactory);
         kids[0].parent = this;
         nSubNodes = 1 + kids[0].nSubNodes;
         maxDepthFromHere = 1 + kids[0].maxDepthFromHere;

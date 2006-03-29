@@ -55,11 +55,6 @@ public class And extends Node
         return 2;
     }
     
-    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
-    {
-        return types.logic;
-    }
-    
     public String name()
     {
         return "and";

@@ -39,16 +39,16 @@ public class TreeBuilder
     private NodeBuilder nodeBuilderFull;
     private int[] nTreesEachDepth;
     private Config config;
-    private NodeTypesConfig types;
+    private NodeFactory nodeFactory;
     
     /** Creates a new instance of TreeBuilder */
-    public TreeBuilder(Config config, NodeTypesConfig types) 
+    public TreeBuilder(Config config, NodeFactory nodeFactory) 
     {
         this.config = config;
-        this.types = types;
+        this.nodeFactory = nodeFactory;
         
-        nodeBuilderGrow = new NodeBuilderGrow(types);
-        nodeBuilderFull = new NodeBuilderFull(types);
+        nodeBuilderGrow = new NodeBuilderGrow(nodeFactory);
+        nodeBuilderFull = new NodeBuilderFull(nodeFactory);
         nTreesEachDepth = new int[config.maxDepth - config.initialMinDepth + 1];
         /* nTreesEachDepth will contain the number of trees created for each
          * depth from initialMinDepth to maxDepth
@@ -77,7 +77,7 @@ public class TreeBuilder
         int treesDoneThisDepth = 0;
         for (int i=0; i<config.populationSize; i++)
         {
-            tree = new Tree(types.treeRoot);
+            tree = new Tree(nodeFactory.treeRoot);
             build(tree, depth);
             population.add(tree);
             
@@ -94,7 +94,7 @@ public class TreeBuilder
     {
         tree.currentDepth = -1;
         tree.kids = new Node[1];
-        tree.kids[0] = types.newRandomNode(tree.typeOfKids(null, 0).all, 0);
+        tree.kids[0] = nodeFactory.newRandomNode(tree.typeOfKids(0).all, 0);
         
         if (Common.globalRandom.nextDouble() <= config.probGrowBuild)
         {

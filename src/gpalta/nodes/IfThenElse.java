@@ -64,15 +64,6 @@ public class IfThenElse extends Node
     {
         return 3;
     }
-    
-    public NodeType typeOfKids(NodeTypesConfig types, int whichKid)
-    {
-        switch (whichKid)
-        {
-            case 0: return types.logic;
-            default: return types.real;
-        }
-    }
 
     public String name()
     {
