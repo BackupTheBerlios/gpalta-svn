@@ -86,8 +86,10 @@ public class NodeTypesConfig
 
         logic.functions.add(new And());
         logic.functions.add(new Or());
+        logic.functions.add(new Not());
         logic.functions.add(new GreaterThan());
         logic.functions.add(new LessThan());
+        logic.functions.add(new Equals());
 
         /* TODO: Important: this could add many terminals if nDelays is too large
          * Maybe we could add a single PreviousOutput and create an init() method
