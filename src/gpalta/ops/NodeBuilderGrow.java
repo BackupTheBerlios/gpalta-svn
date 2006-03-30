@@ -73,12 +73,12 @@ public class NodeBuilderGrow extends NodeBuilder
             //If maxDepth = 1, we need terminals as kids:
             if (maxDepth == 1)
             {
-                node.kids[i] = nodeFactory.newRandomNode(node.typeOfKids(i).terminals, currentGlobalDepth + 1);
+                node.kids[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getTerminals(), currentGlobalDepth + 1);
                 node.nSubNodes += 1;
             }
             else
             {
-                node.kids[i] = nodeFactory.newRandomNode(node.typeOfKids(i).all, currentGlobalDepth + 1);
+                node.kids[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getAll(), currentGlobalDepth + 1);
                 build(node.kids[i], -1, maxDepth-1);
                 
                 /* If we are building only one child, these will be wrong for the 

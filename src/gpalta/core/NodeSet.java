@@ -28,24 +28,56 @@ import java.util.*;
 import gpalta.nodes.*;
 
 /**
- *
+ * Simple class that define a set of Nodes. It has three subsets: functions,
+ * terminals and all. The "all" list should contain both functions and terminals
  * @author neven
  */
 public class NodeSet 
 {
     
-    public List<Node> all;
-    public List<Node> terminals;
-    public List<Node> functions;
-    public String name;
+    private List<Node> all;
+    private List<Node> terminals;
+    private List<Node> functions;
+    private String name;
     
-    /** Creates a new instance of NodeType */
     public NodeSet(String name) 
     {
         this.name = name;
         all = new ArrayList<Node>();
         terminals = new ArrayList<Node>();
         functions = new ArrayList<Node>();
+    }
+
+    public List<Node> getAll()
+    {
+        return all;
+    }
+
+    public List<Node> getTerminals()
+    {
+        return terminals;
+    }
+
+    public void addTerminal(Node node)
+    {
+        terminals.add(node);
+        all.add(node);
+    }
+
+    public List<Node> getFunctions()
+    {
+        return functions;
+    }
+
+    public void addFunction(Node node)
+    {
+        functions.add(node);
+        all.add(node);
+    }
+
+    public String getName()
+    {
+        return name;
     }
     
 }

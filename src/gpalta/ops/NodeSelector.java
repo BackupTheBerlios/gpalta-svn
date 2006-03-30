@@ -83,15 +83,15 @@ public class NodeSelector {
 
         if (type <= config.upLimitProbSelectTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).terminals);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).getTerminals());
         }
         else if (type <= config.upLimitProbSelectNonTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).functions);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).getFunctions());
         }
         else
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).all);
+            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).getAll());
         }
         //TODO: what should we do if we don't find any node?
         if (l.size() == 0)

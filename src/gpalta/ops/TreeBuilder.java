@@ -29,7 +29,7 @@ import gpalta.core.*;
 
 
 /**
- * 
+ * Implements ramped half and half Tree creation
  * @author neven
  */
 public class TreeBuilder
@@ -70,6 +70,9 @@ public class TreeBuilder
         }
     }
     
+    /**
+     * Build a population of Trees, using the ramped half and half method
+     */
     public void build (List<Tree> population)
     {
         int depth = config.initialMinDepth;
@@ -94,7 +97,7 @@ public class TreeBuilder
     {
         tree.currentDepth = -1;
         tree.kids = new Node[1];
-        tree.kids[0] = nodeFactory.newRandomNode(tree.typeOfKids(0).all, 0);
+        tree.kids[0] = nodeFactory.newRandomNode(tree.typeOfKids(0).getAll(), 0);
         
         if (Common.globalRandom.nextDouble() <= config.probGrowBuild)
         {

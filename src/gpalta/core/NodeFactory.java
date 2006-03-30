@@ -71,7 +71,7 @@ public class NodeFactory
                 {
                     Class cl = Class.forName("gpalta.nodes." + nodes[j]);
                     java.lang.reflect.Constructor co = cl.getConstructor();
-                    nodeSets[i].functions.add((Node)co.newInstance());
+                    nodeSets[i].addFunction((Node)co.newInstance());
                 }
                 tmp = props.getProperty(sets[i] + "Terminals");
                 if (tmp == null)
@@ -85,22 +85,20 @@ public class NodeFactory
                         for (k=0; k<data.nVars; k++)
                         {
                             java.lang.reflect.Constructor[] co = cl.getConstructors();
-                            nodeSets[i].terminals.add((Node)co[0].newInstance(k+1));
+                            nodeSets[i].addTerminal((Node)co[0].newInstance(k+1));
                         } 
                     }
                     else
                     {
                         java.lang.reflect.Constructor co = cl.getConstructor();
-                        nodeSets[i].terminals.add((Node)co.newInstance());
+                        nodeSets[i].addTerminal((Node)co.newInstance());
                     }
                 }
-                nodeSets[i].all.addAll(nodeSets[i].functions);
-                nodeSets[i].all.addAll(nodeSets[i].terminals);
             }
             
             for (i=0; i<nodeSets.length; i++)
             {
-                for (Node n:nodeSets[i].all)
+                for (Node n:nodeSets[i].getAll())
                 {
                     tmp = props.getProperty("kids" + n.getClass().getSimpleName());
                     if (tmp != null)
@@ -114,7 +112,7 @@ public class NodeFactory
                         {
                             for (k=0; k<nodeSets.length; k++)
                             {
-                                if (nodeSets[k].name.equals(kids[j]))
+                                if (nodeSets[k].getName().equals(kids[j]))
                                 {
                                     n.setTypeOfKids(j, nodeSets[k]);
                                     break;
@@ -136,7 +134,7 @@ public class NodeFactory
             }
             for (i=0; i<nodeSets.length; i++)
             {
-                if (nodeSets[i].name.equals(tmp))
+                if (nodeSets[i].getName().equals(tmp))
                 {
                     treeRoot = nodeSets[i];
                     break;
@@ -239,7 +237,7 @@ public class NodeFactory
             List<Node> all = new ArrayList<Node>();
             for (int i=0; i<nodeSets.length; i++)
             {
-                all.addAll(nodeSets[i].all);
+                all.addAll(nodeSets[i].getAll());
             }
             for (Node n : all)
             {

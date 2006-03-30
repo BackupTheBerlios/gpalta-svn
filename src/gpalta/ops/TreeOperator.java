@@ -28,7 +28,8 @@ import java.util.*;
 import gpalta.core.*;
 
 /**
- *
+ * Performs genetic operations between trees. Currently crossover, mutation
+ * and reproduction are implemented
  * @author neven
  */
 public class TreeOperator 
@@ -45,6 +46,12 @@ public class TreeOperator
         nodeBuilder = new NodeBuilderGrow(nodeFactory);
     }
     
+    /**
+     * Performs the genetic operations. Probabilities for each op are assigned
+     * in the Config object
+     *
+     * @param population The list of trees that passed the selection process
+     */
     public void operate(List<Tree> population)
     {
         int[] perm = Common.randPerm(config.populationSize);
@@ -124,7 +131,7 @@ public class TreeOperator
                 }
             }
         }
-        //neither tree was modified:
+        //if we reach here, neither tree was modified:
         tree1.fitCalculated = tree2.fitCalculated = true;
         //System.out.println("Crossover failed after " + config.maxCrossoverTries + " tries");
     }
