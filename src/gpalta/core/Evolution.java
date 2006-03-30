@@ -72,7 +72,27 @@ public class Evolution
         }
         
         treeOp = new TreeOperator(config, nodeFactory);
-        treeSelector = new TreeSelector(config);
+        
+        if( config.selectionMethod.equals("tournament"))
+        {
+            treeSelector = new TreeSelectorProportional(config);
+        }
+        else if (config.selectionMethod.equals("SUS"))
+        {
+            treeSelector = new TreeSelectorSUS(config);
+        }
+        else if (config.selectionMethod.equals("roulette"))
+        {
+            treeSelector = new TreeSelectorRoulette(config);
+        }
+        else if ( config.selectionMethod.equals("proportional"))
+        {
+            treeSelector = new TreeSelectorTournament(config);
+        }
+        else
+        {
+            treeSelector =new TreeSelectorTournament(config);
+        }
         
         if (config.problemType.equals("classifier"))
         {
@@ -133,7 +153,20 @@ public class Evolution
         }
         
         treeOp = new TreeOperator(config, nodeFactory);
-        treeSelector = new TreeSelector(config);
+        //treeSelector = new TreeSelector(config);
+        if( config.selectionMethod.equals("proportional"))
+        {
+            treeSelector =new TreeSelectorProportional(config);
+        }
+        /*else if ( config.selectionMethod.equals("tournament"))
+        {
+            treeSelector =new TreeSelectorTournament(config);
+        }*/
+        else
+        {
+            treeSelector =new TreeSelectorTournament(config);
+        }
+        
         if (config.problemType.equals("classifier"))
         {
             fitness = new FitnessClassifier();

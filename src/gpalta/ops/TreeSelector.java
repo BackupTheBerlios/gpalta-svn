@@ -31,17 +31,9 @@ import gpalta.core.*;
  * Implements Tournament selection. Assumes populationSize mod tournamentSize = 0
  * @author DSP
  */
-public class TreeSelector
+public abstract class TreeSelector
 {
-    
-    private Config config;
-    
-    public TreeSelector(Config config)
-    {
-        this.config = config;
-    }
-    
-    /**
+     /**
      * Performs the selection
      * 
      * @param population A list of Trees from where to select the individuals
@@ -51,53 +43,6 @@ public class TreeSelector
      * independant individual (no other Trees will be modified when modifying that Tree)
      *
      */
-    public List<Tree> select(List<Tree> population)
-    {
-        List<Tree> out = new ArrayList<Tree>();
-        for (Tree t: population)
-        {
-            t.isOnPop = false;
-        }
-        double maxFit;
-        int indMaxFit;
-        //For every pass:
-        for (int i=0; i<config.tournamentSize; i++)
-        {
-            int[] perm = Common.randPerm(config.populationSize);
-            
-            //For every tournament:
-            for (int j=0; j<config.populationSize; j+= config.tournamentSize)
-            {
-                maxFit = population.get(perm[j]).fitness;
-                indMaxFit = j;
-                
-                //For every tree in the tournament:
-                for (int k=j+1; k<j+config.tournamentSize; k++)
-                {
-                    if (population.get(perm[k]).fitness > maxFit)
-                    {
-                        maxFit = population.get(perm[k]).fitness;
-                        indMaxFit = k;
-                    }
-                }
-                
-                /* If this tree has already been selected, we need a copy of it
-                 * (So we don't modify both when operating on one of them)
-                 */
-                if (population.get(perm[indMaxFit]).isOnPop)
-                {
-                    Tree tmp = (Tree)population.get(perm[indMaxFit]).deepClone(-1);
-                    tmp.isOnPop = true;
-                    out.add(tmp);
-                }
-                else
-                {
-                    population.get(perm[indMaxFit]).isOnPop = true;
-                    out.add(population.get(perm[indMaxFit]));
-                }
-            }
-        }
-        return out;
-    }
+    public abstract List<Tree> select(List<Tree> population);
     
 }

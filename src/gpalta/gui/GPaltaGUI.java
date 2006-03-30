@@ -535,6 +535,8 @@ public class GPaltaGUI extends javax.swing.JFrame {
         Logger.log("\t Population Size:     " + config.populationSize);
         Logger.log("\t Maximun Depth:       " + config.maxDepth);
         
+        Logger.log("Selection Method:     " + config.selectionMethod);
+        
         
         setEnabledAll(disableAtStart, true);
         setEnabledAll(disableWhenNotRunning, false);

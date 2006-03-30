@@ -55,6 +55,9 @@ public class Config
     
     public int maxCrossoverTries = 10;
     
+    public String selectionMethod = "tournament";
+    public double pointerDistance = 0.1;
+    
     public double upLimitProbSelectTerminal = .1;
     public double upLimitProbSelectNonTerminal = 1;
     public double upLimitProbSelectRoot = 0;

@@ -21,6 +21,11 @@ constLowLimit = -100
 constUpLimit = 100
     
 maxCrossoverTries = 10
+
+#Tree selection methods: tournament, roulette, proportional, SUS
+selectionMethod = SUS
+#SUS pointers distance:
+pointerDistance = .01
     
 upLimitProbSelectTerminal = .1
 upLimitProbSelectNonTerminal = 1
