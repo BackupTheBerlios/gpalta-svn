@@ -29,7 +29,7 @@ public class NodeFactory
         this.config = config;
         try
         {
-            FileInputStream in = new FileInputStream(config.NodeConfigFileName);
+            FileInputStream in = new FileInputStream(config.nodeConfigFileName);
             Properties props = new Properties();
             props.load(in);
             in.close();
@@ -41,12 +41,13 @@ public class NodeFactory
             
             nodeSets = new NodeSet[sets.length];
             
-            for (int i=0; i<sets.length; i++)
+            int i,j,k;
+            for (i=0; i<sets.length; i++)
             {
                 nodeSets[i] = new NodeSet(sets[i]);
                 tmp = props.getProperty(sets[i] + "Functions");
                 String[] nodes = tmp.split(separator);
-                for (int j=0; j<nodes.length; j++)
+                for (j=0; j<nodes.length; j++)
                 {
                     Class cl = Class.forName("gpalta.nodes." + nodes[j]);
                     java.lang.reflect.Constructor co = cl.getConstructor();
@@ -54,14 +55,13 @@ public class NodeFactory
                 }
                 tmp = props.getProperty(sets[i] + "Terminals");
                 nodes = tmp.split(separator);
-                for (int j=0; j<nodes.length; j++)
+                for (j=0; j<nodes.length; j++)
                 {
                     Class cl = Class.forName("gpalta.nodes." + nodes[j]);
                     if (nodes[j].contains("Var"))
                     {
-                        for (int k=0; k<data.nVars; k++)
+                        for (k=0; k<data.nVars; k++)
                         {
-
                             java.lang.reflect.Constructor[] co = cl.getConstructors();
                             nodeSets[i].terminals.add((Node)co[0].newInstance(k+1));
                         } 
@@ -76,7 +76,7 @@ public class NodeFactory
                 nodeSets[i].all.addAll(nodeSets[i].terminals);
             }
             
-            for (int i=0; i<nodeSets.length; i++)
+            for (i=0; i<nodeSets.length; i++)
             {
                 for (Node n:nodeSets[i].all)
                 {
@@ -84,9 +84,13 @@ public class NodeFactory
                     if (tmp != null)
                     {
                         String[] kids = tmp.split(separator);
-                        for (int j=0; j<n.nKids(); j++)
+                        if (kids.length != n.nKids())
                         {
-                            for (int k=0; k<nodeSets.length; k++)
+                            Logger.log("Error reading " + config.nodeConfigFileName + ": must specify " + n.nKids() + " kids for " + n.getClass().getSimpleName());
+                        }
+                        for (j=0; j<n.nKids(); j++)
+                        {
+                            for (k=0; k<nodeSets.length; k++)
                             {
                                 if (nodeSets[k].name.equals(kids[j]))
                                 {
@@ -94,43 +98,57 @@ public class NodeFactory
                                     break;
                                 }
                             }
+                            if (k == nodeSets.length)
+                                Logger.log("Error reading " + config.nodeConfigFileName + ": " + kids[j] + " doesn't match any set name");
                         }
                     }
                     else
-                        for (int j=0; j<n.nKids(); j++)
+                        for (j=0; j<n.nKids(); j++)
                             n.setTypeOfKids(j, nodeSets[i]);
                 }
             }
             tmp = props.getProperty("treeRoot");
-            for (int i=0; i<nodeSets.length; i++)
+            if (tmp == null)
+            {
+                Logger.log("Error reading " + config.nodeConfigFileName + ": property \"treeRoot\" not present");
+            }
+            for (i=0; i<nodeSets.length; i++)
             {
                 if (nodeSets[i].name.equals(tmp))
                     treeRoot = nodeSets[i];
             }
+            if (i == nodeSets.length)
+                Logger.log("Error reading " + config.nodeConfigFileName + ": " + tmp + " doesn't match any set name");
         }
         catch (IOException e)
         {
-            
+            Logger.log("Error reading " + config.nodeConfigFileName + ":");
+            Logger.log(e);
         }
         catch (ClassNotFoundException e)
         {
-            
+            Logger.log("Error reading " + config.nodeConfigFileName + ":");
+            Logger.log(e);
         }
         catch (NoSuchMethodException e)
         {
-            
+            Logger.log("Error reading " + config.nodeConfigFileName + ":");
+            Logger.log(e);
         }
         catch (InstantiationException e)
         {
-            
+            Logger.log("Error reading " + config.nodeConfigFileName + ":");
+            Logger.log(e);
         }
         catch (IllegalAccessException e)
         {
-            
+            Logger.log("Error reading " + config.nodeConfigFileName + ":");
+            Logger.log(e);
         }
         catch (InvocationTargetException e)
         {
-            
+            Logger.log("Error reading " + config.nodeConfigFileName + ":");
+            Logger.log(e);
         }
     }
     

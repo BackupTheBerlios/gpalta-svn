@@ -38,7 +38,7 @@ usePreviousOutputAsReal = false
 
 saveFileName = evo.bin
 
-NodeConfigFileName = NodeConfig.txt
+nodeConfigFileName = NodeConfig.txt
 
 logFileName = log.txt
     

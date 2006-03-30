@@ -70,7 +70,7 @@ public class Config
 
     public String saveFileName = "evo.bin";
     
-    public String NodeConfigFileName = "NodeConfig.txt";
+    public String nodeConfigFileName = "NodeConfig.txt";
     
     public static String logFileName = "log.txt";
     
