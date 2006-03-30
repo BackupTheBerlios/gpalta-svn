@@ -1,7 +1,9 @@
+#Sample node config file for GPalta
+
 #Define the sets of nodes
 sets = real, logic
 
-#For each set, function and terminal nodes must be enumerated
+#For each set, function and terminal nodes must be specified
 realFunctions = Plus, Minus, Times, Divide, IfThenElse
 realTerminals = RealConstant, RealVar
 

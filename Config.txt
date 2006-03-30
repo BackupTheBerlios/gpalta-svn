@@ -1,5 +1,4 @@
-#---No Comment---
-#Mon Jul 18 11:21:09 CLT 2005
+#Sample config file for GPalta
 
 populationSize = 500
 nGenerations = 10000

@@ -1,10 +1,25 @@
 /*
- * NodeTypesConfig2.java
+ * NodeFactory.java
  *
  * Created on 29 de marzo de 2006, 12:44
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ * Copyright (C) 2005  Neven Boric <nboric@gmail.com>
+ *
+ * This file is part of GPalta.
+ *
+ * GPalta is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * GPalta is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with GPalta; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
 package gpalta.core;
@@ -15,7 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- *
+ * Holds information for the Nodes available and provides methods for random Node creation
  * @author DSP
  */
 public class NodeFactory
@@ -24,6 +39,9 @@ public class NodeFactory
     private NodeSet[] nodeSets;
     public NodeSet treeRoot;
     
+    /**
+     * Read Node config from file config.nodeConfigFileName
+     */
     public NodeFactory(Config config, DataHolder data)
     {
         this.config = config;
@@ -46,6 +64,8 @@ public class NodeFactory
             {
                 nodeSets[i] = new NodeSet(sets[i]);
                 tmp = props.getProperty(sets[i] + "Functions");
+                if (tmp == null)
+                    Logger.log ("Warning: when reading " + config.nodeConfigFileName + ", no functions found for set " + sets[i]);
                 String[] nodes = tmp.split(separator);
                 for (j=0; j<nodes.length; j++)
                 {
@@ -54,6 +74,8 @@ public class NodeFactory
                     nodeSets[i].functions.add((Node)co.newInstance());
                 }
                 tmp = props.getProperty(sets[i] + "Terminals");
+                if (tmp == null)
+                    Logger.log ("Warning: when reading " + config.nodeConfigFileName + ", no terminals found for set " + sets[i]);
                 nodes = tmp.split(separator);
                 for (j=0; j<nodes.length; j++)
                 {
@@ -99,7 +121,7 @@ public class NodeFactory
                                 }
                             }
                             if (k == nodeSets.length)
-                                Logger.log("Error reading " + config.nodeConfigFileName + ": " + kids[j] + " doesn't match any set name");
+                                Logger.log("Error reading " + config.nodeConfigFileName + ": Setting kids for " + n.getClass().getSimpleName() + ", " + kids[j] + " doesn't match any set name");
                         }
                     }
                     else
@@ -115,10 +137,13 @@ public class NodeFactory
             for (i=0; i<nodeSets.length; i++)
             {
                 if (nodeSets[i].name.equals(tmp))
+                {
                     treeRoot = nodeSets[i];
+                    break;
+                }
             }
             if (i == nodeSets.length)
-                Logger.log("Error reading " + config.nodeConfigFileName + ": " + tmp + " doesn't match any set name");
+                Logger.log("Error reading " + config.nodeConfigFileName + ": Setting treeRoot, " + tmp + " doesn't match any set name");
         }
         catch (IOException e)
         {

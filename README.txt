@@ -31,8 +31,14 @@ GPalta should solve this problem easily
 
 See the console (or log.txt file) for debugging output if any errors occur
 
+
+Configuraton:
+
+Edit Config.txt to change GP parameters
+Edit NodeConfig.txt to change available nodes and how they connect to each other
+
 For more details, see:
-http://hayabusa.die.uchile.cl/~nboric/gpalta
+http://gpalta.berlios.de
 
 If that page is unavailable, you can contact the author by e-mail:
 
