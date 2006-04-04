@@ -1,9 +1,9 @@
 /*
- * gpalta.coreGUI.java
+ * GPaltaGUI.java
  *
  * Created on 25 de mayo de 2005, 07:14 PM
  *
- * Copyright (C) 2005  Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2005, 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -483,7 +483,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
         plot.setXRange(0, 50);
         plot.setXLabel("Generation");
         //plot.setYLabel("Fitness");
-        if (config.problemType.equals("classifier"))
+        if (config.fitness.equals("classifier"))
         {
             plot.setTitle("Hit Rate");
             plot.addLegend(1, "HR0");
@@ -536,6 +536,11 @@ public class GPaltaGUI extends javax.swing.JFrame {
         Logger.log("\t Maximun Depth:       " + config.maxDepth);
         
         Logger.log("Selection Method:     " + config.selectionMethod);
+        if (!config.selectionMethod.equals("tournament"))
+        {
+            Logger.log("Ranking Type :     " + config.rankingType);
+            
+        }
         
         
         setEnabledAll(disableAtStart, true);
@@ -620,7 +625,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
         }
         if (usePlot)
         {
-            if (config.problemType.equals("classifier"))
+            if (config.fitness.equals("classifier"))
             {
                 plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.hr0, !first);
                 plot.addPoint(2, (double)evoStats.generation, evoStats.bestSoFar.hr1, !first);

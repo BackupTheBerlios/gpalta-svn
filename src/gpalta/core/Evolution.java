@@ -3,7 +3,7 @@
  *
  * Created on 18 de mayo de 2005, 07:31 PM
  *
- * Copyright (C) 2005  Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2005, 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -40,6 +40,7 @@ public class Evolution
     public List<Tree> population;
     private TreeOperator treeOp;
     private TreeSelector treeSelector;
+    private Ranking theRanking;
     private Fitness fitness;
     private DataHolder dataHolder;
     private PreviousOutputHolder previousOutputHolder;
@@ -75,30 +76,48 @@ public class Evolution
         
         if( config.selectionMethod.equals("tournament"))
         {
-            treeSelector = new TreeSelectorProportional(config);
-        }
-        else if (config.selectionMethod.equals("SUS"))
-        {
-            treeSelector = new TreeSelectorSUS(config);
-        }
-        else if (config.selectionMethod.equals("roulette"))
-        {
-            treeSelector = new TreeSelectorRoulette(config);
-        }
-        else if ( config.selectionMethod.equals("proportional"))
-        {
             treeSelector = new TreeSelectorTournament(config);
         }
         else
         {
+            if (config.rankingType.equals("Raw"))
+            {
+                theRanking = new RankingRaw();
+            }
+            else if (config.rankingType.equals("LFR"))
+            {
+                theRanking = new RankingLFR();
+            }
+            else
+            {
+                theRanking = new RankingLFR();
+            }
+            
+            
+            if (config.selectionMethod.equals("SUS"))
+            {
+              treeSelector = new TreeSelectorSUS(config, theRanking);
+            }
+            else if (config.selectionMethod.equals("roulette"))
+            {
+              treeSelector = new TreeSelectorRoulette(config, theRanking);
+            }
+            else if ( config.selectionMethod.equals("proportional"))
+            {
+                treeSelector = new TreeSelectorProportional(config, theRanking);
+            }
+            else
+            {
             treeSelector =new TreeSelectorTournament(config);
+            }
         }
         
-        if (config.problemType.equals("classifier"))
+        
+        if (config.fitness.equals("classifier"))
         {
             fitness = new FitnessClassifier();
         }
-        else if (config.problemType.equals("clustering"))
+        else if (config.fitness.equals("clustering"))
         {
             //fitness = new FitnessClustering();
         }
@@ -154,24 +173,49 @@ public class Evolution
         
         treeOp = new TreeOperator(config, nodeFactory);
         //treeSelector = new TreeSelector(config);
-        if( config.selectionMethod.equals("proportional"))
+        if( config.selectionMethod.equals("tournament"))
         {
-            treeSelector =new TreeSelectorProportional(config);
+            treeSelector = new TreeSelectorTournament(config);
         }
-        /*else if ( config.selectionMethod.equals("tournament"))
-        {
-            treeSelector =new TreeSelectorTournament(config);
-        }*/
         else
         {
+            if (config.rankingType.equals("Raw"))
+            {
+                theRanking = new RankingRaw();
+            }
+            else if (config.rankingType.equals("LFR"))
+            {
+                theRanking = new RankingLFR();
+            }
+            else
+            {
+                theRanking = new RankingLFR();
+            }
+            
+            
+            if (config.selectionMethod.equals("SUS"))
+            {
+              treeSelector = new TreeSelectorSUS(config, theRanking);
+            }
+            else if (config.selectionMethod.equals("roulette"))
+            {
+              treeSelector = new TreeSelectorRoulette(config, theRanking);
+            }
+            else if ( config.selectionMethod.equals("proportional"))
+            {
+                treeSelector = new TreeSelectorProportional(config, theRanking);
+            }
+            else
+            {
             treeSelector =new TreeSelectorTournament(config);
+            }
         }
         
-        if (config.problemType.equals("classifier"))
+        if (config.fitness.equals("classifier"))
         {
             fitness = new FitnessClassifier();
         }
-        else if (config.problemType.equals("clustering"))
+        else if (config.fitness.equals("clustering"))
         {
             //fitness = new FitnessClustering();
         }

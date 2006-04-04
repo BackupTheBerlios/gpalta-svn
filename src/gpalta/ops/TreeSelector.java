@@ -28,8 +28,7 @@ import gpalta.nodes.*;
 import gpalta.core.*;
 
 /**
- * Implements Tournament selection. Assumes populationSize mod tournamentSize = 0
- * @author DSP
+ * Abstract selector class
  */
 public abstract class TreeSelector
 {

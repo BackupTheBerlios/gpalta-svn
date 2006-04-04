@@ -21,27 +21,32 @@
  * along with GPalta; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
 package gpalta.ops;
 import gpalta.nodes.*;
 import gpalta.core.*;
 import java.util.*;
 
 /**
- * Implements proportional selection. Assumes populationSize mod tournamentSize = 0
- * @author DSP
+ * Implements proportional selection (deterministic). First, a number of copies
+ * from each individual, equal to each expectated number of copies integer, are
+ * selected for next population. Then, the following individuals are selected
+ * from the decimals of the expectated number of copies of each tree.
  */
 public class TreeSelectorProportional extends TreeSelector
 {
     private Config config;
     private Comparator<Tree> comp;
     private Comparator<Tree> comp2;
+    private Ranking theRanking;
     
     /** Creates a new instance of TreeSelectorProportional */
-    public TreeSelectorProportional(Config config)
+    public TreeSelectorProportional(Config config, Ranking theRanking)
     {
         this.config = config;
         this.comp=new TreeFitnessComparator();
         this.comp2=new TreeFitnessComparatorDec();
+        this.theRanking = theRanking;
     }
     
     /**
@@ -57,44 +62,36 @@ public class TreeSelectorProportional extends TreeSelector
     public List<Tree> select(List<Tree> population)
     {
         double fitness;
-        double totalFitness;
+        //double totalFitness;
         int treeCounter, treeCopies,k;
         Tree temp1, temp2;
         
-        Tree [] popArray = new Tree[population.size()];        
+        
         List<Tree> out = new ArrayList<Tree>();
         
         
+        theRanking.rankPop(population, comp);
         
-        /*
-         * Move population to an Array structure for sorting. Calculate totalFitness also.
-         */
-        totalFitness=0;
-        for(int i=0;i<population.size();i++)
-        {
-            fitness=population.get(i).fitness;
-            totalFitness+=fitness;
-        
-            popArray[i]=population.get(i);
-        }
-        
-        /*
-         *Sort
-         */
-        Arrays.sort(popArray, comp);
-        
-        /*
-         *Select a number of copies for each individual equal to the truncated copy expectance
-         */
+       
         treeCounter=0;
         for (int i=0;i<population.size();i++)
         {
-            fitness=population.get(i).fitness;
-            temp1 = (Tree)(popArray[ population.size()-1-i ]).deepClone(-1);
-            treeCopies = (int)Math.floor(fitness/totalFitness*population.size());
+            fitness=theRanking.adjustedFitness[ population.size()-1-i ];
+            
+            temp1 = (theRanking.popArray[ population.size()-1-i ]);
+            treeCopies = (int)Math.floor(fitness/theRanking.totalFitness*population.size());
             for (int j=1; j<=treeCopies;j++ )
             {
-                out.add( (Tree)temp1.deepClone(-1) );
+                if (!temp1.isOnPop)
+                {
+                    out.add(temp1);
+                    temp1.isOnPop=true;
+                }
+                else
+                {
+                    out.add( (Tree)temp1.deepClone(-1) );
+                }
+                
             }
             treeCounter+=treeCopies;
         }
@@ -104,10 +101,20 @@ public class TreeSelectorProportional extends TreeSelector
         /*
          *Select best fitted for unsigned population slots
          */
-        Arrays.sort(popArray, comp2);
+        Arrays.sort(theRanking.popArray, comp2);
         while(treeCounter<population.size())
         {
-            out.add((Tree)(popArray[ population.size()-1-k ]).deepClone(-1));
+            temp1=theRanking.popArray[ population.size()-1-k ];
+            if (!temp1.isOnPop)
+            {
+                out.add(temp1);
+                temp1.isOnPop=true;
+            }
+            else
+            {
+                out.add( (Tree)temp1.deepClone(-1) );
+            }
+            
             k++;
             treeCounter++;
         }

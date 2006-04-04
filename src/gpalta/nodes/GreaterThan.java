@@ -1,9 +1,9 @@
 /*
- * LogicGreaterThan.java
+ * GreaterThan.java
  *
  * Created on 10 de mayo de 2005, 11:50 PM
  *
- * Copyright (C) 2005  Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2005, 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *

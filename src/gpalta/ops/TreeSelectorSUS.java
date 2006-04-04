@@ -3,7 +3,7 @@
  *
  * Created on 30 de marzo de 2006, 03:28 PM
  *
- * Copyright (C) 2006  Juan Ramirez <tiomemo@gmail.com>
+ * Copyright (C) 2006 Juan Ramirez <tiomemo@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -21,70 +21,40 @@
  * along with GPalta; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+         
 package gpalta.ops;
 import gpalta.nodes.*;
 import gpalta.core.*;
 import java.util.*;
 
 /**
- *
- * @author DSP
+ * Implements Stochastic Universal sampling (SUS) method
  */
 public class TreeSelectorSUS extends TreeSelector
 {
     private Config config;
     private Comparator<Tree> comp;
     private double pointerDistance;
+    private Ranking theRanking;
     
-    /** Creates a new instance of TreeSelectorRoulette */
-    public TreeSelectorSUS(Config config) {
+    public TreeSelectorSUS(Config config, Ranking theRanking) {
         this.config = config;
         this.comp=new TreeFitnessComparator();
-        this.pointerDistance = config.pointerDistance;
+        this.pointerDistance = config.SUSPointerDistance;
+        this.theRanking = theRanking;
     }
     
      public List<Tree> select(List<Tree> population)
     {
-        double totalFitness,fitness,pointerPos,range,min;
+        double pointerPos;
         int k;
+        Tree temp1;
         
-        Tree [] popArray = new Tree[population.size()];
+        
         List<Tree> out = new ArrayList<Tree>();
         
-        double [] acumulatedFit = new double [population.size()];
         
-        
-        /*
-         * Move population to an Array structure for sorting. 
-         */
-        
-        for(int i=0;i<population.size();i++)
-        {
-            popArray[i]=population.get(i);
-        }
-        
-        /*
-         *Sort
-         */
-        Arrays.sort(popArray, comp);
-        
-        /*
-         *Adjust fitness measures to positive values, these changes must be 
-         *also reflected on acumulated fitness
-         */
-        min=popArray[0].fitness;
-                
-        /*
-         *Calculate acumalated fitness and acumulated probabilities
-         */
-        totalFitness=0;
-        for(int i=0;i<population.size();i++)
-        {
-            fitness=popArray[i].fitness - min;
-            totalFitness+=fitness;
-            acumulatedFit[i] = totalFitness;
-        }
-        
+        theRanking.rankPop(population, comp);
                 
         /*
          *SUS iterations
@@ -93,7 +63,7 @@ public class TreeSelectorSUS extends TreeSelector
         k=0;
         for(int i=0; i<population.size();i++)
         {
-            while ( pointerPos >=acumulatedFit[k]/totalFitness)
+            while ( pointerPos >=theRanking.acumulatedFit[k]/theRanking.totalFitness)
              {
                  k++;
                  if( k==population.size()-1 )
@@ -101,7 +71,17 @@ public class TreeSelectorSUS extends TreeSelector
                      break;
                  }
              }
-            out.add( (Tree)(popArray[ k ]).deepClone(-1) );
+            temp1=theRanking.popArray[ k ];
+            if (!temp1.isOnPop)
+            {
+               out.add(temp1);
+               temp1.isOnPop=true;
+            }
+            else
+            {
+               out.add( (Tree)temp1.deepClone(-1) );
+            }
+            
             pointerPos+=pointerDistance;
             if (pointerPos>1)
             {

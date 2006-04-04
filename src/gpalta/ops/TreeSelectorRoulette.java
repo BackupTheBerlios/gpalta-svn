@@ -28,61 +28,33 @@ import gpalta.core.*;
 import java.util.*;
 
 /**
- *
- * @author DSP
+ * Implements roulette selection method
  */
 public class TreeSelectorRoulette extends TreeSelector
 {
     private Config config;
     private Comparator<Tree> comp;
+    private Ranking theRanking;
     
     /** Creates a new instance of TreeSelectorRoulette */
-    public TreeSelectorRoulette(Config config) {
+    public TreeSelectorRoulette(Config config, Ranking theRanking) {
         this.config = config;
         this.comp=new TreeFitnessComparator();
+        this.theRanking = theRanking;
     }
     
+    /*
+     * TODO: arrange order to descendant on theRanking 
+     */
      public List<Tree> select(List<Tree> population)
     {
-        double totalFitness,fitness,randomNumber,range,min;
+        double randomNumber;
         int k;
+        Tree temp1;
         
-        Tree [] popArray = new Tree[population.size()];
+        
         List<Tree> out = new ArrayList<Tree>();
-        
-        double [] acumulatedFit = new double [population.size()];
-        
-        
-        /*
-         * Move population to an Array structure for sorting. 
-         */
-        
-        for(int i=0;i<population.size();i++)
-        {
-            popArray[i]=population.get(i);
-        }
-        
-        /*
-         *Sort
-         */
-        Arrays.sort(popArray, comp);
-        
-        /*
-         *Adjust fitness measures to positive values, these changes must be 
-         *also reflected on acumulated fitness
-         */
-        min=popArray[0].fitness;
-                
-        /*
-         *Calculate acumalated fitness and acumulated probabilities
-         */
-        totalFitness=0;
-        for(int i=0;i<population.size();i++)
-        {
-            fitness=popArray[i].fitness - min;
-            totalFitness+=fitness;
-            acumulatedFit[i] = totalFitness;
-        }
+        theRanking.rankPop(population, comp);
         
         /*
          * Roulette iterations
@@ -91,7 +63,7 @@ public class TreeSelectorRoulette extends TreeSelector
         {
              randomNumber=Math.random();
              k=0;
-             while ( acumulatedFit[k]/totalFitness <= randomNumber)
+             while ( theRanking.acumulatedFit[k]/theRanking.totalFitness <= randomNumber)
              {
                  k++;
                  if( k==population.size()-1 )
@@ -99,7 +71,17 @@ public class TreeSelectorRoulette extends TreeSelector
                      break;
                  }
              }
-             out.add( (Tree)(popArray[ k ]).deepClone(-1) );
+             temp1=(theRanking.popArray[ k ]);
+             if (!temp1.isOnPop)
+             {
+                out.add(temp1);
+                temp1.isOnPop=true;
+             }
+             else
+             {
+                out.add( (Tree)temp1.deepClone(-1) );
+             }
+             
              
         }
        

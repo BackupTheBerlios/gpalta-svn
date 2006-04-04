@@ -3,7 +3,7 @@
  *
  * Created on 10 de mayo de 2005, 11:46 PM
  *
- * Copyright (C) 2005  Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2005, 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -28,19 +28,23 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Holds the GP parameters.
+ * Holds the GP parameters. See Config.txt for descriptions
  */
 public class Config 
 {
+
+    // --------------- Files -------------------
+    public String saveFileName = "evo.bin";
+    public String nodeConfigFileName = "NodeConfig.txt";
+    public static String logFileName = "log.txt";
     
+    // ----------- Basic GP options ------------
     public int populationSize = 500;
     public int nGenerations = 1000;
     
-    public int tournamentSize = 2;
-    
     public int maxDepth = 9;
     public int initialMinDepth = 3;
-
+    
     /* Upper limits for the probability regions of the tree operations. This means:
      * probability of crossover = upLimitProbCrossOver - 0
      * probability of mutation = upLimitProbMutation - upLimitProbCrossOver
@@ -50,33 +54,51 @@ public class Config
     public double upLimitProbMutation = 0.9;
     //The rest is for reproduction
     
+    /* limits for constants: */
     public double constLowLimit = -100;
     public double constUpLimit = 100;
     
     public int maxCrossoverTries = 10;
     
-    public String selectionMethod = "tournament";
-    public double pointerDistance = 0.1;
-    
+    /* When selecting for crossover, use these probs */
     public double upLimitProbSelectTerminal = .1;
     public double upLimitProbSelectNonTerminal = 1;
     public double upLimitProbSelectRoot = 0;
     //The rest is for select any node
     
+    /* For ramped half and half tree creation */
     public double probGrowBuild = .5;
     //The rest is for Full Build
     
-    //include previous outputs as inputs (how many)
-    public int nPreviousOutput = 0;
-    //wheter previous outputs are real or logic nodes
-    public boolean usePreviousOutputAsReal = false;
+    
+    // -------------- Selection ---------------
+    /* Tree selection methods: tournament, roulette, proportional, SUS */
+    public String selectionMethod = "tournament";
+    /* for tournament selection: */
+    public int tournamentSize = 2;
+    public double SUSPointerDistance = 0.1;
+    /* Population ranking adjustment (unused in case of tournament selection method): Raw, LFR */
+    public String rankingType = "Raw";
+    
+    //---------------- Fitness -----------------------
+    /* generic or classifier */
+    public String fitness = "generic";
 
-    public String saveFileName = "evo.bin";
+    /* stop if fitness reaches this value: */
+    public double stopFitness = 0.99;
     
-    public String nodeConfigFileName = "NodeConfig.txt";
+    /* For the classifier fitness: (kind of obselete options for GPVAD)*/
+    /* How much each SNR is more important than the next one: (Must be smaller than 1/3) */
+    public double deltaSNR = 0.05;
+    public double continuityImportance = 0.001;
+    /* How much important is voice over silence: */
+    public double kHR1 = 4;
     
-    public static String logFileName = "log.txt";
+    //For the clustering fitness:
+    public int nClasses = 5;
+    public boolean useSoftPertenence = false;
     
+    //------------ General behavior ------------
     /* Use vectorial evaluation
      * On this mode, the system descends on the tree once and evaluates all fitness
      * cases on a loop. On the contrary, when using normal evaluation, the system
@@ -99,32 +121,15 @@ public class Config
      */
     public boolean rememberLastEval = false;
     
-    //generic or classifier
-    public String problemType = "generic";
-    
-    //stop if fitness reaches this value:
-    public double stopFitness = 0.99;
-    
-    //For the classifier fitness::
-    
-    /* How much each SNR is more important than the next one:
-     * Must be smaller than 1/3
-     */
-    public double deltaSNR = 0.05;
-    
-    
-    public double continuityImportance = 0.001;
-    
-    //How much important is voice over silence:
-    public double kHR1 = 4;
-    
-    //For the clustering fitness:
-    public int nClasses = 5;
-    public boolean useSoftPertenence = false;
-    
-    //These two for non interactive mode
-    public boolean nonInteractive = false;    
+    /* These two for non interactive mode */
+    public boolean nonInteractive = false;
     public int nDaysToRun = 1;
+    
+    /* include previous outputs as inputs (how many) */
+    public int nPreviousOutput = 0;
+    /* wheter previous outputs are real or logic nodes */
+    public boolean usePreviousOutputAsReal = false;
+    
     
     /**
      * Reads config from a property file. The file must contain a value for all
