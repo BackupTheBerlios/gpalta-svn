@@ -24,7 +24,7 @@ upLimitProbMutation = 0.9
 constLowLimit = -100
 constUpLimit = 100
 
-public int maxCrossoverTries = 10;
+maxCrossoverTries = 10
 
 # When selecting for crossover, use these probs
 upLimitProbSelectTerminal = .1
