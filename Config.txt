@@ -46,8 +46,17 @@ nodeConfigFileName = NodeConfig.txt
 
 logFileName = log.txt
     
-#use vectorial evaluation
-#much faster with large databases
+#On this mode, the system descends on the tree once and evaluates all fitness
+#cases on a loop. On the contrary, when using normal evaluation, the system
+#descends on the tree for each fitness case.
+#The number of operations is the same, but vectorial evaluation should be
+#faster when using lots of fitness cases.
+#Note that with vectorial evaluation, all nodes on the tree are always
+#evaluated. Instead, when using normal evaluation, sometimes the second kid
+#doesn't need to be evaluated because the result can be determined using
+#only the first kid (e.g on an "And" node if the first kid evals to zero)
+#This could eventually lead to a slowdown instead of speeding things up,
+#or cause problems when nodes have side effects (perform actions)
 useVect = true
 
 #If true, trees that haven't changed from the past generation will remember

@@ -35,6 +35,11 @@ public class And extends Node
     
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
+        /* 
+         * Note that this might not evaluate the second kid. This is useful to
+         * speed things up, but could cause problems if some node on that branch
+         * has side effects
+         */
         return ( kids[0].eval(data, prev)!=0 && kids[1].eval(data, prev)!=0 ? 1:0 );
     }
     
