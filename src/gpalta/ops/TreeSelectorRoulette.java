@@ -3,7 +3,7 @@
  *
  * Created on 30 de marzo de 2006, 12:45 PM
  *
- * Copyright (C) 2006  Juan Ramirez <tiomemo@gmail.com>
+ * Copyright (C) 2006 Juan Ramirez <tiomemo@gmail.com>
  *
  * This file is part of GPalta.
  *
