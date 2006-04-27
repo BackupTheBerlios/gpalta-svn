@@ -41,7 +41,7 @@ public class Evolution
     private TreeOperator treeOp;
     private TreeSelector treeSelector;
     private Ranking theRanking;
-    private Fitness fitness;
+    public Fitness fitness;
     private DataHolder dataHolder;
     private PreviousOutputHolder previousOutputHolder;
     public int generation;
@@ -119,7 +119,10 @@ public class Evolution
         }
         else if (config.fitness.equals("clustering"))
         {
-            //fitness = new FitnessClustering();
+            if (config.useSoftPertenence)
+                fitness = new FitnessClusteringFuzzy();
+            else
+                fitness = new FitnessClustering();
         }
         else
         {
@@ -217,7 +220,10 @@ public class Evolution
         }
         else if (config.fitness.equals("clustering"))
         {
-            //fitness = new FitnessClustering();
+            if (config.useSoftPertenence)
+                fitness = new FitnessClusteringFuzzy();
+            else
+                fitness = new FitnessClustering();
         }
         else
         {
