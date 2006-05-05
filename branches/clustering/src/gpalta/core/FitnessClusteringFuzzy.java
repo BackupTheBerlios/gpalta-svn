@@ -78,7 +78,7 @@ public class FitnessClusteringFuzzy implements Fitness
             results[i] = config.scale * Math.tanh(results[i]);
         
         //assign pertenence probabilities (U matrix)
-        for (int wSample=0; wSample<data.nSamples; wSample++)
+        /*for (int wSample=0; wSample<data.nSamples; wSample++)
         {
             double sum = 0;
             for (int wClass=0; wClass<config.nClasses; wClass++)
@@ -86,7 +86,12 @@ public class FitnessClusteringFuzzy implements Fitness
             for (int wClass=0; wClass<config.nClasses; wClass++)
                 if (sum != 0)
                     prob[wClass][wSample] /= sum;
-        }
+        }*/
+        
+        //assign pertenence probabilities (U matrix) without normalizing (possibilistic)
+        for (int wSample=0; wSample<data.nSamples; wSample++)
+            for (int wClass=0; wClass<config.nClasses; wClass++)
+                prob[wClass][wSample] = 1 / (1 + Math.pow(classCenters[wClass] - results[wSample], 2));
         
         //see which class each sample belongs to:
         List<Integer>[] clusters = new List[config.nClasses];
