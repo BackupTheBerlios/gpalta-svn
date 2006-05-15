@@ -35,8 +35,8 @@ public class FitnessClusteringFuzzy implements Fitness
 {
     
     private double[] results;
-    private double[][] prototypes;
-    private double[] classCenters;
+    public double[][] prototypes;
+    public double[] classCenters;
     private Config config;
     public double[][] prob;
     private double m = 2;
@@ -77,51 +77,27 @@ public class FitnessClusteringFuzzy implements Fitness
         for (int i=0; i<data.nSamples; i++)
             results[i] = config.scale * Math.tanh(results[i]);
         
-        //assign pertenence probabilities (U matrix)
-        /*for (int wSample=0; wSample<data.nSamples; wSample++)
-        {
-            double sum = 0;
-            for (int wClass=0; wClass<config.nClasses; wClass++)
-                sum += prob[wClass][wSample] = 1 / (1 + Math.pow(classCenters[wClass] - results[wSample], 2));
-            for (int wClass=0; wClass<config.nClasses; wClass++)
-                if (sum != 0)
-                    prob[wClass][wSample] /= sum;
-        }*/
-        
         //assign pertenence probabilities (U matrix) without normalizing (possibilistic)
         for (int wSample=0; wSample<data.nSamples; wSample++)
             for (int wClass=0; wClass<config.nClasses; wClass++)
-                prob[wClass][wSample] = 1 / (1 + Math.pow(classCenters[wClass] - results[wSample], 2));
-        
-        //see which class each sample belongs to:
-        List<Integer>[] clusters = new List[config.nClasses];
-        for (int wClass=0; wClass<config.nClasses; wClass++)
-            clusters[wClass] = new ArrayList<Integer>();
-        for (int wSample=0; wSample<data.nSamples; wSample++)
-        {
-            double maxProb = prob[0][wSample];
-            int winner = 0;
-            for (int wClass=1; wClass<config.nClasses; wClass++)
-            {
-                if (prob[wClass][wSample] > maxProb)
-                {
-                    maxProb = prob[wClass][wSample];
-                    winner = wClass;
-                }
-            }
-            clusters[winner].add(wSample);
-        }
+                //prob[wClass][wSample] = 1 / (1 + Math.pow(config.scale * Math.abs(classCenters[wClass] - results[wSample]), m));
+                prob[wClass][wSample] = Math.exp(-4*Math.pow(classCenters[wClass] - results[wSample], 2));
         
         //calculate prototypes for each class:
         for (int wClass=0; wClass<config.nClasses; wClass++)
         {
+            double sumProbThisClass = 0;
+            for (int wSample=0; wSample<data.nSamples; wSample++)
+                sumProbThisClass += Math.pow(prob[wClass][wSample], m);
+            
             for (int wVar=0; wVar<data.nVars; wVar++)
             {
                 prototypes[wClass][wVar] = 0;
-                for (int wSample : clusters[wClass])
-                    prototypes[wClass][wVar] += data.getDataVect(wVar+1)[wSample];
-                if (prototypes[wClass][wVar] !=0)
-                    prototypes[wClass][wVar] /= clusters[wClass].size();
+                for (int wSample=0; wSample<data.nSamples; wSample++)
+                {
+                    prototypes[wClass][wVar] += Math.pow(prob[wClass][wSample], m) * data.getDataVect(wVar+1)[wSample];
+                }
+                prototypes[wClass][wVar] /= sumProbThisClass;
             }
         }
         
@@ -135,7 +111,7 @@ public class FitnessClusteringFuzzy implements Fitness
                 double sampleError = 0;
                 for (int wVar=0; wVar<data.nVars; wVar++)
                     sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
-                protoError += Math.pow(prob[wClass][wSample], m) * Math.sqrt(sampleError);
+                protoError += Math.pow(prob[wClass][wSample], m) * sampleError;
             }
             error += protoError;
         }

@@ -35,10 +35,9 @@ public class FitnessClustering implements Fitness
 {
     
     private double[] results;
-    private double[][] prototypes;
-    private double[] classCenters;
+    public double[][] prototypes;
+    public double[] classCenters;
     private Config config;
-    private double[][] resp;
 
     public void init(Config config, DataHolder data, String fileName)
     {
@@ -53,8 +52,6 @@ public class FitnessClustering implements Fitness
         classCenters = new double[config.nClasses];
         for (int i=0; i<config.nClasses; i++)
             classCenters[i] = config.scale * (-1 + 1/(double)config.nClasses + 2*(double)i/(config.nClasses));
-        if (config.useSoftPertenence)
-            resp = new double[config.nClasses][data.nSamples];
     }
 
     public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
