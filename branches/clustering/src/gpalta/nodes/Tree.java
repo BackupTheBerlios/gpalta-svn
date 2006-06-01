@@ -89,4 +89,19 @@ public class Tree extends Node implements Individual
         maxDepthFromHere = 1 + kids[0].maxDepthFromHere;
     }
     
+    public Individual deepClone()
+    {
+        return (Tree)deepClone(-1);
+    }
+    
+    public int getSize()
+    {
+        return nSubNodes;
+    }
+    
+    public double getFitness()
+    {
+        return fitness;
+    }
+    
 }

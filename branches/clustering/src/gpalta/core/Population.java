@@ -9,8 +9,7 @@
 
 package gpalta.core;
 
-import gpalta.ops.TreeBuilder;
-import gpalta.ops.TreeSelector;
+import gpalta.ops.*;
 import java.util.*;
 
 /**
@@ -20,16 +19,16 @@ import java.util.*;
 public interface Population
 {
     
-    public void eval(Fitness f);
+    public void eval(Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
-    public List<Double> getOutput(int which);
+    public List<double[]> getOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
     public Individual get(int which);
     
-    public void add(Individual ind);
-    
-    public void init(Config config, TreeBuilder builder);
+    public void init(Config config, DataHolder data, TreeBuilder builder);
     
     public void doSelection(TreeSelector sel);
+    
+    public void evolve(TreeOperator op);
     
 }

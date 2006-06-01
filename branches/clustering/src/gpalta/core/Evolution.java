@@ -37,7 +37,7 @@ public class Evolution
 {
     
     private TreeBuilder treeBuilder;
-    public List<Individual> population;
+    public Population population;
     private TreeOperator treeOp;
     private TreeSelector treeSelector;
     private Ranking theRanking;
@@ -50,28 +50,11 @@ public class Evolution
     public EvolutionStats evoStats;
     private EvalVectors evalVectors;
     
-    /**
-     * Creates a new instance of Evolution, loading data from file
-     * 
-     * @param config The evolution configuration
-     * @param initPop If true, the population is randomly initialized. Else, 
-     * nothing is done (population will be later read from a file)
-     */
-    public Evolution(Config config, boolean initPop)
+    private void initCommon(Config config, DataHolder initializedData, boolean initPop)
     {
-        this.config = config;
-        
-        dataHolder = new DataHolder("data.txt");
         previousOutputHolder = new PreviousOutputHolder(config);
-        nodeFactory = new NodeFactory(config, dataHolder);
-        
-        population = new ArrayList<Individual>();
-        if (initPop)
-        {
-            treeBuilder = new TreeBuilder(config, nodeFactory);
-            treeBuilder.build(population);
-        }
-        
+        nodeFactory = new NodeFactory(config, initializedData);
+
         treeOp = new TreeOperator(config, nodeFactory);
         
         if( config.selectionMethod.equals("tournament"))
@@ -129,21 +112,39 @@ public class Evolution
             fitness = new FitnessClassic();
         }
         
-        fitness.init(config, dataHolder, "class.txt");
-
+        if (config.nPreviousOutput == 0 && config.useVect)
+        {
+            evalVectors = new EvalVectors(dataHolder.nSamples);
+        }
+        
         evoStats = new EvolutionStats();
         if (initPop)
         {
+            population = new SingleTreePopulation();
+            population.init(config, initializedData, treeBuilder);
             evoStats.bestSoFar = population.get(0);
         }
         
         generation = 0;
         
+    }
+    
+    /**
+     * Creates a new instance of Evolution, loading data from file
+     * 
+     * @param config The evolution configuration
+     * @param initPop If true, the population is randomly initialized. Else, 
+     * nothing is done (population will be later read from a file)
+     */
+    public Evolution(Config config, boolean initPop)
+    {
+        this.config = config;
         
-        if (config.nPreviousOutput == 0 && config.useVect)
-        {
-            evalVectors = new EvalVectors(dataHolder.nSamples);
-        }
+        dataHolder = new DataHolder("data.txt");
+        
+        initCommon(config, dataHolder, initPop);
+        
+        fitness.init(config, dataHolder, "class.txt");
         
     }
     
@@ -164,86 +165,12 @@ public class Evolution
         this.config = config;
         
         dataHolder = new DataHolder(data);
-        previousOutputHolder = new PreviousOutputHolder(config);
-        nodeFactory = new NodeFactory(config, dataHolder);
         
-        population = new ArrayList<Individual>();
-        if (initPop)
-        {
-            treeBuilder = new TreeBuilder(config, nodeFactory);
-            treeBuilder.build(population);
-        }
+        initCommon(config, dataHolder, initPop);
         
-        treeOp = new TreeOperator(config, nodeFactory);
-        //treeSelector = new TreeSelector(config);
-        if( config.selectionMethod.equals("tournament"))
-        {
-            treeSelector = new TreeSelectorTournament(config);
-        }
-        else
-        {
-            if (config.rankingType.equals("Raw"))
-            {
-                theRanking = new RankingRaw();
-            }
-            else if (config.rankingType.equals("LFR"))
-            {
-                theRanking = new RankingLFR();
-            }
-            else
-            {
-                theRanking = new RankingLFR();
-            }
-            
-            
-            if (config.selectionMethod.equals("SUS"))
-            {
-              treeSelector = new TreeSelectorSUS(config, theRanking);
-            }
-            else if (config.selectionMethod.equals("roulette"))
-            {
-              treeSelector = new TreeSelectorRoulette(config, theRanking);
-            }
-            else if ( config.selectionMethod.equals("proportional"))
-            {
-                treeSelector = new TreeSelectorProportional(config, theRanking);
-            }
-            else
-            {
-            treeSelector =new TreeSelectorTournament(config);
-            }
-        }
-        
-        if (config.fitness.equals("classifier"))
-        {
-            fitness = new FitnessClassifier();
-        }
-        else if (config.fitness.equals("clustering"))
-        {
-            if (config.useSoftPertenence)
-                fitness = new FitnessClusteringFuzzy();
-            else
-                fitness = new FitnessClustering();
-        }
-        else
-        {
-            fitness = new FitnessClassic();
-        }
-        fitness.init(config, dataHolder, desiredOutputs, weights);
-
-        evoStats = new EvolutionStats();
-        
-        if (initPop)
-        {
-            evoStats.bestSoFar = population.get(0);
-        }
-
-        generation = 0;
-        
-        if (config.nPreviousOutput == 0 && config.useVect)
-        {
-            evalVectors = new EvalVectors(dataHolder.nSamples);
-        }
+        List<double[]> l = new ArrayList<double[]>(1);
+        l.add(desiredOutputs);
+        fitness.init(config, dataHolder, l, weights);
         
     }
     
@@ -252,37 +179,29 @@ public class Evolution
      */
     public synchronized void eval()
     {
+        population.eval(fitness, evalVectors, dataHolder, previousOutputHolder);
         Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
         
-        for (Individual t : population)
+        for (int i=0; i<config.populationSize; i++)
         {
-            if (!config.rememberLastEval || !t.fitCalculated)
-            {
-                fitness.calculate(t, evalVectors, dataHolder, previousOutputHolder);
-                t.fitCalculated = true;
-            }
-            evoStats.avgFit += t.fitness;
-            evoStats.avgNodes += t.nSubNodes;
-            if (t.fitness > bestThisGen.fitness)
-            {
-                bestThisGen = t;
-            }
+            Individual ind = population.get(i);
+            evoStats.avgFit += ind.getFitness();
+            evoStats.avgNodes += ind.getSize();
+            if (ind.getFitness() > bestThisGen.getFitness())
+                bestThisGen = ind;
         }
         
-        evoStats.avgFit /= config.populationSize;
-        evoStats.avgNodes /= config.populationSize;
-        
         evoStats.bestTreeChanged = false;
-        if (bestThisGen.fitness > evoStats.bestSoFar.fitness)
+        if (bestThisGen.getFitness() > evoStats.bestSoFar.getFitness())
         {
-            evoStats.bestSoFar = (Tree)bestThisGen.deepClone(-1);
+            evoStats.bestSoFar = bestThisGen.deepClone();
             evoStats.bestTreeChanged = true;
         }
 
         evoStats.generation = generation;
-        evoStats.bestFitThisGen = bestThisGen.fitness;
+        evoStats.bestFitThisGen = bestThisGen.getFitness();
     }
     
     /**
@@ -291,9 +210,9 @@ public class Evolution
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
-    public synchronized double[] eval(Tree tree)
+    public synchronized List<double[]> eval(Individual ind)
     {
-        return fitness.calculate(tree, evalVectors, dataHolder, previousOutputHolder);
+        return population.getOutput(ind, evalVectors, dataHolder, previousOutputHolder);
     }
     
     /**
@@ -302,9 +221,8 @@ public class Evolution
      */
     public synchronized void evolve()
     {
-        List<Tree> nextPop = treeSelector.select(population);
-        treeOp.operate(nextPop);
-        population = nextPop;
+        population.doSelection(treeSelector);
+        population.evolve(treeOp);
         generation ++;
     }
     
@@ -329,7 +247,7 @@ public class Evolution
         Logger.log("Saving in file " + fileName);
         Logger.log("Best tree so far:");
         Logger.log("" + evoStats.bestSoFar);
-        Logger.log("with fitness: " + evoStats.bestSoFar.fitness);
+        Logger.log("with fitness: " + evoStats.bestSoFar.getFitness());
         
         
         FileOutputStream fos = new FileOutputStream(fileName);
@@ -369,7 +287,7 @@ public class Evolution
         generation = in.readInt();
         evoStats.generation = generation;
         evoStats.bestSoFar = (Tree)in.readObject();
-        population = (ArrayList<Tree>)in.readObject();
+        population = (Population)in.readObject();
 
         in.close();
 

@@ -73,7 +73,7 @@ public class TreeBuilder
     /**
      * Build a population of Trees, using the ramped half and half method
      */
-    public void build (List<Individual> population)
+    public void build (List<Tree> treeList)
     {
         int depth = config.initialMinDepth;
         Tree tree;
@@ -82,7 +82,7 @@ public class TreeBuilder
         {
             tree = new Tree(nodeFactory.treeRoot);
             build(tree, depth);
-            population.add(tree);
+            treeList.add(tree);
             
             treesDoneThisDepth++;
             if (treesDoneThisDepth == nTreesEachDepth[depth - config.initialMinDepth])
