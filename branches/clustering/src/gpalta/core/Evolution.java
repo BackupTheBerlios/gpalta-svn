@@ -37,7 +37,7 @@ public class Evolution
 {
     
     private TreeBuilder treeBuilder;
-    public List<Tree> population;
+    public List<Individual> population;
     private TreeOperator treeOp;
     private TreeSelector treeSelector;
     private Ranking theRanking;
@@ -65,7 +65,7 @@ public class Evolution
         previousOutputHolder = new PreviousOutputHolder(config);
         nodeFactory = new NodeFactory(config, dataHolder);
         
-        population = new ArrayList<Tree>();
+        population = new ArrayList<Individual>();
         if (initPop)
         {
             treeBuilder = new TreeBuilder(config, nodeFactory);
@@ -167,7 +167,7 @@ public class Evolution
         previousOutputHolder = new PreviousOutputHolder(config);
         nodeFactory = new NodeFactory(config, dataHolder);
         
-        population = new ArrayList<Tree>();
+        population = new ArrayList<Individual>();
         if (initPop)
         {
             treeBuilder = new TreeBuilder(config, nodeFactory);
@@ -252,11 +252,11 @@ public class Evolution
      */
     public synchronized void eval()
     {
-        Tree bestThisGen = population.get(0);
+        Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
         
-        for (Tree t : population)
+        for (Individual t : population)
         {
             if (!config.rememberLastEval || !t.fitCalculated)
             {

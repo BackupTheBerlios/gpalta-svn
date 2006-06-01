@@ -24,6 +24,7 @@
 
 package gpalta.core;
 
+import java.io.Serializable;
 import java.util.*;
 import gpalta.nodes.*;
 
@@ -32,7 +33,7 @@ import gpalta.nodes.*;
  * terminals and all. The "all" list should contain both functions and terminals
  * @author neven
  */
-public class NodeSet 
+public class NodeSet implements Serializable
 {
     
     private List<Node> all;

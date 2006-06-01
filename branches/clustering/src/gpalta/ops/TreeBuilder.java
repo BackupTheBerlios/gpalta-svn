@@ -73,7 +73,7 @@ public class TreeBuilder
     /**
      * Build a population of Trees, using the ramped half and half method
      */
-    public void build (List<Tree> population)
+    public void build (List<Individual> population)
     {
         int depth = config.initialMinDepth;
         Tree tree;

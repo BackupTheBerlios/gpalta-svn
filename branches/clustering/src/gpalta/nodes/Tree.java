@@ -30,7 +30,7 @@ import gpalta.core.*;
  *
  * @author neven
  */
-public class Tree extends Node
+public class Tree extends Node implements Individual
 
 {
     public double fitness;

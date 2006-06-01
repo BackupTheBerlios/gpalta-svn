@@ -33,7 +33,7 @@ import gpalta.nodes.*;
  */
 public class EvolutionStats
 {
-    public Tree bestSoFar;
+    public Individual bestSoFar;
     public boolean bestTreeChanged = true;
     public double bestFitThisGen;
     public int generation;

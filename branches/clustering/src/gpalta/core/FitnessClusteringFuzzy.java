@@ -3,7 +3,7 @@
  *
  * Created on 21 de abril de 2006, 03:06 PM
  *
-* Copyright (C) 2006 Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *

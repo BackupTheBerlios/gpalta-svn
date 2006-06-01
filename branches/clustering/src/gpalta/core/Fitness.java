@@ -25,6 +25,7 @@
 package gpalta.core;
 
 import gpalta.nodes.*;
+import java.util.List;
 
 /**
  * Hold desired outputs for fitness cases, and calculates the fitness for a given 
@@ -51,11 +52,11 @@ public interface Fitness
      *
      * @param config The evolution config, might be needed inside the Fitness
      * @param data The current problem's data, might also be needed (for
-     * instance to know the numer of samples used)
+     * instance to know the number of samples used)
      * @param desiredOutputs The desired outputs
      * @param weights The weight (importance) of each sample
      */
-    void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights);
+    void init(Config config, DataHolder data, List<double[]> desiredOutputs, double[] weights);
     
     /**
      * Evaluates the tree in every sample, and then calculates its fitness
@@ -65,6 +66,6 @@ public interface Fitness
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
-    double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    double[] calculate(List<double[]> outputs, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
 }
