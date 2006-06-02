@@ -63,7 +63,6 @@ kHR1 = 4
 # For the clustering fitness:
 nClasses = 5
 useSoftPertenence = false
-outputPrototypes = true
 m = 2
 scale = 1
 
@@ -81,7 +80,7 @@ scale = 1
 # This could eventually lead to a slowdown instead of speeding things up,
 # or cause problems when nodes have side effects (perform actions)
 
-useVect = false
+useVect = true
 
 # If true, trees that haven't changed from the past generation will remember
 # their fitness and won't be evaluated again.

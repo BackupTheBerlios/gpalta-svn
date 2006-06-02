@@ -44,7 +44,7 @@ public class FitnessClustering implements Fitness
         init(config, data, null, null);
     }
 
-    public void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights)
+    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
         this.config = config;
         results = new double[data.nSamples];
@@ -52,26 +52,13 @@ public class FitnessClustering implements Fitness
         classCenters = new double[config.nClasses];
         for (int i=0; i<config.nClasses; i++)
             classCenters[i] = config.scale * (-1 + 1/(double)config.nClasses + 2*(double)i/(config.nClasses));
+        results = new double[data.nSamples];
     }
 
-    public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        data.reset();
-        if (config.nPreviousOutput == 0 && config.useVect)
-        {
-            tree.evalVect(results, evalVectors, data, prev);
-        }
-        else
-        {
-            for (int i=0; i<data.nSamples; i++)
-            {
-                results[i] = tree.eval(data, prev);
-                data.update();
-            }
-        }
-        
         for (int i=0; i<data.nSamples; i++)
-            results[i] = config.scale * Math.tanh(results[i]);
+            results[i] = config.scale * Math.tanh(outputs.getArray(0)[i]);
         
         //see which class each sample belongs to:
         List<Integer>[] clusters = new List[config.nClasses];
@@ -119,19 +106,15 @@ public class FitnessClustering implements Fitness
             }
             error += protoError;
         }
-        tree.fitness = 1/(1 + error);
-        
-        if (config.outputPrototypes)
-        {
-            double[] out = new double[data.nVars * config.nClasses];
-            for (int i=0; i<config.nClasses; i++)
-                for (int j=0; j<data.nVars; j++)
-                    out[i*data.nVars + j] = prototypes[i][j];
-
-            return out;
-        }
-        return results;
-        
+        ind.setFitness (1/(1 + error));
+    }
+    
+    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    {
+        ClusteringOutput processed = new ClusteringOutput(1, data.nSamples);
+        processed.setArrayCopy(0, raw.getArray(0));
+        processed.setPrototypesCopy(prototypes);
+        return processed;
     }
     
 }

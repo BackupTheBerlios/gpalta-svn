@@ -618,21 +618,21 @@ public class GPaltaGUI extends javax.swing.JFrame {
         if (evoStats.bestTreeChanged)
         {
             textBestSoFar.setText("" + evoStats.bestSoFar);
-            labelBestSoFarFitValue.setText("   " + String.format("%.3f",evoStats.bestSoFar.fitness));
-            labelBestSoFarHR0Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr0));
-            labelBestSoFarHR1Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr1));
-            labelBestSoFarNodesValue.setText("   " + evoStats.bestSoFar.nSubNodes);
+            labelBestSoFarFitValue.setText("   " + String.format("%.3f",evoStats.bestSoFar.readFitness()));
+            //labelBestSoFarHR0Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr0));
+            //labelBestSoFarHR1Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr1));
+            //labelBestSoFarNodesValue.setText("   " + evoStats.bestSoFar.nSubNodes);
         }
         if (usePlot)
         {
             if (config.fitness.equals("classifier"))
             {
-                plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.hr0, !first);
-                plot.addPoint(2, (double)evoStats.generation, evoStats.bestSoFar.hr1, !first);
+                //plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.hr0, !first);
+                //plot.addPoint(2, (double)evoStats.generation, evoStats.bestSoFar.hr1, !first);
             }
             else
             {
-                plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.fitness, !first);
+                plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.readFitness(), !first);
             }
             if (evoStats.generation > plot.getXRange()[1])
             {
@@ -660,7 +660,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
         labelBestFitThisValue.setText("   " + String.format("%.3f",evoStats.bestFitThisGen));
         labelGenValue.setText("   " + evoStats.generation);
         
-        if (evoStats.bestSoFar.fitness > config.stopFitness)
+        if (evoStats.bestSoFar.readFitness() > config.stopFitness)
         {
             stopAtNextGen = true;
             Logger.log("Fitness reached " + config.stopFitness + " at generation " + evoStats.generation);

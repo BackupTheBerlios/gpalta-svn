@@ -57,6 +57,8 @@ public class Evolution
 
         treeOp = new TreeOperator(config, nodeFactory);
         
+        treeBuilder = new TreeBuilder(config, nodeFactory);
+        
         if( config.selectionMethod.equals("tournament"))
         {
             treeSelector = new TreeSelectorTournament(config);
@@ -168,9 +170,9 @@ public class Evolution
         
         initCommon(config, dataHolder, initPop);
         
-        List<double[]> l = new ArrayList<double[]>(1);
-        l.add(desiredOutputs);
-        fitness.init(config, dataHolder, l, weights);
+        Output des = new Output(1, dataHolder.nSamples);
+        des.setArray(0, desiredOutputs);
+        fitness.init(config, dataHolder, des, weights);
         
     }
     
@@ -187,21 +189,21 @@ public class Evolution
         for (int i=0; i<config.populationSize; i++)
         {
             Individual ind = population.get(i);
-            evoStats.avgFit += ind.getFitness();
+            evoStats.avgFit += ind.readFitness();
             evoStats.avgNodes += ind.getSize();
-            if (ind.getFitness() > bestThisGen.getFitness())
+            if (ind.readFitness() > bestThisGen.readFitness())
                 bestThisGen = ind;
         }
         
         evoStats.bestTreeChanged = false;
-        if (bestThisGen.getFitness() > evoStats.bestSoFar.getFitness())
+        if (bestThisGen.readFitness() > evoStats.bestSoFar.readFitness())
         {
             evoStats.bestSoFar = bestThisGen.deepClone();
             evoStats.bestTreeChanged = true;
         }
 
         evoStats.generation = generation;
-        evoStats.bestFitThisGen = bestThisGen.getFitness();
+        evoStats.bestFitThisGen = bestThisGen.readFitness();
     }
     
     /**
@@ -210,9 +212,20 @@ public class Evolution
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
-    public synchronized List<double[]> eval(Individual ind)
+    public synchronized Output getRawOutput(Individual ind)
     {
-        return population.getOutput(ind, evalVectors, dataHolder, previousOutputHolder);
+        return population.getRawOutput(ind, evalVectors, dataHolder, previousOutputHolder);
+    }
+    
+    /**
+     * Evaluate a single tree
+     * 
+     * @return The output of the Tree for every sample, or null if the Tree wasn't
+     * evaluated
+     */
+    public synchronized Output getProcessedOutput(Individual ind)
+    {
+        return population.getProcessedOutput(ind, fitness, evalVectors, dataHolder, previousOutputHolder);
     }
     
     /**
@@ -247,7 +260,7 @@ public class Evolution
         Logger.log("Saving in file " + fileName);
         Logger.log("Best tree so far:");
         Logger.log("" + evoStats.bestSoFar);
-        Logger.log("with fitness: " + evoStats.bestSoFar.getFitness());
+        Logger.log("with fitness: " + evoStats.bestSoFar.readFitness());
         
         
         FileOutputStream fos = new FileOutputStream(fileName);

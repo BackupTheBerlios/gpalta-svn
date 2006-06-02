@@ -15,8 +15,9 @@ package gpalta.core;
  */
 public interface Individual
 {
-    public double getFitness();
-    public int getSize();
-    public Individual deepClone();
+    double readFitness();
+    void setFitness(double fit);
+    int getSize();
+    Individual deepClone();
     
 }

@@ -34,19 +34,17 @@ import java.io.*;
 public class FitnessClassic implements Fitness
 {
     
-    private double[] desiredOutputs;
+    private Output desiredOutputs;
     private double[] weights;
-    private double[] results;
     private Config config;
 
     public void init(Config config, DataHolder data, String fileName) 
     {
         this.config = config;
-        results = new double[data.nSamples];
         
         File classFile = new File(fileName);
 
-        desiredOutputs = new double[data.nSamples];
+        desiredOutputs = new Output(1, data.nSamples);
 
         try
         {
@@ -70,13 +68,13 @@ public class FitnessClassic implements Fitness
                 {
                     String[] vals = line.split("\\s+");
                     //First comes the desiredOutput:
-                    desiredOutputs[sample] = Double.parseDouble(vals[0]);
+                    desiredOutputs.getArray(0)[sample] = Double.parseDouble(vals[0]);
                     //Then the weight:
                     weights[sample] = Double.parseDouble(vals[1]);
                 }
                 else
                 {
-                    desiredOutputs[sample] = Double.parseDouble(line);
+                    desiredOutputs.getArray(0)[sample] = Double.parseDouble(line);
                 }
             }
             
@@ -107,38 +105,26 @@ public class FitnessClassic implements Fitness
         }
     }
 
-    public void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights) 
+    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights) 
     {
         this.config = config;
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
-        results = new double[data.nSamples];
     }
 
-    public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         double error = 0;
-        data.reset();
-        prev.reset();
-        if (config.nPreviousOutput == 0 && config.useVect)
-        {
-            tree.evalVect(results, evalVectors, data, prev);
-        }
-        else
-        {
-            for (int i=0; i<data.nSamples; i++)
-            {
-                results[i] = tree.eval(data, prev);
-                data.update();
-                prev.update(results[i]);
-            }
-        }
         for (int i=0; i<data.nSamples; i++)
         {
-            error += Math.pow (results[i] - desiredOutputs[i], 2);
+            error += Math.pow (outputs.getArray(0)[i] - desiredOutputs.getArray(0)[i], 2);
         }
-        tree.fitness = 1/(1+Math.sqrt(error));
-        return results;
+        ind.setFitness(1/(1+Math.sqrt(error)));
+    }
+
+    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    {
+        return raw;
     }
     
 }

@@ -56,7 +56,7 @@ public interface Fitness
      * @param desiredOutputs The desired outputs
      * @param weights The weight (importance) of each sample
      */
-    void init(Config config, DataHolder data, List<double[]> desiredOutputs, double[] weights);
+    void init(Config config, DataHolder data, Output desiredOutputs, double[] weights);
     
     /**
      * Evaluates the tree in every sample, and then calculates its fitness
@@ -66,6 +66,8 @@ public interface Fitness
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      * evaluated
      */
-    double[] calculate(List<double[]> outputs, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+
+    Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
 }

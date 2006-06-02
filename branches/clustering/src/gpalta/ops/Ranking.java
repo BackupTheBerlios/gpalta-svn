@@ -23,6 +23,7 @@
  */
 
 package gpalta.ops;
+import gpalta.core.*;
 import gpalta.nodes.*;
 import java.util.*;
 
@@ -47,7 +48,7 @@ public abstract class Ranking {
     public void init(List<Tree> population, Comparator comp)
     {
         this.population = population;
-        popArray = this.treesSort(population, comp);
+        popArray = this.indSort(population, comp);
         this.popSize = population.size();
         min=popArray[0].fitness;
         max=popArray[ popSize -1].fitness;
@@ -56,7 +57,7 @@ public abstract class Ranking {
         filled=true;
     }
     
-    public Tree[] treesSort(List<Tree> population, Comparator comp)
+    public Tree[] indSort(List<Tree> population, Comparator comp)
     {
         Tree [] popArray = new Tree[population.size()];
         

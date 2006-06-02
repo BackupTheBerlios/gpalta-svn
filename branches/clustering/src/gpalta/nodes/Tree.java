@@ -99,9 +99,14 @@ public class Tree extends Node implements Individual
         return nSubNodes;
     }
     
-    public double getFitness()
+    public double readFitness()
     {
         return fitness;
+    }
+
+    public void setFitness(double fit)
+    {
+        fitness = fit;
     }
     
 }

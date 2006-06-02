@@ -31,8 +31,20 @@ public class Output
     {
         return data[which];
     }
-    
+
     public void setArray(int which, double[] array)
+    {
+        data[which] = array;
+    }
+    
+    public double[] getArrayCopy(int which)
+    {
+        double[] out = new double[data[which].length];
+        System.arraycopy(data[which], 0, out, 0, data[which].length);
+        return out;
+    }
+    
+    public void setArrayCopy(int which, double[] array)
     {
         data[which] = array;
     }

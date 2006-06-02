@@ -21,24 +21,24 @@ public class SingleTreePopulation implements Population
 {
     private List<Tree> treeList;
     private Config config;
-    List<double[]> outputs;
+    private Output outputs;
 
     public void eval(Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        double[] results = outputs.get(0);
         for (Tree t : treeList)
         {
             if (!config.rememberLastEval || !t.fitCalculated)
             {
-                getOutput(t, results, evalVectors, data, prev);
-                f.calculate(outputs, evalVectors, data, prev);
+                getOutput(t, outputs, evalVectors, data, prev);
+                f.calculate(outputs, t, evalVectors, data, prev);
                 t.fitCalculated = true;
             }
         }
     }
     
-    private void getOutput(Tree t, double[] results, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    private void getOutput(Tree t, Output o, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
+        double[] results = o.getArray(0);
         data.reset();
         prev.reset();
         if (config.nPreviousOutput == 0 && config.useVect)
@@ -56,11 +56,18 @@ public class SingleTreePopulation implements Population
         }
     }
 
-    public List<double[]> getOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getRawOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        double[] results = outputs.get(0);
-        getOutput((Tree)ind, results, evalVectors, data, prev);
-        return outputs;
+        Output out = new Output(1, data.nSamples);
+        getOutput((Tree)ind, out, evalVectors, data, prev);
+        return out;
+    }
+    
+    public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    {
+        Output raw = getRawOutput(ind, evalVectors, data, prev);
+        Output processed = f.getProcessedOutput(raw, ind, evalVectors, data, prev);
+        return processed;
     }
 
     public Individual get(int which)
@@ -83,8 +90,7 @@ public class SingleTreePopulation implements Population
         this.config = config;
         treeList = new ArrayList<Tree>(config.populationSize);
         builder.build(treeList);
-        outputs = new ArrayList<double[]>(1);
-        outputs.add(new double[data.nSamples]);
+        outputs = new Output(1, data.nSamples);
     }
     
 }

@@ -97,7 +97,6 @@ public class Config
     //For the clustering fitness:
     public int nClasses = 5;
     public boolean useSoftPertenence = false;
-    public boolean outputPrototypes = true;
     public double m = 2;
     public double scale = 1;
     

@@ -247,14 +247,27 @@ public class FitnessClassifier implements Fitness
             double continuityPenalizacion = continuityImportance * (data.nSamples - (double)sumMaxContinuity) / data.nSamples;
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
-            tree.fitness = (tree.hr0 + kHR1*tree.hr1)/(kHR1+1);
-            tree.fitness -= (double)tree.nSubNodes * sizePenalization;
-            tree.fitness -= continuityPenalizacion;
+            tree.setFitness((tree.hr0 + kHR1*tree.hr1)/(kHR1+1));
+            tree.setFitness(tree.readFitness() - (double)tree.nSubNodes * sizePenalization);
+            tree.setFitness(tree.readFitness() - continuityPenalizacion);
             return results;
         }
         
         //If we don't eval the tree:
         return null;
+    }
+
+    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
+    {
+    }
+
+    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    {
+    }
+
+    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    {
+        return raw;
     }
     
 }

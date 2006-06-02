@@ -21,7 +21,13 @@ public interface Population
     
     public void eval(Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
-    public List<double[]> getOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    /**
+     * Get the output directly from the Individual, without further processing
+     * @return A totally independent Output object
+     */
+    public Output getRawOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    
+    public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
     
     public Individual get(int which);
     
