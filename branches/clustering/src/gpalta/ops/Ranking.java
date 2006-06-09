@@ -35,31 +35,31 @@ public abstract class Ranking {
     
     public int popSize;
     public boolean filled;
-    public List<Tree> population;
+    public List<? extends Individual> population;
     public double[] adjustedFitness;
-    public Tree [] popArray;
+    public Individual [] popArray;
     public double min;
     public double max;
     public double totalFitness;
     public double  acumulatedFit[];
     
-    public abstract void rankPop(List<Tree> population, Comparator comp);
+    public abstract void rankPop(List<? extends Individual> population, Comparator comp);
     
-    public void init(List<Tree> population, Comparator comp)
+    public <T extends Individual> void init(List<T> population, Comparator comp)
     {
         this.population = population;
         popArray = this.indSort(population, comp);
         this.popSize = population.size();
-        min=popArray[0].fitness;
-        max=popArray[ popSize -1].fitness;
+        min=popArray[0].readFitness();
+        max=popArray[ popSize -1].readFitness();
         adjustedFitness = new double [popSize];
         acumulatedFit = new double [popSize];
         filled=true;
     }
     
-    public Tree[] indSort(List<Tree> population, Comparator comp)
+    public <T extends Individual> T[] indSort(List<T> population, Comparator comp)
     {
-        Tree [] popArray = new Tree[population.size()];
+        Individual [] popArray = new Individual[population.size()];
         
         /*
          * Move population to an Array structure for sorting. 
@@ -67,14 +67,14 @@ public abstract class Ranking {
         for(int i=0;i<population.size();i++)
         {
             popArray[i]=population.get(i);
-            population.get(i).isOnPop=false;
+            population.get(i).setOnPop(false);
         }
         
         /*
          *Sort
          */
         Arrays.sort(popArray, comp);
-        return(popArray);
+        return (T[])popArray;
     }
     
 }

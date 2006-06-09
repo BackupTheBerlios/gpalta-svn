@@ -36,18 +36,18 @@ public class Divide extends Node
 
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        double resultKid1 = kids[1].eval(data, prev);
+        double resultKid1 = getKids()[1].eval(data, prev);
         if (resultKid1 == 0)
             return 1;
         else
-            return ( kids[0].eval(data, prev) / resultKid1 );
+            return ( getKids()[0].eval(data, prev) / resultKid1 );
     }
     
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        kids[0].evalVect(outVect, evalVectors, data, prev);
+        getKids()[0].evalVect(outVect, evalVectors, data, prev);
         double[] resultKid2 = evalVectors.get();
-        kids[1].evalVect(resultKid2, evalVectors, data, prev);
+        getKids()[1].evalVect(resultKid2, evalVectors, data, prev);
         for (int i=0; i < data.nSamples; i++)
         {
             if (resultKid2[i] == 0)

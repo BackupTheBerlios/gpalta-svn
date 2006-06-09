@@ -7,7 +7,9 @@
  * and open the template in the editor.
  */
 
-package gpalta.core;
+package gpalta.clustering;
+
+import gpalta.core.*;
 
 /**
  *
@@ -29,10 +31,6 @@ public class ClusteringOutput extends Output
         for (int i = 0; i < proto.length; i++)
         {
             System.arraycopy(proto[i],0,prototypes[i],0,proto[i].length);
-            /*for (int j = 0; j < proto[i].length; j++)
-            {
-                prototypes[i][j] = proto[i][j];
-            }*/
         }
     }
     
@@ -42,10 +40,6 @@ public class ClusteringOutput extends Output
         for (int i = 0; i < prob.length; i++)
         {
             System.arraycopy(prob[i],0,this.prob[i],0,prob[i].length);
-            /*for (int j = 0; j < prob[i].length; j++)
-            {
-                this.prob[i][j] = prob[i][j];
-            }*/
         }
     }
     

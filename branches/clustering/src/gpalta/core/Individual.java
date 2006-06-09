@@ -13,11 +13,32 @@ package gpalta.core;
  *
  * @author neven
  */
-public interface Individual
+public abstract class Individual
 {
-    double readFitness();
-    void setFitness(double fit);
-    int getSize();
-    Individual deepClone();
+    private double fitness;
+    private boolean isOnPop;
+    
+    public abstract int getSize();
+    public abstract Individual deepClone();
+    
+    public double readFitness()
+    {
+        return fitness;
+    }
+
+    public void setFitness(double fit)
+    {
+        fitness = fit;
+    }
+    
+    public void setOnPop(boolean flag)
+    {
+        isOnPop = flag;
+    }
+
+    public boolean isOnPop()
+    {
+        return isOnPop;
+    }
     
 }

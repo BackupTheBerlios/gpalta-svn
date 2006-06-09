@@ -33,16 +33,17 @@ import java.util.*;
  *
  * @author neven
  */
-public abstract class Node implements Cloneable, Serializable
+public abstract class Node implements NodeParent, Cloneable, Serializable
 {
     
-    public Node parent;
-    public Node[] kids;
+    private NodeParent parent;
+    private Node[] kids;
     
-    public int whichKidOfParent;
+    private int whichKidOfParent;
     
-    public int currentDepth;
-    public int maxDepthFromHere;
+    private int currentDepth;
+    private int maxDepthFromHere;
+    private int nSubNodes;
     
     private NodeSet[] kidsType;
     
@@ -83,7 +84,7 @@ public abstract class Node implements Cloneable, Serializable
         out += name();
         for (int i=0; i<nKids(); i++)
         {
-            out += " " + kids[i];
+            out += " " + getKids()[i];
         }
         if (nKids() > 0)
         {
@@ -91,8 +92,6 @@ public abstract class Node implements Cloneable, Serializable
         }
         return out;
     }
-    
-    public int nSubNodes;
     
     public Object clone() throws CloneNotSupportedException
     {
@@ -112,29 +111,29 @@ public abstract class Node implements Cloneable, Serializable
             Logger.log(e);
         }
         
-        out.currentDepth = currentDepth;
+        out.setCurrentDepth(currentDepth);
         
         if (nKids()>0)
         {
-            out.kids = new Node[nKids()];
+            out.setKids(new Node[nKids()]);
         }
         
         for (int i=0; i<nKids(); i++)
         {
-            out.kids[i] = kids[i].deepClone(currentDepth + 1);
-            out.kids[i].parent = out;
+            out.getKids()[i] = getKids()[i].deepClone(currentDepth + 1);
+            out.getKids()[i].setParent(out);
         }
         return out;
     }
 
-    public static String parse(String expression, Node parent, int whichKid, NodeFactory nodeFactory)
+    public static String parse(String expression, NodeParent parent, int whichKid, NodeFactory nodeFactory)
     {
         java.util.regex.Pattern op = java.util.regex.Pattern.compile("[a-zA-Z_0-9\\.]+");
         java.util.regex.Matcher matcher = op.matcher(expression);
         if (matcher.find())
         {
-            parent.kids[whichKid] = nodeFactory.newNode(matcher.group(), parent.currentDepth+1);
-            parent.kids[whichKid].parent = parent;
+            parent.getKids()[whichKid] = nodeFactory.newNode(matcher.group(), parent.getCurrentDepth()+1);
+            parent.getKids()[whichKid].parent = parent;
         }
         else
         {
@@ -149,7 +148,7 @@ public abstract class Node implements Cloneable, Serializable
             if(expression.startsWith(")"))
             {
                 expression = expression.substring(1);
-                if (nKidsDone < parent.kids[whichKid].nKids())
+                if (nKidsDone < parent.getKids()[whichKid].nKids())
                 {
                     //error
                 }
@@ -158,20 +157,20 @@ public abstract class Node implements Cloneable, Serializable
             else
             {
                 if (nKidsDone == 0)
-                    parent.kids[whichKid].kids = new Node[parent.kids[whichKid].nKids()];
+                    parent.getKids()[whichKid].kids = new Node[parent.getKids()[whichKid].nKids()];
                 if (expression.startsWith("("))
                 {
-                    expression = parse(expression, parent.kids[whichKid], nKidsDone, nodeFactory).trim();
+                    expression = parse(expression, parent.getKids()[whichKid], nKidsDone, nodeFactory).trim();
                 }
                 else
                 {
                     matcher = op.matcher(expression);
                     if (matcher.find())
                     {
-                        parent.kids[whichKid].kids[nKidsDone] = nodeFactory.newNode(matcher.group(), parent.kids[whichKid].currentDepth+1);
-                        parent.kids[whichKid].kids[nKidsDone].parent = parent.kids[whichKid];
-                        parent.kids[whichKid].nSubNodes += 1;
-                        parent.kids[whichKid].maxDepthFromHere = Math.max(parent.kids[whichKid].maxDepthFromHere, 1);
+                        parent.getKids()[whichKid].kids[nKidsDone] = nodeFactory.newNode(matcher.group(), parent.getKids()[whichKid].currentDepth+1);
+                        parent.getKids()[whichKid].kids[nKidsDone].parent = parent.getKids()[whichKid];
+                        parent.getKids()[whichKid].nSubNodes += 1;
+                        parent.getKids()[whichKid].maxDepthFromHere = Math.max(parent.getKids()[whichKid].maxDepthFromHere, 1);
                     }
                     else
                     {
@@ -182,15 +181,75 @@ public abstract class Node implements Cloneable, Serializable
             }
             nKidsDone++;
         }
-        if (nKidsDone < parent.kids[whichKid].nKids())
+        if (nKidsDone < parent.getKids()[whichKid].nKids())
         {
             //error
         }
         
-        parent.nSubNodes = 1 + parent.kids[whichKid].nSubNodes;
-        parent.maxDepthFromHere = Math.max(parent.maxDepthFromHere, 1 + parent.kids[whichKid].maxDepthFromHere);
+        parent.setNSubNodes(1 + parent.getKids()[whichKid].getNSubNodes());
+        parent.setMaxDepthFromHere(Math.max(parent.getMaxDepthFromHere(), 1 + parent.getKids()[whichKid].getMaxDepthFromHere()));
         
         return expression;
+    }
+
+    public int getWhichKidOfParent()
+    {
+        return whichKidOfParent;
+    }
+
+    public void setWhichKidOfParent(int whichKidOfParent)
+    {
+        this.whichKidOfParent = whichKidOfParent;
+    }
+
+    public NodeParent getParent()
+    {
+        return parent;
+    }
+
+    public void setParent(NodeParent parent)
+    {
+        this.parent = parent;
+    }
+
+    public int getNSubNodes()
+    {
+        return nSubNodes;
+    }
+
+    public void setNSubNodes(int nSubNodes)
+    {
+        this.nSubNodes = nSubNodes;
+    }
+
+    public Node[] getKids()
+    {
+        return kids;
+    }
+    
+    public void setKids(Node[] kids)
+    {
+        this.kids = kids;
+    }
+
+    public int getCurrentDepth()
+    {
+        return currentDepth;
+    }
+
+    public void setCurrentDepth(int currentDepth)
+    {
+        this.currentDepth = currentDepth;
+    }
+
+    public int getMaxDepthFromHere()
+    {
+        return maxDepthFromHere;
+    }
+
+    public void setMaxDepthFromHere(int maxDepthFromHere)
+    {
+        this.maxDepthFromHere = maxDepthFromHere;
     }
     
 }

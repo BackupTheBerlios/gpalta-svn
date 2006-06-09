@@ -198,7 +198,7 @@ public class NodeFactory
             Logger.log(e);
         }
         outNode.init(config);
-        outNode.currentDepth = currentGlobalDepth;     
+        outNode.setCurrentDepth(currentGlobalDepth);     
         return outNode;
     }
     
@@ -255,7 +255,7 @@ public class NodeFactory
                 }
             }
         }
-        outNode.currentDepth = currentGlobalDepth;
+        outNode.setCurrentDepth(currentGlobalDepth);
         return outNode;
     }
     

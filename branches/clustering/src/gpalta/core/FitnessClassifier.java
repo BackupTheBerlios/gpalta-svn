@@ -248,7 +248,7 @@ public class FitnessClassifier implements Fitness
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
             tree.setFitness((tree.hr0 + kHR1*tree.hr1)/(kHR1+1));
-            tree.setFitness(tree.readFitness() - (double)tree.nSubNodes * sizePenalization);
+            tree.setFitness(tree.readFitness() - (double)tree.getNSubNodes() * sizePenalization);
             tree.setFitness(tree.readFitness() - continuityPenalizacion);
             return results;
         }

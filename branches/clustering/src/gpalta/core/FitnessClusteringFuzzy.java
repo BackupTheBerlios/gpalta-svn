@@ -22,8 +22,9 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package gpalta.core;
+package gpalta.clustering;
 
+import gpalta.core.*;
 import gpalta.nodes.*;
 import java.util.*;
 
@@ -109,7 +110,7 @@ public class FitnessClusteringFuzzy implements Fitness
     public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         ClusteringOutput processed = new ClusteringOutput(1, data.nSamples);
-        processed.setArrayCopy(0, raw.getArray(0));
+        processed.setArray(0, raw.getArrayCopy(0));
         processed.setPertenenceCopy(prob);
         processed.setPrototypesCopy(prototypes);
         return processed;

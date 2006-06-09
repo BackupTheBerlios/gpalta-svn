@@ -24,6 +24,7 @@
 
 
 package gpalta.ops;
+import gpalta.core.Individual;
 import gpalta.nodes.*;
 import java.util.*;
 
@@ -45,7 +46,7 @@ public class RankingLFR extends Ranking{
     /*
      *Ranks population
      */
-    public void rankPop(List<Tree> population, Comparator comp)
+    public void rankPop(List<? extends Individual> population, Comparator comp)
     {
         int j;
         double m;

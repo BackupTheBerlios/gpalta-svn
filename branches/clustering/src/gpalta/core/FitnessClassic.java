@@ -24,7 +24,7 @@
 
 package gpalta.core;
 
-import gpalta.nodes.Tree;
+import gpalta.core.Tree;
 import java.io.*;
 
 /**

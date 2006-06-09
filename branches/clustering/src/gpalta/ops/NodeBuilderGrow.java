@@ -40,21 +40,21 @@ public class NodeBuilderGrow extends NodeBuilder
         this.nodeFactory = nodeFactory;
     }
     
-    public void build (Node node, int maxDepth)
+    public void build (NodeParent node, int maxDepth)
     {
         build (node, -1, maxDepth);
     }
     
-    public void build (Node node, int whichKid, int maxDepth)
+    public void build (NodeParent node, int whichKid, int maxDepth)
     {
-        int currentGlobalDepth = node.currentDepth;
+        int currentGlobalDepth = node.getCurrentDepth();
         List<Integer> listOfKids = new ArrayList<Integer>();
         
         //whichKid = -1 means: build all kids
         if (whichKid == -1)
         {
             if (node.nKids() > 0)
-                node.kids = new Node[node.nKids()];
+                node.setKids(new Node[node.nKids()]);
             for (int i=0; i<node.nKids(); i++)
             {
                 listOfKids.add(i);
@@ -73,25 +73,25 @@ public class NodeBuilderGrow extends NodeBuilder
             //If maxDepth = 1, we need terminals as kids:
             if (maxDepth == 1)
             {
-                node.kids[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getTerminals(), currentGlobalDepth + 1);
-                node.nSubNodes += 1;
+                node.getKids()[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getTerminals(), currentGlobalDepth + 1);
+                node.setNSubNodes(node.getNSubNodes() + 1);
             }
             else
             {
-                node.kids[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getAll(), currentGlobalDepth + 1);
-                build(node.kids[i], -1, maxDepth-1);
+                node.getKids()[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getAll(), currentGlobalDepth + 1);
+                build(node.getKids()[i], -1, maxDepth-1);
                 
                 /* If we are building only one child, these will be wrong for the 
                  * first parent, but will be corrected by updateParents()
                  */
-                node.nSubNodes += 1 + node.kids[i].nSubNodes;
-                maxDepthOfKids = Math.max(maxDepthOfKids, node.kids[i].maxDepthFromHere);
+                node.setNSubNodes(node.getNSubNodes() + (1 + node.getKids()[i].getNSubNodes()));
+                maxDepthOfKids = Math.max(maxDepthOfKids, node.getKids()[i].getMaxDepthFromHere());
             }
-            node.kids[i].parent = node;
-            node.kids[i].whichKidOfParent = i;
+            node.getKids()[i].setParent(node);
+            node.getKids()[i].setWhichKidOfParent(i);
         }
         if (node.nKids() > 0)
-            node.maxDepthFromHere = 1 + maxDepthOfKids;
+            node.setMaxDepthFromHere(1 + maxDepthOfKids);
     }
     
 }

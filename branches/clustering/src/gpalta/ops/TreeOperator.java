@@ -23,6 +23,7 @@
  */
 
 package gpalta.ops;
+import gpalta.core.Tree;
 import gpalta.nodes.*;
 import java.util.*;
 import gpalta.core.*;
@@ -52,7 +53,7 @@ public class TreeOperator
      *
      * @param population The list of trees that passed the selection process
      */
-    public void operate(List<Tree> population)
+    public <T extends Tree> void operate(List<T> population)
     {
         int[] perm = Common.randPerm(config.populationSize);
         double op;
@@ -85,9 +86,9 @@ public class TreeOperator
     {
         Node tmp = selector.pickRandomNode(tree);
         //Choose a random depth between 1 and (config.maxDepth - currentDepth)
-        int depthFromHere = 1 + Common.globalRandom.nextInt(config.maxDepth - tmp.currentDepth + 1);
+        int depthFromHere = 1 + Common.globalRandom.nextInt(config.maxDepth - tmp.getCurrentDepth() + 1);
         //System.out.println("Mut: " + tmp.currentDepth + " " + depthFromHere);
-        nodeBuilder.build(tmp.parent, tmp.whichKidOfParent, depthFromHere);
+        nodeBuilder.build(tmp.getParent(), tmp.getWhichKidOfParent(), depthFromHere);
         updateParents(tmp);
     }
     
@@ -102,8 +103,8 @@ public class TreeOperator
             node2 = selector.pickRandomNode(tree2, node1);
             if (node2 != null)
             {
-                if (node1.currentDepth + node2.maxDepthFromHere <= config.maxDepth  &&
-                    node2.currentDepth + node1.maxDepthFromHere <= config.maxDepth)
+                if (node1.getCurrentDepth() + node2.getMaxDepthFromHere() <= config.maxDepth  &&
+                    node2.getCurrentDepth() + node1.getMaxDepthFromHere() <= config.maxDepth)
                 {
                     //System.out.println("CO: " + node1.currentDepth + " " + node2.currentDepth);
                     
@@ -113,17 +114,17 @@ public class TreeOperator
                      * so I'm leaving it
                      */
                     
-                    Node node1copy = node1.deepClone(node2.currentDepth);
-                    Node node2copy = node2.deepClone(node1.currentDepth);
+                    Node node1copy = node1.deepClone(node2.getCurrentDepth());
+                    Node node2copy = node2.deepClone(node1.getCurrentDepth());
                     
-                    node1.parent.kids[node1.whichKidOfParent] = node2copy;
-                    node2.parent.kids[node2.whichKidOfParent] = node1copy;
+                    node1.getParent().getKids()[node1.getWhichKidOfParent()] = node2copy;
+                    node2.getParent().getKids()[node2.getWhichKidOfParent()] = node1copy;
                     
-                    node1copy.parent = node2.parent;
-                    node2copy.parent = node1.parent;
+                    node1copy.setParent(node2.getParent());
+                    node2copy.setParent(node1.getParent());
                     
-                    node1copy.whichKidOfParent = node2.whichKidOfParent;
-                    node2copy.whichKidOfParent = node1.whichKidOfParent;
+                    node1copy.setWhichKidOfParent(node2.getWhichKidOfParent());
+                    node2copy.setWhichKidOfParent(node1.getWhichKidOfParent());
                     
                     updateParents(node1copy);
                     updateParents(node2copy);
@@ -140,19 +141,19 @@ public class TreeOperator
      * Recalculate nSubNodes and maxDepthFromHere for all parents up to rootNode
      * This is necessary to keep the assumption that nodes always know both these values
      */
-    private void updateParents(Node node)
+    private void updateParents(NodeParent node)
     {
-        while (node.parent != null)
+        while (node.getParent() != null)
         {
-            node = node.parent;
-            node.nSubNodes = 0;
+            node = node.getParent();
+            node.setNSubNodes(0);
             int maxDepth = 0;
             for (int i=0; i<node.nKids(); i++)
             {
-                node.nSubNodes += 1 + node.kids[i].nSubNodes;
-                maxDepth = Math.max(maxDepth, node.kids[i].maxDepthFromHere);
+                node.setNSubNodes(node.getNSubNodes() + (1 + node.getKids()[i].getNSubNodes()));
+                maxDepth = Math.max(maxDepth, node.getKids()[i].getMaxDepthFromHere());
             }
-            node.maxDepthFromHere = maxDepth + 1;
+            node.setMaxDepthFromHere(maxDepth + 1);
         }
     }
     

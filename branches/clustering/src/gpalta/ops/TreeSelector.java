@@ -42,6 +42,6 @@ public abstract class TreeSelector
      * independant individual (no other Trees will be modified when modifying that Tree)
      *
      */
-    public abstract List<Tree> select(List<Tree> population);
+    public abstract <T extends Individual> List<T> select(List<T> population);
     
 }

@@ -44,10 +44,10 @@ public class Output
         return out;
     }
     
-    public void setArrayCopy(int which, double[] array)
+    /*public void setArrayCopy(int which, double[] array)
     {
         data[which] = array;
-    }
+    }*/
     
     public int nArrays()
     {

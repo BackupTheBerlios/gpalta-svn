@@ -33,11 +33,12 @@ import java.util.*;
 public class TreeSelectorRoulette extends TreeSelector
 {
     private Config config;
-    private Comparator<Tree> comp;
+    private Comparator<Individual> comp;
     private Ranking theRanking;
     
     /** Creates a new instance of TreeSelectorRoulette */
-    public TreeSelectorRoulette(Config config, Ranking theRanking) {
+    public TreeSelectorRoulette(Config config, Ranking theRanking)
+    {
         this.config = config;
         this.comp=new TreeFitnessComparator();
         this.theRanking = theRanking;
@@ -46,14 +47,14 @@ public class TreeSelectorRoulette extends TreeSelector
     /*
      * TODO: arrange order to descendant on theRanking 
      */
-     public List<Tree> select(List<Tree> population)
+    public <T extends Individual> List<T> select(List<T> population)
     {
         double randomNumber;
         int k;
-        Tree temp1;
+        T temp1;
         
         
-        List<Tree> out = new ArrayList<Tree>();
+        List<T> out = new ArrayList<T>();
         theRanking.rankPop(population, comp);
         
         /*
@@ -71,15 +72,15 @@ public class TreeSelectorRoulette extends TreeSelector
                      break;
                  }
              }
-             temp1=(theRanking.popArray[ k ]);
-             if (!temp1.isOnPop)
+             temp1=((T) theRanking.popArray[ k ]);
+             if (!temp1.isOnPop())
              {
                 out.add(temp1);
-                temp1.isOnPop=true;
+                temp1.setOnPop(true);
              }
              else
              {
-                out.add( (Tree)temp1.deepClone(-1) );
+                out.add( (T)temp1.deepClone() );
              }
              
              

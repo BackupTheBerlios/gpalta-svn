@@ -51,12 +51,12 @@ public class TreeSelectorTournament extends TreeSelector
      * independant individual (no other Trees will be modified when modifying that Tree)
      *
      */
-    public List<Tree> select(List<Tree> population)
+    public <T extends Individual> List<T> select(List<T> population)
     {
-        List<Tree> out = new ArrayList<Tree>();
-        for (Tree t: population)
+        List<T> out = new ArrayList<T>();
+        for (T t: population)
         {
-            t.isOnPop = false;
+            t.setOnPop(false);
         }
         double maxFit;
         int indMaxFit;
@@ -68,15 +68,15 @@ public class TreeSelectorTournament extends TreeSelector
             //For every tournament:
             for (int j=0; j<config.populationSize; j+= config.tournamentSize)
             {
-                maxFit = population.get(perm[j]).fitness;
+                maxFit = population.get(perm[j]).readFitness();
                 indMaxFit = j;
                 
                 //For every tree in the tournament:
                 for (int k=j+1; k<j+config.tournamentSize; k++)
                 {
-                    if (population.get(perm[k]).fitness > maxFit)
+                    if (population.get(perm[k]).readFitness() > maxFit)
                     {
-                        maxFit = population.get(perm[k]).fitness;
+                        maxFit = population.get(perm[k]).readFitness();
                         indMaxFit = k;
                     }
                 }
@@ -84,15 +84,15 @@ public class TreeSelectorTournament extends TreeSelector
                 /* If this tree has already been selected, we need a copy of it
                  * (So we don't modify both when operating on one of them)
                  */
-                if (population.get(perm[indMaxFit]).isOnPop)
+                if (population.get(perm[indMaxFit]).isOnPop())
                 {
-                    Tree tmp = (Tree)population.get(perm[indMaxFit]).deepClone(-1);
-                    tmp.isOnPop = true;
+                    T tmp = (T)population.get(perm[indMaxFit]).deepClone();
+                    tmp.setOnPop(true);
                     out.add(tmp);
                 }
                 else
                 {
-                    population.get(perm[indMaxFit]).isOnPop = true;
+                    population.get(perm[indMaxFit]).setOnPop(true);
                     out.add(population.get(perm[indMaxFit]));
                 }
             }

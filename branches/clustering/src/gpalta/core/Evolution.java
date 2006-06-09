@@ -23,6 +23,7 @@
  */
 
 package gpalta.core;
+import gpalta.clustering.*;
 import gpalta.nodes.*;
 import gpalta.ops.*;
 import java.util.*;
@@ -104,7 +105,9 @@ public class Evolution
         }
         else if (config.fitness.equals("clustering"))
         {
-            if (config.useSoftPertenence)
+            if (config.useMultiTree)
+                fitness = new FitnessClusteringGroup();
+            else if (config.useSoftPertenence)
                 fitness = new FitnessClusteringFuzzy();
             else
                 fitness = new FitnessClustering();
@@ -122,7 +125,10 @@ public class Evolution
         evoStats = new EvolutionStats();
         if (initPop)
         {
-            population = new SingleTreePopulation();
+            if (config.useMultiTree)
+                population = new MultiTreePopulation();
+            else
+                population = new SingleTreePopulation();
             population.init(config, initializedData, treeBuilder);
             evoStats.bestSoFar = population.get(0);
         }

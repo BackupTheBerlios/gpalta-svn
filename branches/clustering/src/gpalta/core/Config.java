@@ -96,9 +96,11 @@ public class Config
     
     //For the clustering fitness:
     public int nClasses = 5;
+    public boolean useMultiTree;
     public boolean useSoftPertenence = false;
     public double m = 2;
     public double scale = 1;
+    public int nTrees = 100;
     
     //------------ General behavior ------------
     /* Use vectorial evaluation

@@ -24,6 +24,7 @@
 
 package gpalta.ops;
 
+import gpalta.core.Tree;
 import java.util.*;
 import gpalta.nodes.*;
 import gpalta.core.*;
@@ -46,22 +47,22 @@ public class NodeSelector {
         List<Node> l = new ArrayList<Node>();
         if (type <= config.upLimitProbSelectTerminal)
         {
-            getTerminalNodes(l, tree.kids[0]);
+            getTerminalNodes(l, tree.getKids()[0]);
         }
         else if (type <= config.upLimitProbSelectNonTerminal)
         {
-            getFunctionNodes(l, tree.kids[0]);
+            getFunctionNodes(l, tree.getKids()[0]);
             /* If there aren't function nodes, this is a tree with a terminal at its root
              * (Shoudn't we stop this from happening?)
              */
             if (l.size() == 0)
             {
-                return tree.kids[0];
+                return tree.getKids()[0];
             }
         }
         else if (type <= config.upLimitProbSelectRoot)
         {
-            return tree.kids[0];
+            return tree.getKids()[0];
         }
         else
         {
@@ -83,15 +84,15 @@ public class NodeSelector {
 
         if (type <= config.upLimitProbSelectTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).getTerminals());
+            getNodes(l, tree.getKids()[0], node.getParent().typeOfKids(node.getWhichKidOfParent()).getTerminals());
         }
         else if (type <= config.upLimitProbSelectNonTerminal)
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).getFunctions());
+            getNodes(l, tree.getKids()[0], node.getParent().typeOfKids(node.getWhichKidOfParent()).getFunctions());
         }
         else
         {
-            getNodes(l, tree.kids[0], node.parent.typeOfKids(node.whichKidOfParent).getAll());
+            getNodes(l, tree.getKids()[0], node.getParent().typeOfKids(node.getWhichKidOfParent()).getAll());
         }
         //TODO: what should we do if we don't find any node?
         if (l.size() == 0)
@@ -110,7 +111,7 @@ public class NodeSelector {
         }
         for (int i=0; i<node.nKids(); i++)
         {
-            getNodes(l, node.kids[i], types);
+            getNodes(l, node.getKids()[i], types);
         }
     }
     
@@ -119,9 +120,9 @@ public class NodeSelector {
      */
     private Node pickRandomAnyNode(Tree tree)
     {
-        int which = Common.globalRandom.nextInt(tree.nSubNodes);
+        int which = Common.globalRandom.nextInt(tree.getNSubNodes());
         currentNodeSearched = 0;
-        return getNode(tree.kids[0],which);
+        return getNode(tree.getKids()[0],which);
     }
     
     private Node getNode(Node node, int which)
@@ -132,14 +133,14 @@ public class NodeSelector {
         }
         for (int i=0; i< node.nKids(); i++)
         {
-            if (which > currentNodeSearched + 1 + node.kids[i].nSubNodes)
+            if (which > currentNodeSearched + 1 + node.getKids()[i].getNSubNodes())
             {
-                currentNodeSearched += 1 + node.kids[i].nSubNodes;
+                currentNodeSearched += 1 + node.getKids()[i].getNSubNodes();
             }
             else
             {
                 currentNodeSearched++;
-                return getNode(node.kids[i], which);
+                return getNode(node.getKids()[i], which);
             }
         }
         //we should never get here:
@@ -155,7 +156,7 @@ public class NodeSelector {
         }
         for (int i=0; i<node.nKids(); i++)
         {
-            getTerminalNodes(l, node.kids[i]);
+            getTerminalNodes(l, node.getKids()[i]);
         }
     }
     
@@ -167,7 +168,7 @@ public class NodeSelector {
         }
         for (int i=0; i<node.nKids(); i++)
         {
-            getFunctionNodes(l, node.kids[i]);
+            getFunctionNodes(l, node.getKids()[i]);
         }
     }
     

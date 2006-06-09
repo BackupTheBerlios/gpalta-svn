@@ -32,8 +32,8 @@ import gpalta.nodes.*;
 public abstract class NodeBuilder 
 {
     
-    public abstract void build (Node node, int maxDepth);
+    public abstract void build (NodeParent node, int maxDepth);
     
-    public abstract void build (Node node, int whichKid, int maxDepth);
+    public abstract void build (NodeParent node, int whichKid, int maxDepth);
     
 }

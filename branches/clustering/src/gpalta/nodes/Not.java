@@ -34,12 +34,12 @@ public class Not extends Node
     
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return ( kids[0].eval(data, prev)==0 ? 1:0 );
+        return ( getKids()[0].eval(data, prev)==0 ? 1:0 );
     }
     
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        kids[0].evalVect(outVect, evalVectors, data, prev);
+        getKids()[0].evalVect(outVect, evalVectors, data, prev);
         for (int i=0; i < data.nSamples; i++)
         {
             outVect[i] = ( outVect[i]==0 ? 1:0 );

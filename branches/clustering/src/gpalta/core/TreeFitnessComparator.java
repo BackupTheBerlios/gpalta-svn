@@ -33,15 +33,15 @@ import gpalta.nodes.*;
  */
 
 
-public class TreeFitnessComparator implements Comparator<Tree>
+public class TreeFitnessComparator implements Comparator<Individual>
 {    
   
-    public int compare(Tree o1, Tree o2) {
-        if (o1.fitness < o2.fitness)
+    public int compare(Individual o1, Individual o2) {
+        if (o1.readFitness() < o2.readFitness())
         {
             return(-1);
         }
-        else if (o1.fitness>o2.fitness)
+        else if (o1.readFitness()>o2.readFitness())
         {
             return(1);
         }

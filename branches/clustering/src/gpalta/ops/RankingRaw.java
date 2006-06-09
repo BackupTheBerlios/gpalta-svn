@@ -24,6 +24,7 @@
 
 
 package gpalta.ops;
+import gpalta.core.Individual;
 import gpalta.nodes.*;
 import java.util.*;
 
@@ -43,7 +44,7 @@ public class RankingRaw extends Ranking{
     /*
      *Obtain number expentances and sort population
      */
-    public void rankPop(List<Tree> population, Comparator comp)
+    public void rankPop(List<? extends Individual> population, Comparator comp)
     {
         this.init(population, comp);
                 
@@ -54,7 +55,7 @@ public class RankingRaw extends Ranking{
         totalFitness=0;        
         for(int i=0;i<popSize;i++)
         {
-            adjustedFitness[i]=popArray[i].fitness - min;
+            adjustedFitness[i]=popArray[i].readFitness() - min;
             totalFitness+=adjustedFitness[i];
             acumulatedFit[i] = totalFitness;
         }

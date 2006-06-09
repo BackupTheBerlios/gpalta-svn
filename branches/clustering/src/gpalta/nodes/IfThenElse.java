@@ -34,24 +34,24 @@ public class IfThenElse extends Node
     
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        if (kids[0].eval(data, prev) != 0)
+        if (getKids()[0].eval(data, prev) != 0)
         {
-            return kids[1].eval(data, prev);
+            return getKids()[1].eval(data, prev);
         }
         else
         {
-            return kids[2].eval(data, prev);
+            return getKids()[2].eval(data, prev);
         }
     }
     
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         //Is there a way to not evaluate both kids?
-        kids[0].evalVect(outVect, evalVectors, data, prev);
+        getKids()[0].evalVect(outVect, evalVectors, data, prev);
         double[] resultKid2 = evalVectors.get();
-        kids[1].evalVect(resultKid2, evalVectors, data, prev);
+        getKids()[1].evalVect(resultKid2, evalVectors, data, prev);
         double[] resultKid3 = evalVectors.get();
-        kids[2].evalVect(resultKid3, evalVectors, data, prev);
+        getKids()[2].evalVect(resultKid3, evalVectors, data, prev);
         for (int i=0; i < data.nSamples; i++)
         {
             outVect[i] = (outVect[i]!=0 ? resultKid2[i] : resultKid3[i]);

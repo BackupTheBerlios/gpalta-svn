@@ -22,23 +22,22 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package gpalta.nodes;
+package gpalta.core;
+import gpalta.nodes.*;
 import java.util.*;
-import gpalta.core.*;
 
 /**
  *
  * @author neven
  */
-public class Tree extends Node implements Individual
+public class Tree extends Individual implements NodeParent, Cloneable
 
 {
-    public double fitness;
     public double hr0;
     public double hr1;
     public boolean fitCalculated;
-    public boolean isOnPop;
     NodeSet type;
+    private Node[] kids;
     
     /**
      * Creates a new instance of Tree 
@@ -81,32 +80,94 @@ public class Tree extends Node implements Individual
     public Tree (String expression, NodeSet type, NodeFactory nodeFactory)
     {
         this.type = type;
-        currentDepth = -1;
         kids = new Node[1];
         Node.parse(expression, this, 0, nodeFactory);
-        kids[0].parent = this;
-        nSubNodes = 1 + kids[0].nSubNodes;
-        maxDepthFromHere = 1 + kids[0].maxDepthFromHere;
+        kids[0].setParent(this);
     }
     
     public Individual deepClone()
     {
-        return (Tree)deepClone(-1);
+        Tree out = null;
+        try
+        {
+            out = (Tree)super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            Logger.log(e);
+        }
+        
+        if (nKids()>0)
+        {
+            out.setKids(new Node[nKids()]);
+        }
+        
+        for (int i=0; i<nKids(); i++)
+        {
+            out.getKids()[i] = getKids()[i].deepClone(0);
+            out.getKids()[i].setParent(out);
+        }
+        return out;
     }
     
     public int getSize()
     {
-        return nSubNodes;
-    }
-    
-    public double readFitness()
-    {
-        return fitness;
+        return getNSubNodes();
     }
 
-    public void setFitness(double fit)
+    public NodeParent getParent()
     {
-        fitness = fit;
+        return null;
+    }
+
+    public void setParent(NodeParent n)
+    {
+    }
+
+    public int getWhichKidOfParent()
+    {
+        return -1;
+    }
+
+    public void setWhichKidOfParent(int whichKidOfParent)
+    {
+    }
+
+    public int getNSubNodes()
+    {
+        return kids[0].getNSubNodes() + 1;
+    }
+
+    public void setNSubNodes(int nSubNodes)
+    {
+    }
+
+    public Node[] getKids()
+    {
+        return kids;
+    }
+
+    public void setKids(Node[] kids)
+    {
+        this.kids = kids;
+    }
+    
+    public int getMaxDepthFromHere()
+    {
+        return 1 + kids[0].getMaxDepthFromHere();
+    }
+
+    public void setMaxDepthFromHere(int maxDepthFromHere)
+    {
+    }
+
+    public int getCurrentDepth()
+    {
+        return -1;
+    }
+
+    public void setCurrentDepth(int currentDepth)
+    {
     }
     
 }

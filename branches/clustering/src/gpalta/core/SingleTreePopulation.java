@@ -9,7 +9,7 @@
 
 package gpalta.core;
 
-import gpalta.nodes.Tree;
+import gpalta.core.Tree;
 import gpalta.ops.*;
 import java.util.*;
 
@@ -89,6 +89,10 @@ public class SingleTreePopulation implements Population
     {
         this.config = config;
         treeList = new ArrayList<Tree>(config.populationSize);
+        for (int i=0; i<config.populationSize; i++)
+        {
+            treeList.add(new Tree(builder.treeRoot()));
+        }
         builder.build(treeList);
         outputs = new Output(1, data.nSamples);
     }

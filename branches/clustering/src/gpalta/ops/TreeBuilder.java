@@ -23,6 +23,7 @@
  */
 
 package gpalta.ops;
+import gpalta.core.Tree;
 import gpalta.nodes.*;
 import java.util.*;
 import gpalta.core.*;
@@ -73,16 +74,13 @@ public class TreeBuilder
     /**
      * Build a population of Trees, using the ramped half and half method
      */
-    public void build (List<Tree> treeList)
+    public <T extends Tree> void build (List<T> treeList)
     {
         int depth = config.initialMinDepth;
-        Tree tree;
         int treesDoneThisDepth = 0;
-        for (int i=0; i<config.populationSize; i++)
+        for (T tree : treeList)
         {
-            tree = new Tree(nodeFactory.treeRoot);
             build(tree, depth);
-            treeList.add(tree);
             
             treesDoneThisDepth++;
             if (treesDoneThisDepth == nTreesEachDepth[depth - config.initialMinDepth])
@@ -93,24 +91,26 @@ public class TreeBuilder
         }
     }
     
+    public NodeSet treeRoot()
+    {
+        return nodeFactory.treeRoot;
+    }
+    
     private void build (Tree tree, int maxDepth)
     {
-        tree.currentDepth = -1;
-        tree.kids = new Node[1];
-        tree.kids[0] = nodeFactory.newRandomNode(tree.typeOfKids(0).getAll(), 0);
+        tree.setKids(new Node[1]);
+        tree.getKids()[0] = nodeFactory.newRandomNode(tree.typeOfKids(0).getAll(), 0);
         
         if (Common.globalRandom.nextDouble() <= config.probGrowBuild)
         {
-            nodeBuilderGrow.build(tree.kids[0], maxDepth);
+            nodeBuilderGrow.build(tree.getKids()[0], maxDepth);
         }
         else
         {
-            nodeBuilderFull.build(tree.kids[0], maxDepth);
+            nodeBuilderFull.build(tree.getKids()[0], maxDepth);
         }
         
-        tree.kids[0].parent = tree;
-        tree.nSubNodes = 1 + tree.kids[0].nSubNodes;
-        tree.maxDepthFromHere = 1 + tree.kids[0].maxDepthFromHere;
+        tree.getKids()[0].setParent(tree);
     }
     
 }
