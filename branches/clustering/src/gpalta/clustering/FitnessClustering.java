@@ -89,7 +89,8 @@ public class FitnessClustering implements Fitness
                 prototypes[i][j] = 0;
                 for (int sample : clusters[i])
                     prototypes[i][j] += data.getDataVect(j+1)[sample];
-                prototypes[i][j] /= clusters[i].size();
+                if (clusters[i].size()!=0)
+                    prototypes[i][j] /= clusters[i].size();
             }
         }
         

@@ -65,6 +65,7 @@ public class MultiTreePopulation implements Population
                 prev.update(results[i]);
             }
         }
+        sigmoid(results);
     }
     
     private void sigmoid(double[] x)

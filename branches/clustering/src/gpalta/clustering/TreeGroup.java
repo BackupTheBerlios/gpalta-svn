@@ -32,7 +32,10 @@ public class TreeGroup extends Individual
 
     public Individual deepClone()
     {
-        return null;
+        TreeGroup out = new TreeGroup(trees.length);
+        for (int i=0; i<trees.length; i++)
+            out.set(i, (GroupedTree)get(i).deepClone());
+        return out;
     }
     
     public void set(int pos, GroupedTree t)

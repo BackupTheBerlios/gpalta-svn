@@ -39,7 +39,7 @@ public class FitnessClusteringFuzzy implements Fitness
     public double[] classCenters;
     private Config config;
     public double[][] prob;
-    private double m = 2;
+    private double m;
     private double[] results;
 
     public void init(Config config, DataHolder data, String fileName)
@@ -85,7 +85,8 @@ public class FitnessClusteringFuzzy implements Fitness
                 {
                     prototypes[wClass][wVar] += Math.pow(prob[wClass][wSample], m) * data.getDataVect(wVar+1)[wSample];
                 }
-                prototypes[wClass][wVar] /= sumProbThisClass;
+                if (sumProbThisClass!=0)
+                    prototypes[wClass][wVar] /= sumProbThisClass;
             }
         }
         

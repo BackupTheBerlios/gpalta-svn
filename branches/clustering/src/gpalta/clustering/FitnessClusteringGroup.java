@@ -16,15 +16,11 @@ import gpalta.core.*;
  */
 public class FitnessClusteringGroup implements Fitness
 {
-    public double[][] prototypes;
+    private double[][] prototypes;
+    private double[][] prob;
     private Config config;
-    private double m = 2;
+    private double m;
     
-    /** Creates a new instance of NewClass */
-    public FitnessClusteringGroup()
-    {
-    }
-
     public void init(Config config, DataHolder data, String fileName)
     {
         init(config, data, null, null);
@@ -33,29 +29,14 @@ public class FitnessClusteringGroup implements Fitness
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
         this.config = config;
+        this.m = config.m;
         prototypes = new double[config.nClasses][data.nVars];
+        prob = new double[config.nClasses][data.nSamples];
     }
 
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        
-        //calculate prototypes for each class:
-        for (int wClass=0; wClass<config.nClasses; wClass++)
-        {
-            double sumProbThisClass = 0;
-            for (int wSample=0; wSample<data.nSamples; wSample++)
-                sumProbThisClass += Math.pow(outputs.getArray(wClass)[wSample], m);
-            
-            for (int wVar=0; wVar<data.nVars; wVar++)
-            {
-                prototypes[wClass][wVar] = 0;
-                for (int wSample=0; wSample<data.nSamples; wSample++)
-                {
-                    prototypes[wClass][wVar] += Math.pow(outputs.getArray(wClass)[wSample], m) * data.getDataVect(wVar+1)[wSample];
-                }
-                prototypes[wClass][wVar] /= sumProbThisClass;
-            }
-        }
+        calcProto(outputs, data);
         
         //calculate total error:
         double error = 0;
@@ -67,7 +48,7 @@ public class FitnessClusteringGroup implements Fitness
                 double sampleError = 0;
                 for (int wVar=0; wVar<data.nVars; wVar++)
                     sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
-                protoError += Math.pow(outputs.getArray(wClass)[wSample], m) * sampleError;
+                protoError += prob[wClass][wSample] * sampleError;
             }
             error += protoError;
         }
@@ -80,6 +61,31 @@ public class FitnessClusteringGroup implements Fitness
         }
     }
     
+    private void calcProto(Output outputs, DataHolder data)
+    {
+        //calculate prototypes for each class:
+        for (int wClass=0; wClass<config.nClasses; wClass++)
+        {
+            double sumProbThisClass = 0;
+            for (int wSample=0; wSample<data.nSamples; wSample++)
+            {
+                prob[wClass][wSample] = Math.pow(outputs.getArray(wClass)[wSample], m);
+                sumProbThisClass += prob[wClass][wSample];
+            }
+            
+            for (int wVar=0; wVar<data.nVars; wVar++)
+            {
+                prototypes[wClass][wVar] = 0;
+                for (int wSample=0; wSample<data.nSamples; wSample++)
+                {
+                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
+                }
+                //if (sumProbThisClass!=0)
+                    prototypes[wClass][wVar] /= sumProbThisClass;
+            }
+        }
+    }
+    
     public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         ClusteringOutput processed = new ClusteringOutput(config.nClasses, data.nSamples);
@@ -87,6 +93,7 @@ public class FitnessClusteringGroup implements Fitness
         {
             processed.setArray(i, raw.getArrayCopy(i));
         }
+        calcProto(raw, data);
         processed.setPrototypesCopy(prototypes);
         return processed;
     }
