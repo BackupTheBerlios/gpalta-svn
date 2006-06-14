@@ -103,7 +103,7 @@ public class MultiTreePopulation implements Population
             }
             else
             {
-                out.setArray(0, ind2.get(i).out.getArrayCopy(0));
+                out.setArray(i, ind2.get(i).out.getArrayCopy(0));
             }
         }
         return out;
@@ -163,7 +163,7 @@ public class MultiTreePopulation implements Population
                 //if a tree didn't get selected, its isOnPop will be false
                 if (g.get(i) == null || !g.get(i).isOnPop())
                 {
-                    treeList.get(perm[treePointer]).groups.add(g);
+                    //treeList.get(perm[treePointer]).groups.add(g);
                     g.set(i, treeList.get(perm[treePointer]));
                     if (++treePointer == config.nTrees)
                     {

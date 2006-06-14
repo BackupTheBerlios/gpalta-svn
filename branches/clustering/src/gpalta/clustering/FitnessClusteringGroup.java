@@ -61,10 +61,15 @@ public class FitnessClusteringGroup implements Fitness
             for (int wSample=0; wSample<data.nSamples; wSample++)
             {
                 double sampleError = 0;
-                for (int wVar=0; wVar<data.nVars; wVar++)
-                    sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
-                protoError += prob[wClass][wSample] * sampleError;
+                if (prob[wClass][wSample] != 0)
+                {
+                    for (int wVar=0; wVar<data.nVars; wVar++)
+                        sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
+                    protoError += prob[wClass][wSample] * sampleError;
+                }
             }
+            if (protoError == 0)
+                protoError = Double.MAX_VALUE;
             error += protoError;
         }
         double fitness = 1/(1 + error);
@@ -79,7 +84,7 @@ public class FitnessClusteringGroup implements Fitness
     private void calcProto(Output outputs, DataHolder data)
     {
         //calculate prototypes for each class:
-        for (int wClass=0; wClass<config.nClasses; wClass++)
+        /*for (int wClass=0; wClass<config.nClasses; wClass++)
         {
             double sumProbThisClass = 0;
             for (int wSample=0; wSample<data.nSamples; wSample++)
@@ -95,7 +100,42 @@ public class FitnessClusteringGroup implements Fitness
                 {
                     prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
                 }
-                //if (sumProbThisClass!=0)
+                if (sumProbThisClass!=0)
+                    prototypes[wClass][wVar] /= sumProbThisClass;
+            }
+        }*/
+        
+        for (int wSample=0; wSample<data.nSamples; wSample++)
+        {
+            double maxProb = 0;
+            int winner = 0;
+            for (int wClass=0; wClass<config.nClasses; wClass++)
+            {
+                prob[wClass][wSample] = 0;
+                if (outputs.getArray(wClass)[wSample] > maxProb)
+                {
+                    maxProb = outputs.getArray(wClass)[wSample];
+                    winner = wClass;
+                }
+            }
+            prob[winner][wSample] = 1;
+        }
+        for (int wClass=0; wClass<config.nClasses; wClass++)
+        {
+            double sumProbThisClass = 0;
+            for (int wSample=0; wSample<data.nSamples; wSample++)
+            {
+                sumProbThisClass += prob[wClass][wSample];
+            }
+            
+            for (int wVar=0; wVar<data.nVars; wVar++)
+            {
+                prototypes[wClass][wVar] = 0;
+                for (int wSample=0; wSample<data.nSamples; wSample++)
+                {
+                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
+                }
+                if (sumProbThisClass!=0)
                     prototypes[wClass][wVar] /= sumProbThisClass;
             }
         }

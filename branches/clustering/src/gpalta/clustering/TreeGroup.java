@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author neven
  */
-public class TreeGroup extends Individual
+public class TreeGroup extends Individual implements Cloneable
 {
     private GroupedTree[] trees;
     
@@ -47,7 +47,15 @@ public class TreeGroup extends Individual
 
     public Individual deepClone()
     {
-        TreeGroup out = new TreeGroup(trees.length);
+        TreeGroup out = null;
+        try 
+        {
+            out = (TreeGroup)clone();
+        }
+        catch (CloneNotSupportedException ex) 
+        {
+            Logger.log(ex);
+        }
         for (int i=0; i<trees.length; i++)
             out.set(i, (GroupedTree)get(i).deepClone());
         return out;
