@@ -45,6 +45,7 @@ public class MultiTreePopulation implements Population
     {
         for (GroupedTree t : treeList)
         {
+            t.setFitness(0);
             if (!config.rememberLastEval || !t.fitCalculated)
             {
                 getOutput(t, t.out, evalVectors, data, prev);

@@ -65,7 +65,7 @@ public class FitnessClusteringGroup implements Fitness
                 {
                     for (int wVar=0; wVar<data.nVars; wVar++)
                         sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
-                    protoError += prob[wClass][wSample] * sampleError;
+                    protoError += prob[wClass][wSample] * Math.sqrt(sampleError);
                 }
             }
             if (protoError == 0)
@@ -109,12 +109,13 @@ public class FitnessClusteringGroup implements Fitness
         {
             double maxProb = 0;
             int winner = 0;
+            double p;
             for (int wClass=0; wClass<config.nClasses; wClass++)
             {
                 prob[wClass][wSample] = 0;
-                if (outputs.getArray(wClass)[wSample] > maxProb)
+                if ((p=outputs.getArray(wClass)[wSample]) > maxProb)
                 {
-                    maxProb = outputs.getArray(wClass)[wSample];
+                    maxProb = p;
                     winner = wClass;
                 }
             }
