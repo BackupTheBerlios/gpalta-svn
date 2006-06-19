@@ -33,11 +33,9 @@ public class PreviousOutputHolder
     public int nDelays;
     private double[] prevOut;
     private int index;
-    private Config config;
-    
+
     public PreviousOutputHolder(Config config)
     {
-        this.config = config;
         nDelays = config.nPreviousOutput;
         prevOut = new double[nDelays];
         for (int i=0; i<nDelays; i++)
@@ -48,7 +46,7 @@ public class PreviousOutputHolder
 
         if (nDelays > 0)
             Logger.log("Using " + config.nPreviousOutput + " previous outputs as " + (config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
-        
+
     }
     
     public void reset()

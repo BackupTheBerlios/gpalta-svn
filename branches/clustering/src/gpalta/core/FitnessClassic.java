@@ -36,12 +36,10 @@ public class FitnessClassic implements Fitness
     
     private Output desiredOutputs;
     private double[] weights;
-    private Config config;
 
-    public void init(Config config, DataHolder data, String fileName) 
+    public void init(Config config, DataHolder data, String fileName)
     {
-        this.config = config;
-        
+
         File classFile = new File(fileName);
 
         desiredOutputs = new Output(1, data.nSamples);
@@ -77,7 +75,7 @@ public class FitnessClassic implements Fitness
                     desiredOutputs.getArray(0)[sample] = Double.parseDouble(line);
                 }
             }
-            
+
             Logger.log("Using classic (generic) fitness");
             Logger.log("Fitness initialized from file \"" + fileName + "\"");
             if (useWeight)
@@ -87,10 +85,10 @@ public class FitnessClassic implements Fitness
             Logger.log("\t Samples:              " + data.nSamples);
 
         }
-        
+
         /* TODO: These exceptions shouldn't be catched here, but thrown to the
-         * evolution and then to the controller
-         */
+        * evolution and then to the controller
+        */
         catch (FileNotFoundException e)
         {
             Logger.log(e);
@@ -107,7 +105,6 @@ public class FitnessClassic implements Fitness
 
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights) 
     {
-        this.config = config;
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
     }

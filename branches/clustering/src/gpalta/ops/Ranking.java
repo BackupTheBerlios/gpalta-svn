@@ -33,19 +33,19 @@ import java.util.*;
 public abstract class Ranking {
     
     
-    public int popSize;
-    public boolean filled;
-    public List<? extends Individual> population;
+    int popSize;
+    boolean filled;
+    private List<? extends Individual> population;
     public double[] adjustedFitness;
     public Individual [] popArray;
-    public double min;
-    public double max;
+    double min;
+    double max;
     public double totalFitness;
     public double  acumulatedFit[];
     
     public abstract void rankPop(List<? extends Individual> population, Comparator comp);
     
-    public <T extends Individual> void init(List<T> population, Comparator comp)
+    <T extends Individual> void init(List<T> population, Comparator comp)
     {
         this.population = population;
         popArray = this.indSort(population, comp);
@@ -57,7 +57,7 @@ public abstract class Ranking {
         filled=true;
     }
     
-    public <T extends Individual> T[] indSort(List<T> population, Comparator comp)
+    private <T extends Individual> T[] indSort(List<T> population, Comparator comp)
     {
         Individual [] popArray = new Individual[population.size()];
         

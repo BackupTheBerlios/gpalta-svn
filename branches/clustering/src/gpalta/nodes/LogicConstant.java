@@ -62,7 +62,7 @@ public class LogicConstant extends Node
         return (constant != 0 ? "true" : "false");
     }
     
-    public void init(Evolution evo)
+    public void init(Config config)
     {
         constant = Common.globalRandom.nextInt(2);
     }

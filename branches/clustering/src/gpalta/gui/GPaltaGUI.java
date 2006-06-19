@@ -547,11 +547,7 @@ public class GPaltaGUI extends javax.swing.JFrame {
         setEnabledAll(disableWhenNotRunning, false);
         progressBar.setStringPainted(false);
         progressBar.setValue(0);
-        first = true;
-        if (fromFile)
-        {
-            first = false;
-        }
+        first = !fromFile;
     }
     
     private void go(int n)

@@ -32,14 +32,12 @@ public class Output
 {
     private double[][] data;
     private int nArrays;
-    private int nSamples;
-    
+
     /** Creates a new instance of Output */
     public Output(int nArrays, int nSamples)
     {
         data = new double[nArrays][nSamples];
         this.nArrays = nArrays;
-        this.nSamples = nSamples;
     }
     
     public double[] getArray(int which)
