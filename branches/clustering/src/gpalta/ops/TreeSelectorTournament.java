@@ -63,10 +63,10 @@ public class TreeSelectorTournament extends TreeSelector
         //For every pass:
         for (int i=0; i<config.tournamentSize; i++)
         {
-            int[] perm = Common.randPerm(config.populationSize);
+            int[] perm = Common.randPerm(population.size());
             
             //For every tournament:
-            for (int j=0; j<config.populationSize; j+= config.tournamentSize)
+            for (int j=0; j<population.size(); j+= config.tournamentSize)
             {
                 maxFit = population.get(perm[j]).readFitness();
                 indMaxFit = j;

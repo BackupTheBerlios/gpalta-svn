@@ -28,7 +28,7 @@ package gpalta.core;
  *
  * @author neven
  */
-public class Output
+public class Output implements Cloneable
 {
     private double[][] data;
     private int nArrays;
@@ -38,6 +38,21 @@ public class Output
     {
         data = new double[nArrays][nSamples];
         this.nArrays = nArrays;
+    }
+
+    public Object clone()
+    {
+        Output out = null;
+        try
+        {
+            out = (Output)super.clone();
+            out.data = data.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+            Logger.log(e);
+        }
+        return out;
     }
     
     public double[] getArray(int which)

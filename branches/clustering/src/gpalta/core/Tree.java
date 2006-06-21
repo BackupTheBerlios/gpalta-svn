@@ -72,11 +72,6 @@ public class Tree extends Individual implements NodeParent, Cloneable
         return kids[0].toString();
     }
     
-    public String name()
-    {
-        return "TREE";
-    }
-    
     public Tree (String expression, NodeSet type, NodeFactory nodeFactory)
     {
         this.type = type;

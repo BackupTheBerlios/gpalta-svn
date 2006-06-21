@@ -81,5 +81,17 @@ public abstract class Common
         
         return permutation;
     }
+
+    /**
+     * Calculate the sigmoid (logistic function) for an entire array (inplace, i.e. modifying its contents)
+     * @param x the array
+     */
+    public static void sigmoid(double[] x)
+    {
+        for (int i = 0; i < x.length; i++)
+        {
+            x[i] = 1/(1 + Math.exp(-x[i]));
+        }
+    }
     
 }

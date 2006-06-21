@@ -50,6 +50,14 @@ public class TreeBuilder
         
         nodeBuilderGrow = new NodeBuilderGrow(nodeFactory);
         nodeBuilderFull = new NodeBuilderFull(nodeFactory);
+
+    }
+    
+    /**
+     * Build a population of Trees, using the ramped half and half method
+     */
+    public <T extends Tree> void build (List<T> treeList)
+    {
         nTreesEachDepth = new int[config.maxDepth - config.initialMinDepth + 1];
         /* nTreesEachDepth will contain the number of trees created for each
          * depth from initialMinDepth to maxDepth
@@ -60,7 +68,7 @@ public class TreeBuilder
          * This is done from greater to lower depth in order to favor larger trees.
          */
         int depth = config.maxDepth;
-        for (int i=0; i<config.populationSize; i++)
+        for (int i=0; i<treeList.size(); i++)
         {
             if (depth == config.initialMinDepth - 1)
             {
@@ -69,14 +77,8 @@ public class TreeBuilder
             nTreesEachDepth[depth - config.initialMinDepth]++;
             depth--;
         }
-    }
-    
-    /**
-     * Build a population of Trees, using the ramped half and half method
-     */
-    public <T extends Tree> void build (List<T> treeList)
-    {
-        int depth = config.initialMinDepth;
+
+        depth = config.initialMinDepth;
         int treesDoneThisDepth = 0;
         for (T tree : treeList)
         {

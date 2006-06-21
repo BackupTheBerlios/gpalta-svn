@@ -208,6 +208,8 @@ public class Evolution
             evoStats.bestTreeChanged = true;
         }
 
+        evoStats.avgFit /= config.populationSize;
+        evoStats.avgNodes /= config.populationSize;
         evoStats.generation = generation;
         evoStats.bestFitThisGen = bestThisGen.readFitness();
     }

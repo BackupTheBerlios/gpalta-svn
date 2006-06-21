@@ -68,8 +68,8 @@ public class FitnessClusteringGroup implements Fitness
                     protoError += prob[wClass][wSample] * Math.sqrt(sampleError);
                 }
             }
-            if (protoError == 0)
-                protoError = Double.MAX_VALUE;
+            //if (protoError == 0)
+            //    protoError = Double.MAX_VALUE;
             error += protoError;
         }
         double fitness = 1/(1 + error);
@@ -151,6 +151,7 @@ public class FitnessClusteringGroup implements Fitness
         }
         calcProto(raw, data);
         processed.setPrototypesCopy(prototypes);
+        processed.setPertenenceCopy(prob);
         return processed;
     }
     

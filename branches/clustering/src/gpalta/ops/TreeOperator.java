@@ -55,15 +55,15 @@ public class TreeOperator
      */
     public <T extends Tree> void operate(List<T> population)
     {
-        int[] perm = Common.randPerm(config.populationSize);
+        int[] perm = Common.randPerm(population.size());
         double op;
-        for (int i=0; i< config.populationSize; i++)
+        for (int i=0; i< population.size(); i++)
         {
             op = Common.globalRandom.nextDouble();
             if (op <= config.upLimitProbCrossOver)
             {
                 //Do cross over, except for the last tree:
-                if (i != config.populationSize-1)
+                if (i != population.size()-1)
                 {
                     population.get(perm[i]).fitCalculated = false;
                     population.get(perm[i+1]).fitCalculated = false;
@@ -82,7 +82,7 @@ public class TreeOperator
         }
     }
     
-    private void mutateBuild(Tree tree)
+    public void mutateBuild(Tree tree)
     {
         Node tmp = selector.pickRandomNode(tree);
         //Choose a random depth between 1 and (config.maxDepth - currentDepth)
@@ -92,7 +92,7 @@ public class TreeOperator
         updateParents(tmp);
     }
     
-    private void crossOver(Tree tree1, Tree tree2)
+    public void crossOver(Tree tree1, Tree tree2)
     {
         Node node1;
         Node node2;

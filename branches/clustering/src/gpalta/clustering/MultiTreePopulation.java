@@ -81,15 +81,7 @@ public class MultiTreePopulation implements Population
                 prev.update(results[i]);
             }
         }
-        sigmoid(results);
-    }
-    
-    private void sigmoid(double[] x)
-    {
-        for (int i = 0; i < x.length; i++)
-        {
-            x[i] = 1/(1 + Math.exp(-x[i]));
-        }
+        Common.sigmoid(results);
     }
 
     public Output getRawOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
@@ -113,8 +105,7 @@ public class MultiTreePopulation implements Population
     public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         Output raw = getRawOutput(ind, evalVectors, data, prev);
-        Output processed = f.getProcessedOutput(raw, ind, evalVectors, data, prev);
-        return processed;
+        return f.getProcessedOutput(raw, ind, evalVectors, data, prev);
     }
 
     public Individual get(int which)
@@ -131,7 +122,7 @@ public class MultiTreePopulation implements Population
             treeGroups.add(new TreeGroup(config.nClasses));
         }
         treeList = new ArrayList<GroupedTree>(config.nTrees);
-        for (int i=0; i<config.populationSize; i++)
+        for (int i=0; i<config.nTrees; i++)
         {
             GroupedTree t = new GroupedTree(builder.treeRoot());
             t.out = new Output(1, data.nSamples);
@@ -165,7 +156,7 @@ public class MultiTreePopulation implements Population
                 if (g.get(i) == null || !g.get(i).isOnPop())
                 {
                     //treeList.get(perm[treePointer]).groups.add(g);
-                    g.set(i, treeList.get(perm[treePointer]));
+                    g.set(i, trees.get(perm[treePointer]));
                     if (++treePointer == config.nTrees)
                     {
                         treePointer = 0;

@@ -33,13 +33,25 @@ import java.util.*;
 public class GroupedTree extends Tree
 {
     public Output out;
-    //public List<TreeGroup> groups;
+    public List<TreeGroup> groups;
     
     /** Creates a new instance of GroupedTree */
     public GroupedTree(NodeSet type)
     {
         super(type);
-        //groups = new ArrayList<TreeGroup>();
+        groups = new ArrayList<TreeGroup>();
+    }
+
+    public void resetGroups()
+    {
+        groups.clear();
+    }
+
+    public Individual deepClone()
+    {
+        GroupedTree t = (GroupedTree) super.deepClone();
+        t.out = (Output)out.clone();
+        return t;
     }
     
 }
