@@ -45,8 +45,11 @@ public class Output implements Cloneable
         Output out = null;
         try
         {
+            /* Remember to clone each array and their contents */
             out = (Output)super.clone();
-            out.data = data.clone();
+            out.data = new double[data.length][];
+            for (int i=0; i<nArrays; i++)
+                out.setArray(i, getArrayCopy(i));
         }
         catch (CloneNotSupportedException e)
         {
@@ -71,12 +74,7 @@ public class Output implements Cloneable
         System.arraycopy(data[which], 0, out, 0, data[which].length);
         return out;
     }
-    
-    /*public void setArrayCopy(int which, double[] array)
-    {
-        data[which] = array;
-    }*/
-    
+
     public int nArrays()
     {
         return nArrays;

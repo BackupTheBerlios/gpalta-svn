@@ -51,14 +51,16 @@ public class TreeGroup extends Individual implements Cloneable
         try 
         {
             out = (TreeGroup)clone();
+            /* Remember to also clone the tree array and each tree */
+            out.trees = new GroupedTree[trees.length];
+            for (int i=0; i<trees.length; i++)
+                out.set(i, (GroupedTree)get(i).deepClone());
+            return out;
         }
         catch (CloneNotSupportedException ex) 
         {
             Logger.log(ex);
         }
-        for (int i=0; i<trees.length; i++)
-            out.set(i, (GroupedTree)get(i).deepClone());
-        return out;
     }
     
     public void set(int pos, GroupedTree t)
