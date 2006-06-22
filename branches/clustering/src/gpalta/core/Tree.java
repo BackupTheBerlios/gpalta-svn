@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author neven
  */
-public class Tree extends Individual implements NodeParent, Cloneable
+public class Tree extends Individual implements NodeParent
 
 {
     public double hr0;
@@ -38,7 +38,7 @@ public class Tree extends Individual implements NodeParent, Cloneable
     public boolean fitCalculated;
     NodeSet type;
     private Node[] kids;
-    
+
     /**
      * Creates a new instance of Tree 
      */
@@ -46,22 +46,22 @@ public class Tree extends Individual implements NodeParent, Cloneable
     {
         this.type = type;
     }
-    
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         return kids[0].eval(data, prev);
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         kids[0].evalVect(outVect, evalVectors, data, prev);
     }
-    
+
     public int nKids()
     {
         return 1;
     }
-    
+
     public NodeSet typeOfKids(int whichKid)
     {
         return type;
@@ -71,7 +71,7 @@ public class Tree extends Individual implements NodeParent, Cloneable
     {
         return kids[0].toString();
     }
-    
+
     public Tree (String expression, NodeSet type, NodeFactory nodeFactory)
     {
         this.type = type;
@@ -79,7 +79,7 @@ public class Tree extends Individual implements NodeParent, Cloneable
         Node.parse(expression, this, 0, nodeFactory);
         kids[0].setParent(this);
     }
-    
+
     public Individual deepClone()
     {
         Tree out = null;
@@ -91,12 +91,12 @@ public class Tree extends Individual implements NodeParent, Cloneable
         {
             Logger.log(e);
         }
-        
+
         if (nKids()>0)
         {
             out.setKids(new Node[nKids()]);
         }
-        
+
         for (int i=0; i<nKids(); i++)
         {
             out.getKids()[i] = getKids()[i].deepClone(0);
@@ -104,7 +104,7 @@ public class Tree extends Individual implements NodeParent, Cloneable
         }
         return out;
     }
-    
+
     public int getSize()
     {
         return getNSubNodes();
@@ -146,7 +146,7 @@ public class Tree extends Individual implements NodeParent, Cloneable
     {
         this.kids = kids;
     }
-    
+
     public int getMaxDepthFromHere()
     {
         return 1 + kids[0].getMaxDepthFromHere();
@@ -164,5 +164,5 @@ public class Tree extends Individual implements NodeParent, Cloneable
     public void setCurrentDepth(int currentDepth)
     {
     }
-    
+
 }

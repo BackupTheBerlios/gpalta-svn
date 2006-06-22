@@ -24,11 +24,13 @@
 
 package gpalta.core;
 
+import java.io.Serializable;
+
 /**
  *
  * @author neven
  */
-public class Output implements Cloneable
+public class Output implements Cloneable, Serializable
 {
     private double[][] data;
     private int nArrays;
@@ -57,7 +59,7 @@ public class Output implements Cloneable
         }
         return out;
     }
-    
+
     public double[] getArray(int which)
     {
         return data[which];
@@ -67,7 +69,7 @@ public class Output implements Cloneable
     {
         data[which] = array;
     }
-    
+
     public double[] getArrayCopy(int which)
     {
         double[] out = new double[data[which].length];
@@ -79,5 +81,5 @@ public class Output implements Cloneable
     {
         return nArrays;
     }
-    
+
 }

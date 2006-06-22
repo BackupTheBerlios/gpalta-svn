@@ -76,8 +76,8 @@ public class FitnessClusteringGroup implements Fitness
         ind.setFitness(fitness);
         for (int i=0; i<config.nClasses; i++)
         {
-            if (fitness > ((TreeGroup)ind).get(i).readFitness())
-                ((TreeGroup)ind).get(i).setFitness(fitness);
+            if (fitness > ((TreeGroup)ind).getTree(i).readFitness())
+                ((TreeGroup)ind).getTree(i).setFitness(fitness);
         }
     }
     

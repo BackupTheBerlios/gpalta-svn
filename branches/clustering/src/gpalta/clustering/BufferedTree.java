@@ -1,5 +1,5 @@
 /*
- * GroupedTree.java
+ * BufferedTree.java
  *
  * Created on 7 de junio de 2006, 06:05 PM
  *
@@ -24,34 +24,26 @@
 
 package gpalta.clustering;
 import gpalta.core.*;
-import java.util.*;
 
 /**
  *
  * @author neven
  */
-public class GroupedTree extends Tree
+public class BufferedTree extends Tree
 {
     public Output out;
-    public List<TreeGroup> groups;
-    
-    /** Creates a new instance of GroupedTree */
-    public GroupedTree(NodeSet type)
+
+    /** Creates a new instance of BufferedTree */
+    public BufferedTree(NodeSet type)
     {
         super(type);
-        groups = new ArrayList<TreeGroup>();
-    }
-
-    public void resetGroups()
-    {
-        groups.clear();
     }
 
     public Individual deepClone()
     {
-        GroupedTree t = (GroupedTree) super.deepClone();
+        BufferedTree t = (BufferedTree) super.deepClone();
         t.out = (Output)out.clone();
         return t;
     }
-    
+
 }

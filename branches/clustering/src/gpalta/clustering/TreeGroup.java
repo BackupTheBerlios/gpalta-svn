@@ -24,20 +24,19 @@
 
 package gpalta.clustering;
 import gpalta.core.*;
-import java.util.*;
 
 /**
  *
  * @author neven
  */
-public class TreeGroup extends Individual implements Cloneable
+public class TreeGroup extends Individual
 {
-    private GroupedTree[] trees;
-    
+    private BufferedTree[] trees;
+
     /** Creates a new instance of TreeGroup */
     public TreeGroup(int nTrees)
     {
-        trees = new GroupedTree[nTrees];
+        trees = new BufferedTree[nTrees];
     }
 
     public int getSize()
@@ -48,29 +47,29 @@ public class TreeGroup extends Individual implements Cloneable
     public Individual deepClone()
     {
         TreeGroup out = null;
-        try 
+        try
         {
             out = (TreeGroup)clone();
             /* Remember to also clone the tree array and each tree */
-            out.trees = new GroupedTree[trees.length];
+            out.trees = new BufferedTree[trees.length];
             for (int i=0; i<trees.length; i++)
-                out.set(i, (GroupedTree)get(i).deepClone());
+                out.setTree(i, (BufferedTree)getTree(i).deepClone());
         }
-        catch (CloneNotSupportedException ex) 
+        catch (CloneNotSupportedException ex)
         {
             Logger.log(ex);
         }
         return out;
     }
-    
-    public void set(int pos, GroupedTree t)
+
+    public void setTree(int pos, BufferedTree t)
     {
         trees[pos] = t;
     }
-    
-    public GroupedTree get(int pos)
+
+    public BufferedTree getTree(int pos)
     {
         return trees[pos];
     }
-    
+
 }
