@@ -41,7 +41,10 @@ public class TreeGroup extends Individual
 
     public int getSize()
     {
-        return trees.length;
+        int nodes = 0;
+        for (int i=0; i<trees.length; i++)
+            nodes += trees[i].getSize();
+        return nodes;
     }
 
     public Individual deepClone()

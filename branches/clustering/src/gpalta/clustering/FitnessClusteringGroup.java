@@ -74,11 +74,18 @@ public class FitnessClusteringGroup implements Fitness
         }
         double fitness = 1/(1 + error);
         ind.setFitness(fitness);
+        Tree t;
         for (int i=0; i<config.nClasses; i++)
         {
-            if (fitness > ((TreeGroup)ind).getTree(i).readFitness())
-                ((TreeGroup)ind).getTree(i).setFitness(fitness);
+            t = ((TreeGroup)ind).getTree(i);
+            if (fitness > t.readFitness())
+                t.setFitness(penalizedFitness(fitness, t.getMaxDepthFromHere()));
         }
+    }
+
+    private double penalizedFitness(double fitness, int depth)
+    {
+        return (1 - .1*depth/config.maxDepth)*fitness;
     }
     
     private void calcProto(Output outputs, DataHolder data)
