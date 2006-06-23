@@ -93,5 +93,46 @@ public abstract class Common
             x[i] = 1/(1 + Math.exp(-x[i]));
         }
     }
+
+    public static double[][] readFromFile(String fileName, String separator) throws IOException
+    {
+        File dataFile = new File(fileName);
+
+        BufferedReader in = new BufferedReader(new FileReader(dataFile));
+
+        //count columns:
+        int nCols = in.readLine().trim().split("\\s+").length;
+
+        //count rows:
+        int nRows;
+        for (nRows =1; in.readLine()!=null; nRows++);
+
+        double[][] data = new double[nRows][nCols];
+
+        in = new BufferedReader(new FileReader(dataFile));
+        for (int row =0; row <nRows; row++)
+        {
+            String[] vars = in.readLine().trim().split(separator);
+            for (int col =0; col <nCols; col++)
+            {
+                data[row][col] = Double.parseDouble(vars[col]);
+            }
+        }
+
+        return data;
+    }
+
+    public static double[][] transpose(double[][] m)
+    {
+        int nRows = m.length;
+        int nCols = m[0].length;
+        double[][] mT = new double[nCols][nRows];
+
+        for (int row=0; row<nRows; row++)
+            for (int col=0; col<nCols; col++)
+                mT[col][row] = m[row][col];
+
+        return mT;
+    }
     
 }

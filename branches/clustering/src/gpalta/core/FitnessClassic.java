@@ -24,7 +24,6 @@
 
 package gpalta.core;
 
-import gpalta.core.Tree;
 import java.io.*;
 
 /**
@@ -39,41 +38,16 @@ public class FitnessClassic implements Fitness
 
     public void init(Config config, DataHolder data, String fileName)
     {
-
-        File classFile = new File(fileName);
-
-        desiredOutputs = new Output(1, data.nSamples);
-
         try
         {
-            BufferedReader out = new BufferedReader(new FileReader(classFile));
-
-            //Find out if we are using snr info:
+            double[][] matrix = Common.transpose(Common.readFromFile(fileName, "\\s+"));
+            desiredOutputs = new Output(1, 0);
+            desiredOutputs.setArray(0, matrix[0]);
             boolean useWeight = false;
-            String line = out.readLine().trim();
-            if (line.split("\\s+").length == 2)
+            if (matrix.length == 2)
             {
                 useWeight = true;
-                weights = new double[data.nSamples];
-            }
-            out = new BufferedReader(new FileReader(classFile));
-
-
-            for (int sample=0; sample<data.nSamples; sample++)
-            {
-                line = out.readLine().trim();
-                if (useWeight)
-                {
-                    String[] vals = line.split("\\s+");
-                    //First comes the desiredOutput:
-                    desiredOutputs.getArray(0)[sample] = Double.parseDouble(vals[0]);
-                    //Then the weight:
-                    weights[sample] = Double.parseDouble(vals[1]);
-                }
-                else
-                {
-                    desiredOutputs.getArray(0)[sample] = Double.parseDouble(line);
-                }
+                weights = matrix[1];
             }
 
             Logger.log("Using classic (generic) fitness");
@@ -83,21 +57,12 @@ public class FitnessClassic implements Fitness
                 Logger.log("\t Using weight data");
             }
             Logger.log("\t Samples:              " + data.nSamples);
-
         }
 
-        /* TODO: These exceptions shouldn't be catched here, but thrown to the
-        * evolution and then to the controller
-        */
-        catch (FileNotFoundException e)
-        {
-            Logger.log(e);
-        }
+        /* TODO: This exception shouldn't be caught here, but thrown to the
+         * evolution and then to the controller
+         */
         catch (IOException e)
-        {
-            Logger.log(e);
-        }
-        catch (NumberFormatException e)
         {
             Logger.log(e);
         }

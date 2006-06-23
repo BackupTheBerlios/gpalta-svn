@@ -25,7 +25,6 @@
 package gpalta.core;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * Holds the problem's data and provides methods to access it.
@@ -36,77 +35,48 @@ import java.util.*;
  */
 public class DataHolder
 {
-    
+
     /* Every row in data correponds to all the samples for a variable. 
-     * This is done to be able to return all the samples for a certain variable 
-     * as a vector.
-     */
+    * This is done to be able to return all the samples for a certain variable
+    * as a vector.
+    */
     private double[][] data;
     public int nSamples;
     private int currentSample;
     public int nVars;
-    
+
     public double getData(int whichVar)
     {
         return data[whichVar-1][currentSample];
     }
-    
+
     public double[] getDataVect(int whichVar)
     {
         return data[whichVar-1];
     }
-    
+
     /**
      * Initialize the data from a file
      */
     public DataHolder(String fileName)
     {
-        File dataFile = new File(fileName);
         try
         {
-            BufferedReader in = new BufferedReader(new FileReader(dataFile));
-            
-            //count vars:
-            nVars = in.readLine().trim().split("\\s+").length;
-
-            //count samples:
-            for (nSamples=1; in.readLine()!=null; nSamples++);
-            
-            data = new double[nVars][nSamples];
-            
-            in = new BufferedReader(new FileReader(dataFile));
-            for (int sample=0; sample<nSamples; sample++)
-            {
-                String[] vars = in.readLine().trim().split("\\s+");
-                for (int var=0; var<nVars; var++)
-                {
-                    data[var][sample] = Double.parseDouble(vars[var]);
-                }
-            }
-            
-            currentSample = 0;
-            
+            data = Common.transpose(Common.readFromFile(fileName, "\\s+"));
+            nVars = data.length;
+            nSamples = data[0].length;
             Logger.log("Finished reading " + nSamples + " samples from file \"" + fileName + "\"");
-            
         }
-        /* TODO: These exceptions shouldn't be catched here, but thrown to the
+
+        /* TODO: This exception shouldn't be caught here, but thrown to the
          * evolution and then to the controller
          */
-        catch (FileNotFoundException e)
-        {
-            Logger.log(e);
-        }
         catch (IOException e)
         {
             Logger.log(e);
         }
-        catch (NumberFormatException e)
-        {
-            Logger.log(e);
-        }
-
     }
-    
+
     /**
      * Initialize the data from the given matrix. Every row is a variable and
      * every column is a sample
@@ -118,7 +88,7 @@ public class DataHolder
         nSamples = data[0].length;
         currentSample = 0;
     }
-    
+
     /**
      * reset() must be called every time a new tree is being evaluated
      * (when using eval() instead of evalVect() )
@@ -127,7 +97,7 @@ public class DataHolder
     {
         currentSample = 0;
     }
-    
+
     /**
      * update() must be called every time a new sample is required
      * (when using eval() instead of evalVect() )
@@ -136,5 +106,5 @@ public class DataHolder
     {
         currentSample++;
     }
-    
+
 }

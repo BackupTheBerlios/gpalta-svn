@@ -24,9 +24,6 @@
 
 package gpalta.core;
 
-import gpalta.nodes.*;
-import gpalta.ops.*;
-import java.util.*;
 import java.io.*;
 
 /**
@@ -72,52 +69,19 @@ public class FitnessClassifier implements Fitness
         // only init constants:
         init(config, data);
 
-        File classFile = new File(fileName);
-
-        desiredOutputs = new double[data.nSamples];
         n0 = 0;
         n1 = 0;
 
         try
         {
-            BufferedReader out = new BufferedReader(new FileReader(classFile));
-
-            //Find out if we are using snr info:
-            useWeight = false;
-            String line = out.readLine().trim();
-            if (line.split("\\s+").length == 2)
+            double[][] matrix = Common.transpose(Common.readFromFile(fileName, "\\s+"));
+            desiredOutputs = matrix[0];
+            if (matrix.length == 2)
             {
                 useWeight = true;
-                weights = new double[data.nSamples];
+                weights = matrix[1];
             }
-            out = new BufferedReader(new FileReader(classFile));
 
-
-            for (int sample=0; sample<data.nSamples; sample++)
-            {
-                line = out.readLine().trim();
-                if (useWeight)
-                {
-                    String[] vals = line.split("\\s+");
-                    //First comes the desiredOutput:
-                    desiredOutputs[sample] = Double.parseDouble(vals[0]);
-                    //Then the weight:
-                    weights[sample] = Double.parseDouble(vals[1]);
-                }
-                else
-                {
-                    desiredOutputs[sample] = Double.parseDouble(line);
-                }
-                if (desiredOutputs[sample] == 0)
-                {
-                    n0++;
-                }
-                else
-                {
-                    n1++;
-                }
-            }
-            
             Logger.log("Using classifier fitness");
             Logger.log("Fitness initialized from file \"" + fileName + "\"");
             Logger.log("\t kHR1:                " + kHR1);
@@ -130,22 +94,28 @@ public class FitnessClassifier implements Fitness
             Logger.log("\t N0:                  " + n0);
             Logger.log("\t N1:                  " + n1);
 
+            for (int sample=0; sample<desiredOutputs.length; sample++)
+            {
+                if (desiredOutputs[sample] == 0)
+                {
+                    n0++;
+                }
+                else
+                {
+                    n1++;
+                }
+            }
+
         }
-        /* TODO: These exceptions shouldn't be catched here, but thrown to the
+
+        /* TODO: This exception shouldn't be caught here, but thrown to the
          * evolution and then to the controller
          */
-        catch (FileNotFoundException e)
-        {
-            Logger.log(e);
-        }
         catch (IOException e)
         {
             Logger.log(e);
         }
-        catch (NumberFormatException e)
-        {
-            Logger.log(e);
-        }
+
     }
     
     public void init (Config config, DataHolder data, double[] desiredOutputs, double[] weights)
