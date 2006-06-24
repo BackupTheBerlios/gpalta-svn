@@ -23,40 +23,46 @@
  */
 
 package gpalta.ops;
+
 import gpalta.core.Tree;
 import gpalta.nodes.*;
+
 import java.util.*;
+
 import gpalta.core.*;
 
 
 /**
  * Implements ramped half and half Tree creation
+ *
  * @author neven
  */
 public class TreeBuilder
 {
-    
+
     private NodeBuilder nodeBuilderGrow;
     private NodeBuilder nodeBuilderFull;
     private int[] nTreesEachDepth;
     private Config config;
     private NodeFactory nodeFactory;
-    
-    /** Creates a new instance of TreeBuilder */
-    public TreeBuilder(Config config, NodeFactory nodeFactory) 
+
+    /**
+     * Creates a new instance of TreeBuilder
+     */
+    public TreeBuilder(Config config, NodeFactory nodeFactory)
     {
         this.config = config;
         this.nodeFactory = nodeFactory;
-        
+
         nodeBuilderGrow = new NodeBuilderGrow(nodeFactory);
         nodeBuilderFull = new NodeBuilderFull(nodeFactory);
 
     }
-    
+
     /**
      * Build a population of Trees, using the ramped half and half method
      */
-    public <T extends Tree> void build (List<T> treeList)
+    public <T extends Tree> void build(List<T> treeList)
     {
         nTreesEachDepth = new int[config.maxDepth - config.initialMinDepth + 1];
         /* nTreesEachDepth will contain the number of trees created for each
@@ -68,7 +74,7 @@ public class TreeBuilder
          * This is done from greater to lower depth in order to favor larger trees.
          */
         int depth = config.maxDepth;
-        for (int i=0; i<treeList.size(); i++)
+        for (int i = 0; i < treeList.size(); i++)
         {
             if (depth == config.initialMinDepth - 1)
             {
@@ -83,7 +89,7 @@ public class TreeBuilder
         for (T tree : treeList)
         {
             build(tree, depth);
-            
+
             treesDoneThisDepth++;
             if (treesDoneThisDepth == nTreesEachDepth[depth - config.initialMinDepth])
             {
@@ -92,27 +98,26 @@ public class TreeBuilder
             }
         }
     }
-    
+
     public NodeSet treeRoot()
     {
         return nodeFactory.treeRoot;
     }
-    
-    private void build (Tree tree, int maxDepth)
+
+    private void build(Tree tree, int maxDepth)
     {
-        tree.setKids(new Node[1]);
-        tree.getKids()[0] = nodeFactory.newRandomNode(tree.typeOfKids(0).getAll(), 0);
-        
+        tree.setKid(0, nodeFactory.newRandomNode(tree.typeOfKids(0).getAll(), 0));
+
         if (Common.globalRandom.nextDouble() <= config.probGrowBuild)
         {
-            nodeBuilderGrow.build(tree.getKids()[0], maxDepth);
+            nodeBuilderGrow.build(tree.getKid(0), maxDepth);
         }
         else
         {
-            nodeBuilderFull.build(tree.getKids()[0], maxDepth);
+            nodeBuilderFull.build(tree.getKid(0), maxDepth);
         }
-        
-        tree.getKids()[0].setParent(tree);
+
+        tree.getKid(0).setParent(tree);
     }
-    
+
 }

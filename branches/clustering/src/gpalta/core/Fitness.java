@@ -25,49 +25,51 @@
 package gpalta.core;
 
 import gpalta.nodes.*;
+
 import java.util.List;
 
 /**
- * Hold desired outputs for fitness cases, and calculates the fitness for a given 
+ * Hold desired outputs for fitness cases, and calculates the fitness for a given
  * Tree
+ *
  * @author DSP
  */
 public interface Fitness
 {
-    
-    /** 
+
+    /**
      * Initializes the Fitness, reading desired outputs from file
-     * 
-     * @param config The evolution config, might be needed inside the Fitness
-     * @param data The current problem's data, might also be needed (for
-     * instance to know the numer of samples used)
+     *
+     * @param config   The evolution config, might be needed inside the Fitness
+     * @param data     The current problem's data, might also be needed (for
+     *                 instance to know the numer of samples used)
      * @param fileName The file to read
      */
     void init(Config config, DataHolder data, String fileName);
-    
-    
+
+
     /**
      * Initializes the Fitness, receiving the desired outputs and
      * the wheights (importance) for each sample.
      *
-     * @param config The evolution config, might be needed inside the Fitness
-     * @param data The current problem's data, might also be needed (for
-     * instance to know the number of samples used)
+     * @param config         The evolution config, might be needed inside the Fitness
+     * @param data           The current problem's data, might also be needed (for
+     *                       instance to know the number of samples used)
      * @param desiredOutputs The desired outputs
-     * @param weights The weight (importance) of each sample
+     * @param weights        The weight (importance) of each sample
      */
     void init(Config config, DataHolder data, Output desiredOutputs, double[] weights);
-    
+
     /**
      * Evaluates the tree in every sample, and then calculates its fitness
      * (and maybe some other stats, like hr0 and hr1 for classifiers),
      * recording them in the tree.
      *
      * @return The output of the Tree for every sample, or null if the Tree wasn't
-     * evaluated
+     *         evaluated
      */
     void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
 
     Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
-    
+
 }

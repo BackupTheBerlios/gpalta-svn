@@ -26,22 +26,24 @@ package gpalta.core;
 
 import java.io.Serializable;
 import java.util.*;
+
 import gpalta.nodes.*;
 
 /**
  * Simple class that define a set of Nodes. It has three subsets: functions,
  * terminals and all. The "all" list should contain both functions and terminals
+ *
  * @author neven
  */
 public class NodeSet implements Serializable
 {
-    
+
     private List<Node> all;
     private List<Node> terminals;
     private List<Node> functions;
     private String name;
-    
-    public NodeSet(String name) 
+
+    public NodeSet(String name)
     {
         this.name = name;
         all = new ArrayList<Node>();
@@ -80,5 +82,5 @@ public class NodeSet implements Serializable
     {
         return name;
     }
-    
+
 }

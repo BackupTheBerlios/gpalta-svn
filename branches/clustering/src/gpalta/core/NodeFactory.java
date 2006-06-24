@@ -25,12 +25,14 @@
 package gpalta.core;
 
 import gpalta.nodes.*;
+
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
  * Holds information for the Nodes available and provides methods for random Node creation
+ *
  * @author DSP
  */
 public class NodeFactory
@@ -38,7 +40,7 @@ public class NodeFactory
     private Config config;
     private NodeSet[] nodeSets;
     public NodeSet treeRoot;
-    
+
     /**
      * Read Node config from file config.nodeConfigFileName
      */
@@ -51,54 +53,54 @@ public class NodeFactory
             Properties props = new Properties();
             props.load(in);
             in.close();
-            
+
             String separator = "\\s*,\\s*";
-            
+
             String tmp = props.getProperty("sets");
             String[] sets = tmp.split(separator);
-            
+
             nodeSets = new NodeSet[sets.length];
-            
-            int i,j,k;
-            for (i=0; i<sets.length; i++)
+
+            int i, j, k;
+            for (i = 0; i < sets.length; i++)
             {
                 nodeSets[i] = new NodeSet(sets[i]);
                 tmp = props.getProperty(sets[i] + "Functions");
                 if (tmp == null)
-                    Logger.log ("Warning: when reading " + config.nodeConfigFileName + ", no functions found for set " + sets[i]);
+                    Logger.log("Warning: when reading " + config.nodeConfigFileName + ", no functions found for set " + sets[i]);
                 String[] nodes = tmp.split(separator);
-                for (j=0; j<nodes.length; j++)
+                for (j = 0; j < nodes.length; j++)
                 {
                     Class cl = Class.forName("gpalta.nodes." + nodes[j]);
                     java.lang.reflect.Constructor co = cl.getConstructor();
-                    nodeSets[i].addFunction((Node)co.newInstance());
+                    nodeSets[i].addFunction((Node) co.newInstance());
                 }
                 tmp = props.getProperty(sets[i] + "Terminals");
                 if (tmp == null)
-                    Logger.log ("Warning: when reading " + config.nodeConfigFileName + ", no terminals found for set " + sets[i]);
+                    Logger.log("Warning: when reading " + config.nodeConfigFileName + ", no terminals found for set " + sets[i]);
                 nodes = tmp.split(separator);
-                for (j=0; j<nodes.length; j++)
+                for (j = 0; j < nodes.length; j++)
                 {
                     Class cl = Class.forName("gpalta.nodes." + nodes[j]);
                     if (nodes[j].contains("Var"))
                     {
-                        for (k=0; k<data.nVars; k++)
+                        for (k = 0; k < data.nVars; k++)
                         {
                             java.lang.reflect.Constructor[] co = cl.getConstructors();
-                            nodeSets[i].addTerminal((Node)co[0].newInstance(k+1));
-                        } 
+                            nodeSets[i].addTerminal((Node) co[0].newInstance(k + 1));
+                        }
                     }
                     else
                     {
                         java.lang.reflect.Constructor co = cl.getConstructor();
-                        nodeSets[i].addTerminal((Node)co.newInstance());
+                        nodeSets[i].addTerminal((Node) co.newInstance());
                     }
                 }
             }
-            
-            for (i=0; i<nodeSets.length; i++)
+
+            for (i = 0; i < nodeSets.length; i++)
             {
-                for (Node n:nodeSets[i].getAll())
+                for (Node n : nodeSets[i].getAll())
                 {
                     tmp = props.getProperty("kids" + n.getClass().getSimpleName());
                     if (tmp != null)
@@ -108,9 +110,9 @@ public class NodeFactory
                         {
                             Logger.log("Error reading " + config.nodeConfigFileName + ": must specify " + n.nKids() + " kids for " + n.getClass().getSimpleName());
                         }
-                        for (j=0; j<n.nKids(); j++)
+                        for (j = 0; j < n.nKids(); j++)
                         {
-                            for (k=0; k<nodeSets.length; k++)
+                            for (k = 0; k < nodeSets.length; k++)
                             {
                                 if (nodeSets[k].getName().equals(kids[j]))
                                 {
@@ -123,7 +125,7 @@ public class NodeFactory
                         }
                     }
                     else
-                        for (j=0; j<n.nKids(); j++)
+                        for (j = 0; j < n.nKids(); j++)
                             n.setTypeOfKids(j, nodeSets[i]);
                 }
             }
@@ -132,7 +134,7 @@ public class NodeFactory
             {
                 Logger.log("Error reading " + config.nodeConfigFileName + ": property \"treeRoot\" not present");
             }
-            for (i=0; i<nodeSets.length; i++)
+            for (i = 0; i < nodeSets.length; i++)
             {
                 if (nodeSets[i].getName().equals(tmp))
                 {
@@ -174,12 +176,12 @@ public class NodeFactory
             Logger.log(e);
         }
     }
-    
+
     /**
      * Obtain a new Node randomly chosen from the given list.
      * The Node is cloned and initialized, so it can be used separatedly
      *
-     * @param l The list of Nodes from which to choose
+     * @param l                  The list of Nodes from which to choose
      * @param currentGlobalDepth The depth of the requested Node in the Tree
      */
     public Node newRandomNode(List<Node> l, int currentGlobalDepth)
@@ -188,7 +190,7 @@ public class NodeFactory
         Node outNode = null;
         try
         {
-            outNode = (Node)l.get(which).clone();
+            outNode = (Node) l.get(which).clone();
         }
         /* This should never happen, as nodes do support cloning, so it's ok
          * to catch this exception here
@@ -198,10 +200,10 @@ public class NodeFactory
             Logger.log(e);
         }
         outNode.init(config);
-        outNode.setCurrentDepth(currentGlobalDepth);     
+        outNode.setCurrentDepth(currentGlobalDepth);
         return outNode;
     }
-    
+
     public static boolean isInList(Node node, List<Node> l)
     {
         for (Node n : l)
@@ -211,8 +213,8 @@ public class NodeFactory
         }
         return false;
     }
-    
-    public Node newNode(String name, int currentGlobalDepth) 
+
+    public Node newNode(String name, int currentGlobalDepth)
     {
         System.out.println(name);
         Node outNode = null;
@@ -220,7 +222,7 @@ public class NodeFactory
         {
             outNode = new RealVar(Integer.parseInt(name.substring(1)));
         }
-        else if (name.substring(0,1).matches("\\d"))
+        else if (name.substring(0, 1).matches("\\d"))
         {
             outNode = new RealConstant(Double.parseDouble(name));
         }
@@ -235,7 +237,7 @@ public class NodeFactory
         else
         {
             List<Node> all = new ArrayList<Node>();
-            for (int i=0; i<nodeSets.length; i++)
+            for (int i = 0; i < nodeSets.length; i++)
             {
                 all.addAll(nodeSets[i].getAll());
             }
@@ -245,7 +247,7 @@ public class NodeFactory
                 {
                     try
                     {
-                        outNode = (Node)n.clone();
+                        outNode = (Node) n.clone();
                     }
                     catch (CloneNotSupportedException e)
                     {
@@ -258,5 +260,5 @@ public class NodeFactory
         outNode.setCurrentDepth(currentGlobalDepth);
         return outNode;
     }
-    
+
 }

@@ -27,10 +27,10 @@ package gpalta.clustering;
 import gpalta.core.*;
 import gpalta.core.Tree;
 import gpalta.ops.*;
+
 import java.util.*;
 
 /**
- *
  * @author neven
  */
 public class MultiTreePopulation implements Population
@@ -53,15 +53,15 @@ public class MultiTreePopulation implements Population
         }
         for (TreeGroup g : treeGroups)
         {
-            for (int i=0; i<config.nClasses; i++)
+            for (int i = 0; i < config.nClasses; i++)
             {
                 out.setArray(i, g.getTree(i).out.getArray(0));
             }
             f.calculate(out, g, evalVectors, data, prev);
         }
-        
+
     }
-    
+
     private void getOutput(Tree t, Output o, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         double[] results = o.getArray(0);
@@ -73,7 +73,7 @@ public class MultiTreePopulation implements Population
         }
         else
         {
-            for (int i=0; i<data.nSamples; i++)
+            for (int i = 0; i < data.nSamples; i++)
             {
                 results[i] = t.eval(data, prev);
                 data.update();
@@ -86,8 +86,8 @@ public class MultiTreePopulation implements Population
     public Output getRawOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         Output out = new Output(config.nClasses, data.nSamples);
-        TreeGroup ind2 = (TreeGroup)ind;
-        for (int i=0; i<config.nClasses; i++)
+        TreeGroup ind2 = (TreeGroup) ind;
+        for (int i = 0; i < config.nClasses; i++)
         {
             if (!ind2.getTree(i).fitCalculated)
             {
@@ -100,7 +100,7 @@ public class MultiTreePopulation implements Population
         }
         return out;
     }
-    
+
     public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         Output raw = getRawOutput(ind, evalVectors, data, prev);
@@ -116,12 +116,12 @@ public class MultiTreePopulation implements Population
     {
         this.config = config;
         treeGroups = new ArrayList<TreeGroup>(config.populationSize);
-        for (int i=0; i<config.populationSize; i++)
+        for (int i = 0; i < config.populationSize; i++)
         {
             treeGroups.add(new TreeGroup(config.nClasses));
         }
         treeList = new ArrayList<BufferedTree>(config.nTrees);
-        for (int i=0; i<config.nTrees; i++)
+        for (int i = 0; i < config.nTrees; i++)
         {
             BufferedTree t = new BufferedTree(builder.treeRoot());
             t.out = new Output(1, data.nSamples);
@@ -132,7 +132,7 @@ public class MultiTreePopulation implements Population
         out = new Output(config.nClasses, data.nSamples);
     }
 
-    public void doSelection(TreeSelector sel)
+    public void doSelection(IndSelector sel)
     {
         treeList = sel.select(treeList);
         asignTrees(treeList, treeGroups);
@@ -142,14 +142,14 @@ public class MultiTreePopulation implements Population
     {
         op.operate(treeList);
     }
-    
+
     private void asignTrees(List<BufferedTree> trees, List<TreeGroup> groups)
     {
         int treePointer = 0;
         int[] perm = Common.randPerm(config.nTrees);
         for (TreeGroup g : groups)
         {
-            for (int i=0; i<config.nClasses; i++)
+            for (int i = 0; i < config.nClasses; i++)
             {
                 //if a tree didn't get selected, its isOnPop will be false
                 if (g.getTree(i) == null || !g.getTree(i).isOnPop())
@@ -165,5 +165,5 @@ public class MultiTreePopulation implements Population
             }
         }
     }
-    
+
 }

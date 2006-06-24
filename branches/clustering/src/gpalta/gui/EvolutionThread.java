@@ -23,27 +23,31 @@
  */
 
 package gpalta.gui;
+
 import java.io.IOException;
+
 import gpalta.core.*;
 
 /**
  * Controls the evolution in a thread separated from the gui
+ *
  * @author neven
  */
 public class EvolutionThread extends Thread
 {
-    
+
     private GPaltaGUI gui;
     private int nGenerations;
     private Evolution e;
     private boolean exit;
     private boolean first;
-    
-    /** 
+
+    /**
      * Creates a new instance of EvolutionThread
-     * @param gui The GPaltaGUI that controls this EvoThread
+     *
+     * @param gui      The GPaltaGUI that controls this EvoThread
      * @param fromFile Whether the Evolution should continue from a previously saved
-     * "evo.bin" file
+     *                 "evo.bin" file
      */
     public EvolutionThread(GPaltaGUI gui, boolean fromFile)
     {
@@ -80,6 +84,7 @@ public class EvolutionThread extends Thread
 
     /**
      * Tell the Evolution to advance n generatinos
+     *
      * @param n The number of generations to advance
      */
     public synchronized void go(int n)
@@ -89,13 +94,13 @@ public class EvolutionThread extends Thread
         //and then take out the thread from waiting state ("wake it up"):
         notifyAll();
     }
-    
+
     public synchronized void exit()
     {
         exit = true;
         notifyAll();
     }
-    
+
     /**
      * Save inmediatelly (not threaded)
      */
@@ -118,7 +123,7 @@ public class EvolutionThread extends Thread
              * here again, but nGenerations will have some value other than 0
              * and the evolution will begin/continue
              */
-            for (int i=0; i<nGenerations; i++)
+            for (int i = 0; i < nGenerations; i++)
             {
                 /* Check if the evolution has been canceled and we should
                  * stop instead of proceeding with the next generation
@@ -135,9 +140,9 @@ public class EvolutionThread extends Thread
                     e.eval();
                     gui.updateStats(e.evoStats);
                 }
-                gui.reportStatus("Evolving to generation " + (e.evoStats.generation+1));
+                gui.reportStatus("Evolving to generation " + (e.evoStats.generation + 1));
                 e.evolve();
-                gui.reportStatus("Evaluating generation " + (e.evoStats.generation+1));
+                gui.reportStatus("Evaluating generation " + (e.evoStats.generation + 1));
                 e.eval();
                 if (gui.saveEnabled() && e.evoStats.generation % gui.getSaveInterval() == 0)
                 {
@@ -148,7 +153,7 @@ public class EvolutionThread extends Thread
                     /* We will have to catch this exception here, as method run
                      * is not directly called from the gui
                      */
-                    catch(IOException e)
+                    catch (IOException e)
                     {
                         Logger.log("An error ocurred while trying to save. Evolution will proceed");
                         Logger.log(e);
@@ -163,7 +168,7 @@ public class EvolutionThread extends Thread
             //We're done for this go() call
             nGenerations = 0;
             gui.notifyReady();
-            
+
             //Enter waiting state:
             try
             {
@@ -178,5 +183,5 @@ public class EvolutionThread extends Thread
             }
         }
     }
-    
+
 }

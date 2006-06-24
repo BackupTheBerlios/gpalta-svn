@@ -27,7 +27,6 @@ package gpalta.core;
 import java.io.Serializable;
 
 /**
- *
  * @author neven
  */
 public abstract class Individual implements Cloneable, Serializable
@@ -36,6 +35,7 @@ public abstract class Individual implements Cloneable, Serializable
     private boolean isOnPop;
 
     public abstract int getSize();
+
     public abstract Individual deepClone();
 
     public double readFitness()

@@ -23,10 +23,10 @@
  */
 
 package gpalta.clustering;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class FitnessClusteringGroup implements Fitness
@@ -35,7 +35,7 @@ public class FitnessClusteringGroup implements Fitness
     private double[][] prob;
     private Config config;
     private double m;
-    
+
     public void init(Config config, DataHolder data, String fileName)
     {
         init(config, data, null, null);
@@ -52,19 +52,19 @@ public class FitnessClusteringGroup implements Fitness
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         calcProto(outputs, data);
-        
+
         //calculate total error:
         double error = 0;
-        for (int wClass=0; wClass<config.nClasses; wClass++)
+        for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
             double protoError = 0;
-            for (int wSample=0; wSample<data.nSamples; wSample++)
+            for (int wSample = 0; wSample < data.nSamples; wSample++)
             {
                 double sampleError = 0;
                 if (prob[wClass][wSample] != 0)
                 {
-                    for (int wVar=0; wVar<data.nVars; wVar++)
-                        sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
+                    for (int wVar = 0; wVar < data.nVars; wVar++)
+                        sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar + 1)[wSample], 2);
                     protoError += prob[wClass][wSample] * Math.sqrt(sampleError);
                 }
             }
@@ -72,12 +72,12 @@ public class FitnessClusteringGroup implements Fitness
             //    protoError = Double.MAX_VALUE;
             error += protoError;
         }
-        double fitness = 1/(1 + error);
+        double fitness = 1 / (1 + error);
         ind.setFitness(fitness);
         Tree t;
-        for (int i=0; i<config.nClasses; i++)
+        for (int i = 0; i < config.nClasses; i++)
         {
-            t = ((TreeGroup)ind).getTree(i);
+            t = ((TreeGroup) ind).getTree(i);
             if (fitness > t.readFitness())
                 t.setFitness(penalizedFitness(fitness, t.getMaxDepthFromHere()));
         }
@@ -85,9 +85,9 @@ public class FitnessClusteringGroup implements Fitness
 
     private double penalizedFitness(double fitness, int depth)
     {
-        return (1 - .1*depth/config.maxDepth)*fitness;
+        return (1 - .1 * depth / config.maxDepth) * fitness;
     }
-    
+
     private void calcProto(Output outputs, DataHolder data)
     {
         //calculate prototypes for each class:
@@ -111,16 +111,16 @@ public class FitnessClusteringGroup implements Fitness
                     prototypes[wClass][wVar] /= sumProbThisClass;
             }
         }*/
-        
-        for (int wSample=0; wSample<data.nSamples; wSample++)
+
+        for (int wSample = 0; wSample < data.nSamples; wSample++)
         {
             double maxProb = 0;
             int winner = 0;
             double p;
-            for (int wClass=0; wClass<config.nClasses; wClass++)
+            for (int wClass = 0; wClass < config.nClasses; wClass++)
             {
                 prob[wClass][wSample] = 0;
-                if ((p=outputs.getArray(wClass)[wSample]) > maxProb)
+                if ((p = outputs.getArray(wClass)[wSample]) > maxProb)
                 {
                     maxProb = p;
                     winner = wClass;
@@ -128,31 +128,31 @@ public class FitnessClusteringGroup implements Fitness
             }
             prob[winner][wSample] = 1;
         }
-        for (int wClass=0; wClass<config.nClasses; wClass++)
+        for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
             double sumProbThisClass = 0;
-            for (int wSample=0; wSample<data.nSamples; wSample++)
+            for (int wSample = 0; wSample < data.nSamples; wSample++)
             {
                 sumProbThisClass += prob[wClass][wSample];
             }
-            
-            for (int wVar=0; wVar<data.nVars; wVar++)
+
+            for (int wVar = 0; wVar < data.nVars; wVar++)
             {
                 prototypes[wClass][wVar] = 0;
-                for (int wSample=0; wSample<data.nSamples; wSample++)
+                for (int wSample = 0; wSample < data.nSamples; wSample++)
                 {
-                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
+                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar + 1)[wSample];
                 }
-                if (sumProbThisClass!=0)
+                if (sumProbThisClass != 0)
                     prototypes[wClass][wVar] /= sumProbThisClass;
             }
         }
     }
-    
+
     public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         ClusteringOutput processed = new ClusteringOutput(config.nClasses, data.nSamples);
-        for (int i=0; i<config.nClasses; i++)
+        for (int i = 0; i < config.nClasses; i++)
         {
             processed.setArray(i, raw.getArrayCopy(i));
         }
@@ -161,5 +161,5 @@ public class FitnessClusteringGroup implements Fitness
         processed.setPertenenceCopy(prob);
         return processed;
     }
-    
+
 }

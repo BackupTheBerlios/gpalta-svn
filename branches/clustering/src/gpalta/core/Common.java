@@ -23,53 +23,54 @@
  */
 
 package gpalta.core;
+
 import java.io.*;
 
 /**
  * Useful utilities for all clases
+ *
  * @author neven
  */
 public abstract class Common
 {
-    
+
     /**
      * A random number generator for use by other classes
      */
     public static java.util.Random globalRandom = new java.util.Random();
-    
+
     private static int lastN;
     private static int[] permutation;
-    
-    /** 
+
+    /**
      * Efficient permutation algorithm, O(n)
      *
      * @param n The size of the permutation
-     *
      * @return A permutation of size n. That is, an int array consisting of all
-     * integer numbers between 0 and n (non-inclusive) in random order
+     *         integer numbers between 0 and n (non-inclusive) in random order
      */
     public static int[] randPerm(int n)
     {
         /* If we need a permutation of the same size as the last time, we can
          * use the same array whithout reinitializing it.
-         */ 
+         */
         if (n != lastN)
         {
-            permutation = new int[n];        
-            for (int i=0; i<n; i++)
+            permutation = new int[n];
+            for (int i = 0; i < n; i++)
             {
                 permutation[i] = i;
             }
         }
         lastN = n;
-        
+
         /* At the end of each iteration:
-         * Between 0 and i is the sequence of indexes already selected
-         * Between i+1 and n-1 are the indexes not selected so far (in any order)
-         * The loop goes until i<n-1 because when i=n-1 it does nothing
-         * (always swaps with itself)
-         */
-        for (int i=0; i<n-1; i++)
+        * Between 0 and i is the sequence of indexes already selected
+        * Between i+1 and n-1 are the indexes not selected so far (in any order)
+        * The loop goes until i<n-1 because when i=n-1 it does nothing
+        * (always swaps with itself)
+        */
+        for (int i = 0; i < n - 1; i++)
         {
             //choose a random position between i and n-1
             int which = i + globalRandom.nextInt(n - i);
@@ -78,19 +79,20 @@ public abstract class Common
             permutation[i] = permutation[which];
             permutation[which] = tmp;
         }
-        
+
         return permutation;
     }
 
     /**
      * Calculate the sigmoid (logistic function) for an entire array (inplace, i.e. modifying its contents)
+     *
      * @param x the array
      */
     public static void sigmoid(double[] x)
     {
         for (int i = 0; i < x.length; i++)
         {
-            x[i] = 1/(1 + Math.exp(-x[i]));
+            x[i] = 1 / (1 + Math.exp(-x[i]));
         }
     }
 
@@ -105,15 +107,15 @@ public abstract class Common
 
         //count rows:
         int nRows;
-        for (nRows =1; in.readLine()!=null; nRows++);
+        for (nRows = 1; in.readLine() != null; nRows++) ;
 
         double[][] data = new double[nRows][nCols];
 
         in = new BufferedReader(new FileReader(dataFile));
-        for (int row =0; row <nRows; row++)
+        for (int row = 0; row < nRows; row++)
         {
             String[] vars = in.readLine().trim().split(separator);
-            for (int col =0; col <nCols; col++)
+            for (int col = 0; col < nCols; col++)
             {
                 data[row][col] = Double.parseDouble(vars[col]);
             }
@@ -128,11 +130,11 @@ public abstract class Common
         int nCols = m[0].length;
         double[][] mT = new double[nCols][nRows];
 
-        for (int row=0; row<nRows; row++)
-            for (int col=0; col<nCols; col++)
+        for (int row = 0; row < nRows; row++)
+            for (int col = 0; col < nCols; col++)
                 mT[col][row] = m[row][col];
 
         return mT;
     }
-    
+
 }

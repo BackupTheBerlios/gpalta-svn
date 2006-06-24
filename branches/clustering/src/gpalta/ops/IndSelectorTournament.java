@@ -1,5 +1,5 @@
 /*
- * TreeSelector.java
+ * IndSelector.java
  *
  * Created on 19 de mayo de 2005, 05:20 PM
  *
@@ -23,56 +23,56 @@
  */
 
 package gpalta.ops;
+
 import java.util.*;
-import gpalta.nodes.*;
+
 import gpalta.core.*;
 
 /**
  * Implements Tournament selection. Assumes populationSize mod tournamentSize = 0
+ *
  * @author DSP
  */
-public class TreeSelectorTournament extends TreeSelector
+public class IndSelectorTournament extends IndSelector
 {
-    
+
     private Config config;
-    
-    public TreeSelectorTournament(Config config)
+
+    public IndSelectorTournament(Config config)
     {
         this.config = config;
     }
-    
+
     /**
      * Performs the selection
-     * 
-     * @param population A list of Trees from where to select the individuals
-     * 
-     * @return A new list of Trees with the selected individuals. If a Tree is
-     * selected more than once, each instance of that Tree will be a totally
-     * independant individual (no other Trees will be modified when modifying that Tree)
      *
+     * @param population A list of Trees from where to select the individuals
+     * @return A new list of Trees with the selected individuals. If a Tree is
+     *         selected more than once, each instance of that Tree will be a totally
+     *         independant individual (no other Trees will be modified when modifying that Tree)
      */
     public <T extends Individual> List<T> select(List<T> population)
     {
         List<T> out = new ArrayList<T>();
-        for (T t: population)
+        for (T t : population)
         {
             t.setOnPop(false);
         }
         double maxFit;
         int indMaxFit;
         //For every pass:
-        for (int i=0; i<config.tournamentSize; i++)
+        for (int i = 0; i < config.tournamentSize; i++)
         {
             int[] perm = Common.randPerm(population.size());
-            
+
             //For every tournament:
-            for (int j=0; j<population.size(); j+= config.tournamentSize)
+            for (int j = 0; j < population.size(); j += config.tournamentSize)
             {
                 maxFit = population.get(perm[j]).readFitness();
                 indMaxFit = j;
-                
+
                 //For every tree in the tournament:
-                for (int k=j+1; k<j+config.tournamentSize; k++)
+                for (int k = j + 1; k < j + config.tournamentSize; k++)
                 {
                     if (population.get(perm[k]).readFitness() > maxFit)
                     {
@@ -80,13 +80,13 @@ public class TreeSelectorTournament extends TreeSelector
                         indMaxFit = k;
                     }
                 }
-                
+
                 /* If this tree has already been selected, we need a copy of it
-                 * (So we don't modify both when operating on one of them)
-                 */
+                * (So we don't modify both when operating on one of them)
+                */
                 if (population.get(perm[indMaxFit]).isOnPop())
                 {
-                    T tmp = (T)population.get(perm[indMaxFit]).deepClone();
+                    T tmp = (T) population.get(perm[indMaxFit]).deepClone();
                     tmp.setOnPop(true);
                     out.add(tmp);
                 }
@@ -99,5 +99,5 @@ public class TreeSelectorTournament extends TreeSelector
         }
         return out;
     }
-    
+
 }

@@ -24,11 +24,9 @@
 
 package gpalta.nodes;
 
-import java.util.*;
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class Divide extends Node
@@ -36,19 +34,19 @@ public class Divide extends Node
 
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        double resultKid1 = getKids()[1].eval(data, prev);
+        double resultKid1 = getKid(1).eval(data, prev);
         if (resultKid1 == 0)
             return 1;
         else
-            return ( getKids()[0].eval(data, prev) / resultKid1 );
+            return (getKid(0).eval(data, prev) / resultKid1);
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        getKids()[0].evalVect(outVect, evalVectors, data, prev);
+        getKid(0).evalVect(outVect, evalVectors, data, prev);
         double[] resultKid2 = evalVectors.get();
-        getKids()[1].evalVect(resultKid2, evalVectors, data, prev);
-        for (int i=0; i < data.nSamples; i++)
+        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
+        for (int i = 0; i < data.nSamples; i++)
         {
             if (resultKid2[i] == 0)
                 outVect[i] = 1;
@@ -57,15 +55,15 @@ public class Divide extends Node
         }
         evalVectors.release();
     }
-    
+
     public int nKids()
     {
         return 2;
     }
-    
+
     public String name()
     {
         return "divide";
     }
-    
+
 }

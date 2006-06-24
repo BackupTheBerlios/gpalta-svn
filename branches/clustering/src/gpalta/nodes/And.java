@@ -23,16 +23,15 @@
  */
 
 package gpalta.nodes;
-import java.util.*;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class And extends Node
 {
-    
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         /* 
@@ -40,29 +39,29 @@ public class And extends Node
          * speed things up, but could cause problems if some node on that branch
          * has side effects
          */
-        return ( getKids()[0].eval(data, prev)!=0 && getKids()[1].eval(data, prev)!=0 ? 1:0 );
+        return (getKid(0).eval(data, prev) != 0 && getKid(1).eval(data, prev) != 0 ? 1 : 0);
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        getKids()[0].evalVect(outVect, evalVectors, data, prev);
+        getKid(0).evalVect(outVect, evalVectors, data, prev);
         double[] resultKid2 = evalVectors.get();
-        getKids()[1].evalVect(resultKid2, evalVectors, data, prev);
-        for (int i=0; i < data.nSamples; i++)
+        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
+        for (int i = 0; i < data.nSamples; i++)
         {
-            outVect[i] = ( outVect[i]!=0 && resultKid2[i]!=0 ? 1:0 );
+            outVect[i] = (outVect[i] != 0 && resultKid2[i] != 0 ? 1 : 0);
         }
         evalVectors.release();
     }
-    
+
     public int nKids()
     {
         return 2;
     }
-    
+
     public String name()
     {
         return "and";
     }
-    
+
 }

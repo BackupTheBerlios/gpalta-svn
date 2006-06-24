@@ -29,8 +29,9 @@ import java.io.*;
 /**
  * Holds the problem's data and provides methods to access it.
  * It's no longer abstract, so an instance must be created and passed around
- * This was done to fix a problen when passing a large matrix from Matlab 
+ * This was done to fix a problen when passing a large matrix from Matlab
  * (the data sometimes 'dissapeared' if this class was abstract)
+ *
  * @author neven
  */
 public class DataHolder
@@ -47,12 +48,12 @@ public class DataHolder
 
     public double getData(int whichVar)
     {
-        return data[whichVar-1][currentSample];
+        return data[whichVar - 1][currentSample];
     }
 
     public double[] getDataVect(int whichVar)
     {
-        return data[whichVar-1];
+        return data[whichVar - 1];
     }
 
     /**

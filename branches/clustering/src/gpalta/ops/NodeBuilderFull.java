@@ -23,84 +23,87 @@
  */
 
 package gpalta.ops;
+
 import java.util.*;
+
 import gpalta.nodes.*;
 import gpalta.core.*;
 
 /**
  * Implements the 'FULL' build method
+ *
  * @author neven
  */
 public class NodeBuilderFull extends NodeBuilder
 {
     private NodeFactory nodeFactory;
-    
-    public NodeBuilderFull (NodeFactory nodeFactory)
+
+    public NodeBuilderFull(NodeFactory nodeFactory)
     {
         this.nodeFactory = nodeFactory;
     }
-    
-    public void build (NodeParent node, int maxDepth)
+
+    public void build(NodeParent node, int maxDepth)
     {
-        build (node, -1, maxDepth);
+        build(node, -1, maxDepth);
     }
-    
-    
+
+
     /**
      * Implements the 'FULL' build method
-     * 
-     * @param node The {@link Node} to build (i.e. modify its kids)
+     *
+     * @param node     The {@link Node} to build (i.e. modify its kids)
      * @param whichKid If -1, modify all kids. Else, modify only kid number wichKid
      * @param maxDepth The number of levels this {@link Node} must have (relative to himself)
      */
-    public void build (NodeParent node, int whichKid, int maxDepth)
+    public void build(NodeParent node, int whichKid, int maxDepth)
     {
         int currentGlobalDepth = node.getCurrentDepth();
         List<Integer> listOfKids = new ArrayList<Integer>();
-        
+
         //whichKid = -1 means: build all kids
         if (whichKid == -1)
         {
             if (node.nKids() > 0)
-                node.setKids(new Node[node.nKids()]);
-            for (int i=0; i<node.nKids(); i++)
+                node.newKids();
+            for (int i = 0; i < node.nKids(); i++)
             {
                 listOfKids.add(i);
-            }            
+            }
         }
-        
+
         //build only whichKid
         else
         {
             listOfKids.add(whichKid);
         }
-        
-        
+
+
         int maxDepthOfKids = 0;
         for (Integer i : listOfKids)
         {
             //If maxDepth = 1, we need terminals as kids:
             if (maxDepth == 1)
             {
-                node.getKids()[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getTerminals(), currentGlobalDepth + 1);
+                node.setKid(i, nodeFactory.newRandomNode(node.typeOfKids(i).getTerminals(), currentGlobalDepth + 1));
                 node.setNSubNodes(node.getNSubNodes() + 1);
             }
             else
             {
-                node.getKids()[i] = nodeFactory.newRandomNode(node.typeOfKids(i).getFunctions(), currentGlobalDepth + 1);
-                build(node.getKids()[i], -1, maxDepth-1);
-                
+                node.setKid(i, nodeFactory.newRandomNode(node.typeOfKids(i).getFunctions(), currentGlobalDepth + 1));
+                build(node.getKid(i), -1, maxDepth - 1);
+
                 /* If we are building only one child, these will be wrong for the 
-                 * first parent, but will be corrected by updateParents()
-                 */
-                node.setNSubNodes(node.getNSubNodes() + (1 + node.getKids()[i].getNSubNodes()));
-                maxDepthOfKids = Math.max(maxDepthOfKids, node.getKids()[i].getMaxDepthFromHere());
+                * first parent, but will be corrected by updateParents()
+                */
+                node.setNSubNodes(node.getNSubNodes() + (1 + node.getKid(i).getNSubNodes()));
+                maxDepthOfKids = Math.max(maxDepthOfKids, node.getKid(i).getMaxDepthFromHere());
             }
-            node.getKids()[i].setWhichKidOfParent(i);
-            node.getKids()[i].setParent(node);
+            node.getKid(i).setWhichKidOfParent(i);
+            node.getKid(i).setParent(node);
         }
         if (node.nKids() > 0)
             node.setMaxDepthFromHere(1 + maxDepthOfKids);
     }
-    
+
 }

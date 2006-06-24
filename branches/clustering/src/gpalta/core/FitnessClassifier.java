@@ -28,11 +28,12 @@ import java.io.*;
 
 /**
  * Fitness suitable for classifiers
+ *
  * @author DSP
  */
 public class FitnessClassifier implements Fitness
 {
-    
+
     private double[] desiredOutputs;
     private double[] weights;
     private int n0;
@@ -44,11 +45,11 @@ public class FitnessClassifier implements Fitness
     private double continuityImportance;
     private double[] results;
     private Config config;
-    
-    /** 
+
+    /**
      * Initializes only constants (to avoid duplicating code)
      */
-    private void init (Config config, DataHolder data)
+    private void init(Config config, DataHolder data)
     {
         this.config = config;
         /* How much each SNR is more important than the next one:
@@ -58,12 +59,12 @@ public class FitnessClassifier implements Fitness
         continuityImportance = config.continuityImportance;
         //How much important is voice over silence:
         kHR1 = config.kHR1;
-        
-        sizePenalization = 1/ (500*Math.pow(2, config.maxDepth+1));
-        
+
+        sizePenalization = 1 / (500 * Math.pow(2, config.maxDepth + 1));
+
         results = new double[data.nSamples];
     }
-    
+
     public void init(Config config, DataHolder data, String fileName)
     {
         // only init constants:
@@ -90,11 +91,11 @@ public class FitnessClassifier implements Fitness
                 Logger.log("\t Using SNR data");
                 Logger.log("\t deltaSNR:            " + deltaSNR);
             }
-            Logger.log("\t Frames:              " + (n0+n1));
+            Logger.log("\t Frames:              " + (n0 + n1));
             Logger.log("\t N0:                  " + n0);
             Logger.log("\t N1:                  " + n1);
 
-            for (int sample=0; sample<desiredOutputs.length; sample++)
+            for (int sample = 0; sample < desiredOutputs.length; sample++)
             {
                 if (desiredOutputs[sample] == 0)
                 {
@@ -117,15 +118,15 @@ public class FitnessClassifier implements Fitness
         }
 
     }
-    
-    public void init (Config config, DataHolder data, double[] desiredOutputs, double[] weights)
+
+    public void init(Config config, DataHolder data, double[] desiredOutputs, double[] weights)
     {
         // only init constants:
         init(config, data);
-        
+
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
-        for (int sample=0; sample<data.nSamples; sample++)
+        for (int sample = 0; sample < data.nSamples; sample++)
         {
             if (desiredOutputs[sample] == 0)
             {
@@ -137,10 +138,10 @@ public class FitnessClassifier implements Fitness
             }
         }
     }
-    
+
     public double[] calculate(Tree tree, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        
+
         if (!tree.fitCalculated)
         {
             data.reset();
@@ -157,22 +158,22 @@ public class FitnessClassifier implements Fitness
             }
             else
             {
-                for (int i=0; i<data.nSamples; i++)
+                for (int i = 0; i < data.nSamples; i++)
                 {
                     results[i] = tree.eval(data, prev);
                     data.update();
                     prev.update(results[i]);
                 }
             }
-            for (int i=0; i<data.nSamples; i++)
+            for (int i = 0; i < data.nSamples; i++)
             {
-                if (desiredOutputs[i]!=previousTarget)
+                if (desiredOutputs[i] != previousTarget)
                 {
                     previousTarget = desiredOutputs[i];
                     sumMaxContinuity += maxContinuity;
-                    maxContinuity= 0;
+                    maxContinuity = 0;
                 }
-                if (results[i]!=0 && desiredOutputs[i]!=0)
+                if (results[i] != 0 && desiredOutputs[i] != 0)
                 {
                     if (useWeight)
                     {
@@ -187,7 +188,7 @@ public class FitnessClassifier implements Fitness
                          * This works if snrs come specified in this order
                          * form 0 to 6 in the class file
                          */
-                        hits1 += (1 + (3-weights[i])*deltaSNR);
+                        hits1 += (1 + (3 - weights[i]) * deltaSNR);
                     }
                     else
                     {
@@ -195,11 +196,11 @@ public class FitnessClassifier implements Fitness
                     }
                     continuity++;
                 }
-                else if (results[i]==0 && desiredOutputs[i]==0)
+                else if (results[i] == 0 && desiredOutputs[i] == 0)
                 {
                     if (useWeight)
                     {
-                        hits0 += (1 + (3-weights[i])*deltaSNR);
+                        hits0 += (1 + (3 - weights[i]) * deltaSNR);
                     }
                     else
                     {
@@ -214,15 +215,15 @@ public class FitnessClassifier implements Fitness
                 }
             }
             sumMaxContinuity += maxContinuity;
-            double continuityPenalizacion = continuityImportance * (data.nSamples - (double)sumMaxContinuity) / data.nSamples;
+            double continuityPenalizacion = continuityImportance * (data.nSamples - (double) sumMaxContinuity) / data.nSamples;
             tree.hr0 = hits0 / n0;
             tree.hr1 = hits1 / n1;
-            tree.setFitness((tree.hr0 + kHR1*tree.hr1)/(kHR1+1));
-            tree.setFitness(tree.readFitness() - (double)tree.getNSubNodes() * sizePenalization);
+            tree.setFitness((tree.hr0 + kHR1 * tree.hr1) / (kHR1 + 1));
+            tree.setFitness(tree.readFitness() - (double) tree.getNSubNodes() * sizePenalization);
             tree.setFitness(tree.readFitness() - continuityPenalizacion);
             return results;
         }
-        
+
         //If we don't eval the tree:
         return null;
     }
@@ -239,5 +240,5 @@ public class FitnessClassifier implements Fitness
     {
         return raw;
     }
-    
+
 }

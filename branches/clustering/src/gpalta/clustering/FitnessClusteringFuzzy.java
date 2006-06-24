@@ -26,15 +26,15 @@ package gpalta.clustering;
 
 import gpalta.core.*;
 import gpalta.nodes.*;
+
 import java.util.*;
 
 /**
- *
  * @author neven
  */
 public class FitnessClusteringFuzzy implements Fitness
 {
-    
+
     public double[][] prototypes;
     public double[] classCenters;
     private Config config;
@@ -52,8 +52,8 @@ public class FitnessClusteringFuzzy implements Fitness
         this.config = config;
         prototypes = new double[config.nClasses][data.nVars];
         classCenters = new double[config.nClasses];
-        for (int i=0; i<config.nClasses; i++)
-            classCenters[i] = config.scale * (-1 + 1/(double)config.nClasses + 2*(double)i/(config.nClasses));
+        for (int i = 0; i < config.nClasses; i++)
+            classCenters[i] = config.scale * (-1 + 1 / (double) config.nClasses + 2 * (double) i / (config.nClasses));
         prob = new double[config.nClasses][data.nSamples];
         this.m = m;
         results = new double[data.nSamples];
@@ -61,50 +61,50 @@ public class FitnessClusteringFuzzy implements Fitness
 
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        
-        for (int i=0; i<data.nSamples; i++)
+
+        for (int i = 0; i < data.nSamples; i++)
             results[i] = config.scale * Math.tanh(outputs.getArray(0)[i]);
-        
+
         //assign pertenence probabilities (U matrix) without normalizing (possibilistic)
-        for (int wSample=0; wSample<data.nSamples; wSample++)
-            for (int wClass=0; wClass<config.nClasses; wClass++)
+        for (int wSample = 0; wSample < data.nSamples; wSample++)
+            for (int wClass = 0; wClass < config.nClasses; wClass++)
                 //prob[wClass][wSample] = 1 / (1 + Math.pow(config.scale * Math.abs(classCenters[wClass] - results[wSample]), m));
-                prob[wClass][wSample] = Math.exp(-4*Math.pow(classCenters[wClass] - results[wSample], 2));
-        
+                prob[wClass][wSample] = Math.exp(-4 * Math.pow(classCenters[wClass] - results[wSample], 2));
+
         //calculate prototypes for each class:
-        for (int wClass=0; wClass<config.nClasses; wClass++)
+        for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
             double sumProbThisClass = 0;
-            for (int wSample=0; wSample<data.nSamples; wSample++)
+            for (int wSample = 0; wSample < data.nSamples; wSample++)
                 sumProbThisClass += Math.pow(prob[wClass][wSample], m);
-            
-            for (int wVar=0; wVar<data.nVars; wVar++)
+
+            for (int wVar = 0; wVar < data.nVars; wVar++)
             {
                 prototypes[wClass][wVar] = 0;
-                for (int wSample=0; wSample<data.nSamples; wSample++)
+                for (int wSample = 0; wSample < data.nSamples; wSample++)
                 {
-                    prototypes[wClass][wVar] += Math.pow(prob[wClass][wSample], m) * data.getDataVect(wVar+1)[wSample];
+                    prototypes[wClass][wVar] += Math.pow(prob[wClass][wSample], m) * data.getDataVect(wVar + 1)[wSample];
                 }
-                if (sumProbThisClass!=0)
+                if (sumProbThisClass != 0)
                     prototypes[wClass][wVar] /= sumProbThisClass;
             }
         }
-        
+
         //calculate total error:
         double error = 0;
-        for (int wClass=0; wClass<config.nClasses; wClass++)
+        for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
             double protoError = 0;
-            for (int wSample=0; wSample<data.nSamples; wSample++)
+            for (int wSample = 0; wSample < data.nSamples; wSample++)
             {
                 double sampleError = 0;
-                for (int wVar=0; wVar<data.nVars; wVar++)
-                    sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar+1)[wSample], 2);
+                for (int wVar = 0; wVar < data.nVars; wVar++)
+                    sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar + 1)[wSample], 2);
                 protoError += Math.pow(prob[wClass][wSample], m) * sampleError;
             }
             error += protoError;
         }
-        ind.setFitness(1/(1 + error));
+        ind.setFitness(1 / (1 + error));
 
     }
 
@@ -116,5 +116,5 @@ public class FitnessClusteringFuzzy implements Fitness
         processed.setPrototypesCopy(prototypes);
         return processed;
     }
-    
+
 }

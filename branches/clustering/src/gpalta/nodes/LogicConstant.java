@@ -23,48 +23,48 @@
  */
 
 package gpalta.nodes;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class LogicConstant extends Node
 {
-    
+
     private double constant;
-    
+
     public LogicConstant()
     {
-        
+
     }
-    
-    public LogicConstant(double constant) 
+
+    public LogicConstant(double constant)
     {
         this.constant = constant;
     }
-    
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         return constant;
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        for (int i=0; i < data.nSamples; i++)
+        for (int i = 0; i < data.nSamples; i++)
         {
             outVect[i] = constant;
         }
     }
-    
+
     public String name()
     {
         return (constant != 0 ? "true" : "false");
     }
-    
+
     public void init(Config config)
     {
         constant = Common.globalRandom.nextInt(2);
     }
-    
+
 }

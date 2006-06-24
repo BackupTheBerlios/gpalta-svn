@@ -26,15 +26,15 @@ package gpalta.clustering;
 
 import gpalta.core.*;
 import gpalta.nodes.*;
+
 import java.util.*;
 
 /**
- *
  * @author neven
  */
 public class FitnessClustering implements Fitness
 {
-    
+
     private double[] results;
     public double[][] prototypes;
     public double[] classCenters;
@@ -51,25 +51,25 @@ public class FitnessClustering implements Fitness
         results = new double[data.nSamples];
         prototypes = new double[config.nClasses][data.nVars];
         classCenters = new double[config.nClasses];
-        for (int i=0; i<config.nClasses; i++)
-            classCenters[i] = config.scale * (-1 + 1/(double)config.nClasses + 2*(double)i/(config.nClasses));
+        for (int i = 0; i < config.nClasses; i++)
+            classCenters[i] = config.scale * (-1 + 1 / (double) config.nClasses + 2 * (double) i / (config.nClasses));
         results = new double[data.nSamples];
     }
 
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        for (int i=0; i<data.nSamples; i++)
+        for (int i = 0; i < data.nSamples; i++)
             results[i] = config.scale * Math.tanh(outputs.getArray(0)[i]);
-        
+
         //see which class each sample belongs to:
         List<Integer>[] clusters = new List[config.nClasses];
-        for (int i=0; i<config.nClasses; i++)
+        for (int i = 0; i < config.nClasses; i++)
             clusters[i] = new ArrayList<Integer>();
-        for (int i=0; i<data.nSamples; i++)
+        for (int i = 0; i < data.nSamples; i++)
         {
             double minDist = Math.abs(results[i] - classCenters[0]);
             int winnerClass = 0;
-            for (int j=1; j<config.nClasses; j++)
+            for (int j = 1; j < config.nClasses; j++)
             {
                 double dist = Math.abs(results[i] - classCenters[j]);
                 if (dist < minDist)
@@ -80,37 +80,37 @@ public class FitnessClustering implements Fitness
             }
             clusters[winnerClass].add(i);
         }
-        
+
         //calculate prototypes for each class:
-        for (int i=0; i<config.nClasses; i++)
+        for (int i = 0; i < config.nClasses; i++)
         {
-            for (int j=0; j<data.nVars; j++)
+            for (int j = 0; j < data.nVars; j++)
             {
                 prototypes[i][j] = 0;
                 for (int sample : clusters[i])
-                    prototypes[i][j] += data.getDataVect(j+1)[sample];
-                if (clusters[i].size()!=0)
+                    prototypes[i][j] += data.getDataVect(j + 1)[sample];
+                if (clusters[i].size() != 0)
                     prototypes[i][j] /= clusters[i].size();
             }
         }
-        
+
         //calculate total error:
         double error = 0;
-        for (int i=0; i<config.nClasses; i++)
+        for (int i = 0; i < config.nClasses; i++)
         {
             double protoError = 0;
             for (int sample : clusters[i])
             {
                 double sampleError = 0;
-                for (int j=0; j<data.nVars; j++)
-                    sampleError += Math.pow(prototypes[i][j] - data.getDataVect(j+1)[sample], 2);
+                for (int j = 0; j < data.nVars; j++)
+                    sampleError += Math.pow(prototypes[i][j] - data.getDataVect(j + 1)[sample], 2);
                 protoError += Math.sqrt(sampleError);
             }
             error += protoError;
         }
-        ind.setFitness (1/(1 + error));
+        ind.setFitness(1 / (1 + error));
     }
-    
+
     public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         ClusteringOutput processed = new ClusteringOutput(1, data.nSamples);
@@ -118,5 +118,5 @@ public class FitnessClustering implements Fitness
         processed.setPrototypesCopy(prototypes);
         return processed;
     }
-    
+
 }

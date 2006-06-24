@@ -27,24 +27,24 @@ package gpalta.nodes;
 import gpalta.core.*;
 
 /**
- *
  * @author DSP
  */
 public class PreviousOutput extends Node
 {
 
     private int delay;
+
     public PreviousOutput(int delay)
     {
         this.delay = delay;
     }
-    
-    
+
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         return prev.getData(delay);
     }
-    
+
     /**
      * This should never be called. The whole evalVect was implemented to be
      * used when there are no previous outputs as Nodes
@@ -54,10 +54,10 @@ public class PreviousOutput extends Node
         //TODO: Maybe throw an exception?
         Logger.log("Error: Should not be calling PreviousOutput's evalVect()");
     }
-    
+
     public String name()
     {
         return ("Yn_" + delay);
     }
-    
+
 }

@@ -24,8 +24,10 @@
 
 
 package gpalta.ops;
+
 import gpalta.core.Individual;
 import gpalta.nodes.*;
+
 import java.util.*;
 
 /*
@@ -33,39 +35,44 @@ import java.util.*;
  * the population assigns a "surviving probability" to each individual
  * proportional to ranking position
  */
-public class RankingLFR extends Ranking{
-    
-        
-    /** Creates a new instance of RankingLFR */
-    public RankingLFR() {
-        this.filled = false;
-        
-        
-    }
-    
-    /*
-     *Ranks population
+
+public class RankingLFR extends Ranking
+{
+
+
+    /**
+     * Creates a new instance of RankingLFR
      */
+    public RankingLFR()
+    {
+        this.filled = false;
+
+
+    }
+
+    /*
+    *Ranks population
+    */
     public void rankPop(List<? extends Individual> population, Comparator comp)
     {
         int j;
         double m;
         this.init(population, comp);
         //m=m/(-(popSize-1) );
-        m= (max-min) / (popSize-1);
-        
+        m = (max - min) / (popSize - 1);
+
         /*
-         *Calculate acumulated fitness and acumulated probabilities
-         */       
-        totalFitness=0;        
-        for(int i = 0; i<popSize; i++)
+        *Calculate acumulated fitness and acumulated probabilities
+        */
+        totalFitness = 0;
+        for (int i = 0; i < popSize; i++)
         {
-            
-            adjustedFitness[i]=i*m; 
-            totalFitness+=adjustedFitness[i];
+
+            adjustedFitness[i] = i * m;
+            totalFitness += adjustedFitness[i];
             acumulatedFit[i] = totalFitness;
         }
-        
+
     }
-    
+
 }

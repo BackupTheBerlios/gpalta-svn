@@ -23,7 +23,9 @@
  */
 
 package gpalta.nodes;
+
 import java.util.*;
+
 import gpalta.core.*;
 
 /**
@@ -34,23 +36,25 @@ import gpalta.core.*;
 public class RealVar extends Node
 {
     public int whichVar;
-    
-    /** Creates a new instance of RealVar */
-    public RealVar(int whichVar) 
+
+    /**
+     * Creates a new instance of RealVar
+     */
+    public RealVar(int whichVar)
     {
         this.whichVar = whichVar;
     }
-    
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
         return data.getData(whichVar);
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         System.arraycopy(data.getDataVect(whichVar), 0, outVect, 0, data.nSamples);
     }
-    
+
     public String name()
     {
         return ("X" + whichVar);

@@ -23,43 +23,43 @@
  */
 
 package gpalta.nodes;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class IfThenElse extends Node
 {
-    
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        if (getKids()[0].eval(data, prev) != 0)
+        if (getKid(0).eval(data, prev) != 0)
         {
-            return getKids()[1].eval(data, prev);
+            return getKid(1).eval(data, prev);
         }
         else
         {
-            return getKids()[2].eval(data, prev);
+            return getKid(2).eval(data, prev);
         }
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         //Is there a way to not evaluate both kids?
-        getKids()[0].evalVect(outVect, evalVectors, data, prev);
+        getKid(0).evalVect(outVect, evalVectors, data, prev);
         double[] resultKid2 = evalVectors.get();
-        getKids()[1].evalVect(resultKid2, evalVectors, data, prev);
+        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
         double[] resultKid3 = evalVectors.get();
-        getKids()[2].evalVect(resultKid3, evalVectors, data, prev);
-        for (int i=0; i < data.nSamples; i++)
+        getKid(2).evalVect(resultKid3, evalVectors, data, prev);
+        for (int i = 0; i < data.nSamples; i++)
         {
-            outVect[i] = (outVect[i]!=0 ? resultKid2[i] : resultKid3[i]);
+            outVect[i] = (outVect[i] != 0 ? resultKid2[i] : resultKid3[i]);
         }
         evalVectors.release();
         evalVectors.release();
     }
-    
+
     public int nKids()
     {
         return 3;
@@ -69,5 +69,5 @@ public class IfThenElse extends Node
     {
         return "if";
     }
-    
+
 }

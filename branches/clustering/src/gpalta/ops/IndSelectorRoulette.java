@@ -1,5 +1,5 @@
 /*
- * TreeSelectorRoulette.java
+ * IndSelectorRoulette.java
  *
  * Created on 30 de marzo de 2006, 12:45 PM
  *
@@ -23,70 +23,73 @@
  */
 
 package gpalta.ops;
-import gpalta.nodes.*;
+
 import gpalta.core.*;
+
 import java.util.*;
 
 /**
  * Implements roulette selection method
  */
-public class TreeSelectorRoulette extends TreeSelector
+public class IndSelectorRoulette extends IndSelector
 {
     private Config config;
     private Comparator<Individual> comp;
     private Ranking theRanking;
-    
-    /** Creates a new instance of TreeSelectorRoulette */
-    public TreeSelectorRoulette(Config config, Ranking theRanking)
+
+    /**
+     * Creates a new instance of IndSelectorRoulette
+     */
+    public IndSelectorRoulette(Config config, Ranking theRanking)
     {
         this.config = config;
-        this.comp=new TreeFitnessComparator();
+        this.comp = new IndFitnessComparator();
         this.theRanking = theRanking;
     }
-    
+
     /*
-     * TODO: arrange order to descendant on theRanking 
-     */
+    * TODO: arrange order to descendant on theRanking
+    */
     public <T extends Individual> List<T> select(List<T> population)
     {
         double randomNumber;
         int k;
         T temp1;
-        
-        
+
+
         List<T> out = new ArrayList<T>();
         theRanking.rankPop(population, comp);
-        
+
         /*
-         * Roulette iterations
-         */
-        for(int i=0; i<population.size();i++)
+        * Roulette iterations
+        */
+        for (int i = 0; i < population.size(); i++)
         {
-             randomNumber=Math.random();
-             k=0;
-             while ( theRanking.acumulatedFit[k]/theRanking.totalFitness <= randomNumber)
-             {
-                 k++;
-                 if( k==population.size()-1 )
-                 {
-                     break;
-                 }
-             }
-             temp1=((T) theRanking.popArray[ k ]);
-             if (!temp1.isOnPop())
-             {
+            randomNumber = Math.random();
+            k = 0;
+            while (theRanking.acumulatedFit[k] / theRanking.totalFitness <= randomNumber)
+            {
+                k++;
+                if (k == population.size() - 1)
+                {
+                    break;
+                }
+            }
+            temp1 = ((T) theRanking.popArray[k]);
+            if (!temp1.isOnPop())
+            {
                 out.add(temp1);
                 temp1.setOnPop(true);
-             }
-             else
-             {
-                out.add( (T)temp1.deepClone() );
-             }
-             
-             
+            }
+            else
+            {
+                out.add((T) temp1.deepClone());
+            }
+
+
         }
-       
-        return(out);
-     }
-    
+
+        return (out);
+    }
+
 }

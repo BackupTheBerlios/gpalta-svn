@@ -25,10 +25,9 @@
 package gpalta.core;
 
 /**
- *
  * @author DSP
  */
-public class PreviousOutputHolder 
+public class PreviousOutputHolder
 {
     public int nDelays;
     private double[] prevOut;
@@ -38,7 +37,7 @@ public class PreviousOutputHolder
     {
         nDelays = config.nPreviousOutput;
         prevOut = new double[nDelays];
-        for (int i=0; i<nDelays; i++)
+        for (int i = 0; i < nDelays; i++)
         {
             prevOut[i] = 0;
         }
@@ -48,16 +47,16 @@ public class PreviousOutputHolder
             Logger.log("Using " + config.nPreviousOutput + " previous outputs as " + (config.usePreviousOutputAsReal ? "real" : "logic") + " terminals");
 
     }
-    
+
     public void reset()
     {
         index = 0;
-        for (int i=0; i<nDelays; i++)
+        for (int i = 0; i < nDelays; i++)
         {
             prevOut[i] = 0;
         }
     }
-    
+
     public void update(double currentOut)
     {
         if (nDelays != 0)
@@ -70,7 +69,7 @@ public class PreviousOutputHolder
             prevOut[index] = currentOut;
         }
     }
-    
+
     public double getData(int delay)
     {
         int tmpIndex = index - (delay - 1);

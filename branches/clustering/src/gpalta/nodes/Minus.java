@@ -23,11 +23,10 @@
  */
 
 package gpalta.nodes;
-import java.util.*;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class Minus extends Node
@@ -35,29 +34,29 @@ public class Minus extends Node
 
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return ( getKids()[0].eval(data, prev) - getKids()[1].eval(data, prev) );
+        return (getKid(0).eval(data, prev) - getKid(1).eval(data, prev));
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        getKids()[0].evalVect(outVect, evalVectors, data, prev);
+        getKid(0).evalVect(outVect, evalVectors, data, prev);
         double[] resultKid2 = evalVectors.get();
-        getKids()[1].evalVect(resultKid2, evalVectors, data, prev);
-        for (int i=0; i < data.nSamples; i++)
+        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
+        for (int i = 0; i < data.nSamples; i++)
         {
             outVect[i] = outVect[i] - resultKid2[i];
         }
         evalVectors.release();
     }
-    
+
     public int nKids()
     {
         return 2;
     }
-    
+
     public String name()
     {
         return "minus";
     }
-    
+
 }

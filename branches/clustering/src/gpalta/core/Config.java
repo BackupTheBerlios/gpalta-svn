@@ -30,47 +30,47 @@ import java.util.*;
 /**
  * Holds the GP parameters. See Config.txt for descriptions
  */
-public class Config 
+public class Config
 {
 
     // --------------- Files -------------------
     public String saveFileName = "evo.bin";
     public String nodeConfigFileName = "NodeConfig.txt";
     public static String logFileName = "log.txt";
-    
+
     // ----------- Basic GP options ------------
     public int populationSize = 500;
     public int nGenerations = 1000;
-    
+
     public int maxDepth = 9;
     public int initialMinDepth = 3;
-    
+
     /* Upper limits for the probability regions of the tree operations. This means:
-     * probability of crossover = upLimitProbCrossOver - 0
-     * probability of mutation = upLimitProbMutation - upLimitProbCrossOver
-     * probability of reproduction = 1 - upLimitProbMutation
-     */
+    * probability of crossover = upLimitProbCrossOver - 0
+    * probability of mutation = upLimitProbMutation - upLimitProbCrossOver
+    * probability of reproduction = 1 - upLimitProbMutation
+    */
     public double upLimitProbCrossOver = 0.85;
     public double upLimitProbMutation = 0.9;
     //The rest is for reproduction
-    
+
     /* limits for constants: */
     public double constLowLimit = -100;
     public double constUpLimit = 100;
-    
+
     public int maxCrossoverTries = 10;
-    
+
     /* When selecting for crossover, use these probs */
     public double upLimitProbSelectTerminal = .1;
     public double upLimitProbSelectNonTerminal = 1;
     public double upLimitProbSelectRoot = 0;
     //The rest is for select any node
-    
+
     /* For ramped half and half tree creation */
     public double probGrowBuild = .5;
     //The rest is for Full Build
-    
-    
+
+
     // -------------- Selection ---------------
     /* Tree selection methods: tournament, roulette, proportional, SUS */
     public String selectionMethod = "tournament";
@@ -79,21 +79,21 @@ public class Config
     public double SUSPointerDistance = 0.1;
     /* Population ranking adjustment (unused in case of tournament selection method): Raw, LFR */
     public String rankingType = "Raw";
-    
+
     //---------------- Fitness -----------------------
     /* generic or classifier */
     public String fitness = "generic";
 
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;
-    
+
     /* For the classifier fitness: (kind of obselete options for GPVAD)*/
     /* How much each SNR is more important than the next one: (Must be smaller than 1/3) */
     public double deltaSNR = 0.05;
     public double continuityImportance = 0.001;
     /* How much important is voice over silence: */
     public double kHR1 = 4;
-    
+
     //For the clustering fitness:
     public int nClasses = 5;
     public boolean useMultiTree;
@@ -101,7 +101,7 @@ public class Config
     public double m = 2;
     public double scale = 1;
     public int nTrees = 100;
-    
+
     //------------ General behavior ------------
     /* Use vectorial evaluation
      * On this mode, the system descends on the tree once and evaluates all fitness
@@ -117,28 +117,28 @@ public class Config
      * or cause problems when nodes have side effects (perform actions)
      */
     public boolean useVect = false;
-    
+
     /* If true, trees that haven't changed from the past generation will remember
-     * their fitness and won't be evaluated again.
-     * WARNING: do not use if some values change between generations (e.g. cicling
-     * fitness cases, random components in terminals, etc.)
-     */
+    * their fitness and won't be evaluated again.
+    * WARNING: do not use if some values change between generations (e.g. cicling
+    * fitness cases, random components in terminals, etc.)
+    */
     public boolean rememberLastEval = false;
-    
+
     /* These two for non interactive mode */
     public boolean nonInteractive = false;
     public int nDaysToRun = 1;
-    
+
     /* include previous outputs as inputs (how many) */
     public int nPreviousOutput = 0;
     /* wheter previous outputs are real or logic nodes */
     public boolean usePreviousOutputAsReal = false;
-    
-    
+
+
     /**
      * Reads config from a property file. The file must contain a value for all
      * the fields in the Config class
-     * 
+     *
      * @param fileName The name of the config file
      */
     public Config(String fileName)
@@ -149,7 +149,7 @@ public class Config
             Properties applicationProps = new Properties();
             applicationProps.load(in);
             in.close();
-            
+
             java.lang.reflect.Field[] fields = Config.class.getFields();
             for (int i = 0; i < fields.length; i++)
             {
@@ -160,7 +160,7 @@ public class Config
                     //Do not exit, just warn and continue:
                     continue;
                 }
-                
+
                 if (type.getName().equals("double"))
                 {
                     fields[i].setDouble(this, Double.parseDouble(applicationProps.getProperty(fields[i].getName())));
@@ -178,7 +178,7 @@ public class Config
                     fields[i].set(this, applicationProps.getProperty(fields[i].getName()));
                 }
             }
-            
+
         }
         catch (IOException e)
         {
@@ -196,6 +196,6 @@ public class Config
         {
             Logger.log(e.getMessage());
         }
-        
+
     }
 }

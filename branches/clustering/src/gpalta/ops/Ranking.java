@@ -23,16 +23,19 @@
  */
 
 package gpalta.ops;
+
 import gpalta.core.*;
 import gpalta.nodes.*;
+
 import java.util.*;
 
 /**
  * Implements tree sorting methods for selection
  */
-public abstract class Ranking {
-    
-    
+public abstract class Ranking
+{
+
+
     int popSize;
     boolean filled;
     private List<? extends Individual> population;
@@ -41,40 +44,40 @@ public abstract class Ranking {
     double min;
     double max;
     public double totalFitness;
-    public double  acumulatedFit[];
-    
+    public double acumulatedFit[];
+
     public abstract void rankPop(List<? extends Individual> population, Comparator comp);
-    
+
     <T extends Individual> void init(List<T> population, Comparator comp)
     {
         this.population = population;
         popArray = this.indSort(population, comp);
         this.popSize = population.size();
-        min=popArray[0].readFitness();
-        max=popArray[ popSize -1].readFitness();
+        min = popArray[0].readFitness();
+        max = popArray[popSize - 1].readFitness();
         adjustedFitness = new double [popSize];
         acumulatedFit = new double [popSize];
-        filled=true;
+        filled = true;
     }
-    
+
     private <T extends Individual> T[] indSort(List<T> population, Comparator comp)
     {
         Individual [] popArray = new Individual[population.size()];
-        
+
         /*
-         * Move population to an Array structure for sorting. 
-         */        
-        for(int i=0;i<population.size();i++)
+        * Move population to an Array structure for sorting.
+        */
+        for (int i = 0; i < population.size(); i++)
         {
-            popArray[i]=population.get(i);
+            popArray[i] = population.get(i);
             population.get(i).setOnPop(false);
         }
-        
+
         /*
-         *Sort
-         */
+        *Sort
+        */
         Arrays.sort(popArray, comp);
-        return (T[])popArray;
+        return (T[]) popArray;
     }
-    
+
 }

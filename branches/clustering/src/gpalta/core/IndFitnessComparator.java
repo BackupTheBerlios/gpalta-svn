@@ -1,5 +1,5 @@
 /*
- * TreeFitnessComparator.java
+ * IndFitnessComparator.java
  *
  * Created on 29 de marzo de 2006, 04:24 PM
  *
@@ -25,31 +25,32 @@
 package gpalta.core;
 
 import java.util.*;
-import gpalta.nodes.*;
 
 /**
  * Implements a comparator for Trees based on their fitness
+ *
  * @author DSP
  */
 
 
-public class TreeFitnessComparator implements Comparator<Individual>
-{    
-  
-    public int compare(Individual o1, Individual o2) {
+public class IndFitnessComparator implements Comparator<Individual>
+{
+
+    public int compare(Individual o1, Individual o2)
+    {
         if (o1.readFitness() < o2.readFitness())
         {
-            return(-1);
+            return (-1);
         }
-        else if (o1.readFitness()>o2.readFitness())
+        else if (o1.readFitness() > o2.readFitness())
         {
-            return(1);
+            return (1);
         }
         else
         {
-            return(0);
+            return (0);
         }
-               
+
     }
-    
+
 }

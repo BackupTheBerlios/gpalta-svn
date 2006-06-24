@@ -27,7 +27,6 @@ package gpalta.core;
 import java.io.Serializable;
 
 /**
- *
  * @author neven
  */
 public class Output implements Cloneable, Serializable
@@ -35,7 +34,9 @@ public class Output implements Cloneable, Serializable
     private double[][] data;
     private int nArrays;
 
-    /** Creates a new instance of Output */
+    /**
+     * Creates a new instance of Output
+     */
     public Output(int nArrays, int nSamples)
     {
         data = new double[nArrays][nSamples];
@@ -48,9 +49,9 @@ public class Output implements Cloneable, Serializable
         try
         {
             /* Remember to clone each array and their contents */
-            out = (Output)super.clone();
+            out = (Output) super.clone();
             out.data = new double[data.length][];
-            for (int i=0; i<nArrays; i++)
+            for (int i = 0; i < nArrays; i++)
                 out.setArray(i, getArrayCopy(i));
         }
         catch (CloneNotSupportedException e)

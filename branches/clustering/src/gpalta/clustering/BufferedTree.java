@@ -23,17 +23,19 @@
  */
 
 package gpalta.clustering;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class BufferedTree extends Tree
 {
     public Output out;
 
-    /** Creates a new instance of BufferedTree */
+    /**
+     * Creates a new instance of BufferedTree
+     */
     public BufferedTree(NodeSet type)
     {
         super(type);
@@ -42,7 +44,7 @@ public class BufferedTree extends Tree
     public Individual deepClone()
     {
         BufferedTree t = (BufferedTree) super.deepClone();
-        t.out = (Output)out.clone();
+        t.out = (Output) out.clone();
         return t;
     }
 

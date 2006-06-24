@@ -24,8 +24,10 @@
 
 
 package gpalta.ops;
+
 import gpalta.core.Individual;
 import gpalta.nodes.*;
+
 import java.util.*;
 
 /**
@@ -34,33 +36,34 @@ import java.util.*;
  * of the individual normalized by the sum of all population fitness
  */
 
-public class RankingRaw extends Ranking{
-        
-    public RankingRaw() 
+public class RankingRaw extends Ranking
+{
+
+    public RankingRaw()
     {
         this.filled = false;
     }
-    
+
     /*
-     *Obtain number expentances and sort population
-     */
+    *Obtain number expentances and sort population
+    */
     public void rankPop(List<? extends Individual> population, Comparator comp)
     {
         this.init(population, comp);
-                
+
         /*
-         *Calculate acumulated fitness and acumulated probabilities
-         */
-        
-        totalFitness=0;        
-        for(int i=0;i<popSize;i++)
+        *Calculate acumulated fitness and acumulated probabilities
+        */
+
+        totalFitness = 0;
+        for (int i = 0; i < popSize; i++)
         {
-            adjustedFitness[i]=popArray[i].readFitness() - min;
-            totalFitness+=adjustedFitness[i];
+            adjustedFitness[i] = popArray[i].readFitness() - min;
+            totalFitness += adjustedFitness[i];
             acumulatedFit[i] = totalFitness;
         }
-        
-        
+
+
     }
-    
+
 }

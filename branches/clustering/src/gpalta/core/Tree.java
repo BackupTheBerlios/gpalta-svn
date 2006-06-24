@@ -23,11 +23,10 @@
  */
 
 package gpalta.core;
+
 import gpalta.nodes.*;
-import java.util.*;
 
 /**
- *
  * @author neven
  */
 public class Tree extends Individual implements NodeParent
@@ -40,11 +39,12 @@ public class Tree extends Individual implements NodeParent
     private Node[] kids;
 
     /**
-     * Creates a new instance of Tree 
+     * Creates a new instance of Tree
      */
     public Tree(NodeSet type)
     {
         this.type = type;
+        newKids();
     }
 
     public double eval(DataHolder data, PreviousOutputHolder prev)
@@ -72,10 +72,10 @@ public class Tree extends Individual implements NodeParent
         return kids[0].toString();
     }
 
-    public Tree (String expression, NodeSet type, NodeFactory nodeFactory)
+    public Tree(String expression, NodeSet type, NodeFactory nodeFactory)
     {
         this.type = type;
-        kids = new Node[1];
+        newKids();
         Node.parse(expression, this, 0, nodeFactory);
         kids[0].setParent(this);
     }
@@ -85,22 +85,22 @@ public class Tree extends Individual implements NodeParent
         Tree out = null;
         try
         {
-            out = (Tree)super.clone();
+            out = (Tree) super.clone();
         }
         catch (CloneNotSupportedException e)
         {
             Logger.log(e);
         }
 
-        if (nKids()>0)
+        if (nKids() > 0)
         {
-            out.setKids(new Node[nKids()]);
+            out.newKids();
         }
 
-        for (int i=0; i<nKids(); i++)
+        for (int i = 0; i < nKids(); i++)
         {
-            out.getKids()[i] = getKids()[i].deepClone(0);
-            out.getKids()[i].setParent(out);
+            out.setKid(i, getKid(i).deepClone(0));
+            out.getKid(i).setParent(out);
         }
         return out;
     }
@@ -137,14 +137,14 @@ public class Tree extends Individual implements NodeParent
     {
     }
 
-    public Node[] getKids()
+    public Node getKid(int whichKid)
     {
-        return kids;
+        return kids[whichKid];
     }
 
-    public void setKids(Node[] kids)
+    public void setKid(int whichKid, Node kid)
     {
-        this.kids = kids;
+        kids[whichKid] = kid;
     }
 
     public int getMaxDepthFromHere()
@@ -163,6 +163,11 @@ public class Tree extends Individual implements NodeParent
 
     public void setCurrentDepth(int currentDepth)
     {
+    }
+
+    public void newKids()
+    {
+        kids = new Node[nKids()];
     }
 
 }

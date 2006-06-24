@@ -23,12 +23,13 @@
  */
 
 package gpalta.core;
-import gpalta.nodes.*;
 
+import gpalta.nodes.*;
 
 
 /**
  * Simple class that holds some statistics about the ongoing Evolution
+ *
  * @author neven
  */
 public class EvolutionStats
@@ -39,5 +40,5 @@ public class EvolutionStats
     public int generation;
     public double avgFit;
     public double avgNodes;
-    
+
 }

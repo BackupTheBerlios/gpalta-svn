@@ -23,57 +23,58 @@
  */
 
 package gpalta.nodes;
+
 import java.io.Serializable;
+
 import gpalta.core.*;
-import java.util.*;
 
 /**
  * Generic Node definition
- * 
  *
  * @author neven
  */
 public abstract class Node implements NodeParent, Cloneable, Serializable
 {
-    
+
     private NodeParent parent;
     private Node[] kids;
-    
+
     private int whichKidOfParent;
-    
+
     private int currentDepth;
     private int maxDepthFromHere;
     private int nSubNodes;
-    
+
     private NodeSet[] kidsType;
-    
+
     public void init(Config config)
     {
 
     }
-    
+
     public abstract double eval(DataHolder data, PreviousOutputHolder prev);
+
     public abstract void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
-    
+
     public void setTypeOfKids(int whichKid, NodeSet t)
     {
         if (kidsType == null)
             kidsType = new NodeSet[nKids()];
         kidsType[whichKid] = t;
     }
-    
+
     public NodeSet typeOfKids(int whichKid)
     {
         return kidsType[whichKid];
     }
-    
+
     public int nKids()
     {
         return 0;
     }
-    
+
     public abstract String name();
-    
+
     public String toString()
     {
         String out = "";
@@ -82,9 +83,9 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             out += "(";
         }
         out += name();
-        for (int i=0; i<nKids(); i++)
+        for (int i = 0; i < nKids(); i++)
         {
-            out += " " + getKids()[i];
+            out += " " + getKid(i);
         }
         if (nKids() > 0)
         {
@@ -92,36 +93,36 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         }
         return out;
     }
-    
+
     public Object clone() throws CloneNotSupportedException
     {
-        return (Node)super.clone();
+        return (Node) super.clone();
     }
-    
+
     public Node deepClone(int currentDepth)
     {
-        
+
         Node out = null;
         try
         {
-            out = (Node)super.clone();
+            out = (Node) super.clone();
         }
         catch (CloneNotSupportedException e)
         {
             Logger.log(e);
         }
-        
+
         out.setCurrentDepth(currentDepth);
-        
-        if (nKids()>0)
+
+        if (nKids() > 0)
         {
-            out.setKids(new Node[nKids()]);
+            out.newKids();
         }
-        
-        for (int i=0; i<nKids(); i++)
+
+        for (int i = 0; i < nKids(); i++)
         {
-            out.getKids()[i] = getKids()[i].deepClone(currentDepth + 1);
-            out.getKids()[i].setParent(out);
+            out.setKid(i, getKid(i).deepClone(currentDepth + 1));
+            out.getKid(i).setParent(out);
         }
         return out;
     }
@@ -132,23 +133,23 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         java.util.regex.Matcher matcher = op.matcher(expression);
         if (matcher.find())
         {
-            parent.getKids()[whichKid] = nodeFactory.newNode(matcher.group(), parent.getCurrentDepth()+1);
-            parent.getKids()[whichKid].parent = parent;
+            parent.setKid(whichKid, nodeFactory.newNode(matcher.group(), parent.getCurrentDepth() + 1));
+            parent.getKid(whichKid).parent = parent;
         }
         else
         {
             //error
         }
-        
-        expression = expression.substring(matcher.end()+1).trim();
-        
+
+        expression = expression.substring(matcher.end() + 1).trim();
+
         int nKidsDone = 0;
         while (expression.length() != 0)
         {
-            if(expression.startsWith(")"))
+            if (expression.startsWith(")"))
             {
                 expression = expression.substring(1);
-                if (nKidsDone < parent.getKids()[whichKid].nKids())
+                if (nKidsDone < parent.getKid(whichKid).nKids())
                 {
                     //error
                 }
@@ -157,20 +158,20 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             else
             {
                 if (nKidsDone == 0)
-                    parent.getKids()[whichKid].kids = new Node[parent.getKids()[whichKid].nKids()];
+                    parent.getKid(whichKid).newKids();
                 if (expression.startsWith("("))
                 {
-                    expression = parse(expression, parent.getKids()[whichKid], nKidsDone, nodeFactory).trim();
+                    expression = parse(expression, parent.getKid(whichKid), nKidsDone, nodeFactory).trim();
                 }
                 else
                 {
                     matcher = op.matcher(expression);
                     if (matcher.find())
                     {
-                        parent.getKids()[whichKid].kids[nKidsDone] = nodeFactory.newNode(matcher.group(), parent.getKids()[whichKid].currentDepth+1);
-                        parent.getKids()[whichKid].kids[nKidsDone].parent = parent.getKids()[whichKid];
-                        parent.getKids()[whichKid].nSubNodes += 1;
-                        parent.getKids()[whichKid].maxDepthFromHere = Math.max(parent.getKids()[whichKid].maxDepthFromHere, 1);
+                        parent.getKid(whichKid).setKid(nKidsDone, nodeFactory.newNode(matcher.group(), parent.getKid(whichKid).currentDepth + 1));
+                        parent.getKid(whichKid).getKid(nKidsDone).parent = parent.getKid(whichKid);
+                        parent.getKid(whichKid).nSubNodes += 1;
+                        parent.getKid(whichKid).maxDepthFromHere = Math.max(parent.getKid(whichKid).maxDepthFromHere, 1);
                     }
                     else
                     {
@@ -181,14 +182,14 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             }
             nKidsDone++;
         }
-        if (nKidsDone < parent.getKids()[whichKid].nKids())
+        if (nKidsDone < parent.getKid(whichKid).nKids())
         {
             //error
         }
-        
-        parent.setNSubNodes(1 + parent.getKids()[whichKid].getNSubNodes());
-        parent.setMaxDepthFromHere(Math.max(parent.getMaxDepthFromHere(), 1 + parent.getKids()[whichKid].getMaxDepthFromHere()));
-        
+
+        parent.setNSubNodes(1 + parent.getKid(whichKid).getNSubNodes());
+        parent.setMaxDepthFromHere(Math.max(parent.getMaxDepthFromHere(), 1 + parent.getKid(whichKid).getMaxDepthFromHere()));
+
         return expression;
     }
 
@@ -222,14 +223,14 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         this.nSubNodes = nSubNodes;
     }
 
-    public Node[] getKids()
+    public Node getKid(int whichKid)
     {
-        return kids;
+        return kids[whichKid];
     }
-    
-    public void setKids(Node[] kids)
+
+    public void setKid(int whichKid, Node kid)
     {
-        this.kids = kids;
+        kids[whichKid] = kid;
     }
 
     public int getCurrentDepth()
@@ -242,6 +243,11 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         this.currentDepth = currentDepth;
     }
 
+    public void newKids()
+    {
+        kids = new Node[nKids()];
+    }
+
     public int getMaxDepthFromHere()
     {
         return maxDepthFromHere;
@@ -251,5 +257,5 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
     {
         this.maxDepthFromHere = maxDepthFromHere;
     }
-    
+
 }

@@ -23,17 +23,19 @@
  */
 
 package gpalta.ops;
+
 import gpalta.nodes.*;
 
 /**
  * Abstract Node Builder
+ *
  * @author neven
  */
-public abstract class NodeBuilder 
+public abstract class NodeBuilder
 {
-    
-    public abstract void build (NodeParent node, int maxDepth);
-    
-    public abstract void build (NodeParent node, int whichKid, int maxDepth);
-    
+
+    public abstract void build(NodeParent node, int maxDepth);
+
+    public abstract void build(NodeParent node, int whichKid, int maxDepth);
+
 }

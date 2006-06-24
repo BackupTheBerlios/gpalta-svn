@@ -1,5 +1,5 @@
 /*
- * TreeSelectorSUS.java
+ * IndSelectorSUS.java
  *
  * Created on 30 de marzo de 2006, 03:28 PM
  *
@@ -21,81 +21,83 @@
  * along with GPalta; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-         
+
 package gpalta.ops;
-import gpalta.nodes.*;
+
 import gpalta.core.*;
+
 import java.util.*;
 
 /**
  * Implements Stochastic Universal sampling (SUS) method
  */
-public class TreeSelectorSUS extends TreeSelector
+public class IndSelectorSUS extends IndSelector
 {
     private Config config;
     private Comparator<Individual> comp;
     private double pointerDistance;
     private Ranking theRanking;
-    
-    public TreeSelectorSUS(Config config, Ranking theRanking) {
+
+    public IndSelectorSUS(Config config, Ranking theRanking)
+    {
         this.config = config;
-        this.comp=new TreeFitnessComparator();
+        this.comp = new IndFitnessComparator();
         this.pointerDistance = config.SUSPointerDistance;
         this.theRanking = theRanking;
     }
-    
+
     public <T extends Individual> List<T> select(List<T> population)
     {
         double pointerPos;
         int k;
         T temp1;
-        
-        
+
+
         List<T> out = new ArrayList<T>();
-        
-        
+
+
         theRanking.rankPop(population, comp);
-                
+
         /*
-         *SUS iterations
-         */
-        pointerPos=Math.random();
-        k=0;
-        for(int i=0; i<population.size();i++)
+        *SUS iterations
+        */
+        pointerPos = Math.random();
+        k = 0;
+        for (int i = 0; i < population.size(); i++)
         {
-            while ( pointerPos >=theRanking.acumulatedFit[k]/theRanking.totalFitness)
-             {
-                 k++;
-                 if( k==population.size()-1 )
-                 {
-                     break;
-                 }
-             }
-            temp1=(T) theRanking.popArray[ k ];
+            while (pointerPos >= theRanking.acumulatedFit[k] / theRanking.totalFitness)
+            {
+                k++;
+                if (k == population.size() - 1)
+                {
+                    break;
+                }
+            }
+            temp1 = (T) theRanking.popArray[k];
             if (!temp1.isOnPop())
             {
-               out.add(temp1);
-               temp1.setOnPop(true);
+                out.add(temp1);
+                temp1.setOnPop(true);
             }
             else
             {
-               out.add( (T)temp1.deepClone() );
+                out.add((T) temp1.deepClone());
             }
-            
-            pointerPos+=pointerDistance;
-            if (pointerPos>1)
+
+            pointerPos += pointerDistance;
+            if (pointerPos > 1)
             {
-                pointerPos=pointerPos-1;
-                k=0;
+                pointerPos = pointerPos - 1;
+                k = 0;
             }
-            else if ( k >= population.size() )
+            else if (k >= population.size())
             {
-                k=0;
+                k = 0;
             }
-            
-         }
-       
-        return(out);
-     }
-    
+
+        }
+
+        return (out);
+    }
+
 }

@@ -33,16 +33,19 @@ import java.util.*;
  *
  * @author neven
  */
-public class EvalVectors {
-    
+public class EvalVectors
+{
+
     private List<double[]> vectors;
     private int currentEvalVector;
     private int vectorSize;
-    
-    /** Creates a new instance of EvalVectors
+
+    /**
+     * Creates a new instance of EvalVectors
+     *
      * @param vectorSize The size of each array (number of samples)
      */
-    public EvalVectors(int vectorSize) 
+    public EvalVectors(int vectorSize)
     {
         this.vectorSize = vectorSize;
         vectors = new ArrayList<double[]>(0);
@@ -63,17 +66,17 @@ public class EvalVectors {
         }
         return vectors.get(currentEvalVector);
     }
-    
+
     /**
      * Tell that the latest requested vector is no longer needed by the Node.
      * The Node that requested an array must release it inmediately after
      * stopping using it, or every time a node of that kind is evaluated,
      * an array will be created and never released, leading to HUGE
-     * MEMORY LEAKS. 
+     * MEMORY LEAKS.
      */
     public synchronized void release()
     {
         currentEvalVector--;
     }
-    
+
 }

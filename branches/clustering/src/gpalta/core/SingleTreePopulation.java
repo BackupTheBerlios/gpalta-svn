@@ -26,10 +26,10 @@ package gpalta.core;
 
 import gpalta.core.Tree;
 import gpalta.ops.*;
+
 import java.util.*;
 
 /**
- *
  * @author neven
  */
 public class SingleTreePopulation implements Population
@@ -50,7 +50,7 @@ public class SingleTreePopulation implements Population
             }
         }
     }
-    
+
     private void getOutput(Tree t, Output o, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         double[] results = o.getArray(0);
@@ -62,7 +62,7 @@ public class SingleTreePopulation implements Population
         }
         else
         {
-            for (int i=0; i<data.nSamples; i++)
+            for (int i = 0; i < data.nSamples; i++)
             {
                 results[i] = t.eval(data, prev);
                 data.update();
@@ -74,10 +74,10 @@ public class SingleTreePopulation implements Population
     public Output getRawOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         Output out = new Output(1, data.nSamples);
-        getOutput((Tree)ind, out, evalVectors, data, prev);
+        getOutput((Tree) ind, out, evalVectors, data, prev);
         return out;
     }
-    
+
     public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         Output raw = getRawOutput(ind, evalVectors, data, prev);
@@ -90,11 +90,11 @@ public class SingleTreePopulation implements Population
         return treeList.get(which);
     }
 
-    public void doSelection(TreeSelector sel)
+    public void doSelection(IndSelector sel)
     {
         treeList = sel.select(treeList);
     }
-    
+
     public void evolve(TreeOperator op)
     {
         op.operate(treeList);
@@ -104,12 +104,12 @@ public class SingleTreePopulation implements Population
     {
         this.config = config;
         treeList = new ArrayList<Tree>(config.populationSize);
-        for (int i=0; i<config.populationSize; i++)
+        for (int i = 0; i < config.populationSize; i++)
         {
             treeList.add(new Tree(builder.treeRoot()));
         }
         builder.build(treeList);
         outputs = new Output(1, data.nSamples);
     }
-    
+
 }

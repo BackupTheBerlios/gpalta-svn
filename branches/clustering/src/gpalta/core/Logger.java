@@ -23,33 +23,33 @@
  */
 
 package gpalta.core;
+
 import java.io.*;
 
 /**
- *
  * @author DSP
  */
 
 //TODO: investigate about Java Logging
 public abstract class Logger
 {
-    
+
     private static PrintWriter writer;
     private static boolean initialized = false;
-    
+
     public static void init()
     {
         //TODO: this exception should be caught here?
         try
         {
-            writer = new PrintWriter(new BufferedWriter (new FileWriter(Config.logFileName)));
+            writer = new PrintWriter(new BufferedWriter(new FileWriter(Config.logFileName)));
         }
         catch (IOException e)
         {
             e.printStackTrace(writer);
         }
     }
-    
+
     public static void log(String s)
     {
         if (!initialized)
@@ -62,7 +62,7 @@ public abstract class Logger
         //TODO: should we alway flush?
         writer.flush();
     }
-    
+
     public static void log(Exception e)
     {
         if (!initialized)
@@ -75,5 +75,5 @@ public abstract class Logger
         //TODO: should we alway flush?
         writer.flush();
     }
-    
+
 }

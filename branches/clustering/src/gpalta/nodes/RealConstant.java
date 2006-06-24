@@ -23,48 +23,48 @@
  */
 
 package gpalta.nodes;
+
 import gpalta.core.*;
 
 /**
- *
  * @author neven
  */
 public class RealConstant extends Node
 {
-    
+
     private double constant;
-    
+
     public RealConstant()
     {
-        
+
     }
-    
-    public RealConstant(double constant) 
+
+    public RealConstant(double constant)
     {
         this.constant = constant;
     }
-    
+
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return ( constant );
+        return (constant);
     }
-    
+
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        for (int i=0; i < data.nSamples; i++)
+        for (int i = 0; i < data.nSamples; i++)
         {
             outVect[i] = constant;
         }
     }
-    
+
     public String name()
     {
         return ("" + constant);
     }
-    
+
     public void init(Config config)
     {
         double random01 = Common.globalRandom.nextDouble();
-        this.constant = config.constLowLimit + (config.constUpLimit-config.constLowLimit)*random01;
+        this.constant = config.constLowLimit + (config.constUpLimit - config.constLowLimit) * random01;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * TreeSelectorProportional.java
+ * IndSelectorProportional.java
  *
  * Created on 28 de marzo de 2006, 06:03 PM
  *
@@ -23,8 +23,9 @@
  */
 
 package gpalta.ops;
-import gpalta.nodes.*;
+
 import gpalta.core.*;
+
 import java.util.*;
 
 /**
@@ -33,54 +34,54 @@ import java.util.*;
  * selected for next population. Then, the following individuals are selected
  * from the decimals of the expectated number of copies of each tree.
  */
-public class TreeSelectorProportional extends TreeSelector
+public class IndSelectorProportional extends IndSelector
 {
     private Config config;
     private Comparator<Individual> comp;
     private Comparator<Individual> comp2;
     private Ranking theRanking;
-    
-    /** Creates a new instance of TreeSelectorProportional */
-    public TreeSelectorProportional(Config config, Ranking theRanking)
+
+    /**
+     * Creates a new instance of IndSelectorProportional
+     */
+    public IndSelectorProportional(Config config, Ranking theRanking)
     {
         this.config = config;
-        this.comp=new TreeFitnessComparator();
-        this.comp2=new TreeFitnessComparatorDec();
+        this.comp = new IndFitnessComparator();
+        this.comp2 = new IndFitnessComparatorDec();
         this.theRanking = theRanking;
     }
-    
+
     /**
      * Performs the selection
-     * 
-     * @param population A list of Trees from where to select the individuals
-     * 
-     * @return A new list of Trees with the selected individuals. If a Tree is
-     * selected more than once, each instance of that Tree will be a totally
-     * independant individual (no other Trees will be modified when modifying that Tree)
      *
+     * @param population A list of Trees from where to select the individuals
+     * @return A new list of Trees with the selected individuals. If a Tree is
+     *         selected more than once, each instance of that Tree will be a totally
+     *         independant individual (no other Trees will be modified when modifying that Tree)
      */
     public <T extends Individual> List<T> select(List<T> population)
     {
         double fitness;
         //double totalFitness;
-        int treeCounter, treeCopies,k;
+        int treeCounter, treeCopies, k;
         T temp1, temp2;
-        
-        
+
+
         List<T> out = new ArrayList<T>();
-        
-        
+
+
         theRanking.rankPop(population, comp);
-        
-       
-        treeCounter=0;
-        for (int i=0;i<population.size();i++)
+
+
+        treeCounter = 0;
+        for (int i = 0; i < population.size(); i++)
         {
-            fitness=theRanking.adjustedFitness[ population.size()-1-i ];
-            
-            temp1 = ((T) theRanking.popArray[ population.size()-1-i ]);
-            treeCopies = (int)Math.floor(fitness/theRanking.totalFitness*population.size());
-            for (int j=1; j<=treeCopies;j++ )
+            fitness = theRanking.adjustedFitness[population.size() - 1 - i];
+
+            temp1 = ((T) theRanking.popArray[population.size() - 1 - i]);
+            treeCopies = (int) Math.floor(fitness / theRanking.totalFitness * population.size());
+            for (int j = 1; j <= treeCopies; j++)
             {
                 if (!temp1.isOnPop())
                 {
@@ -89,22 +90,22 @@ public class TreeSelectorProportional extends TreeSelector
                 }
                 else
                 {
-                    out.add( (T)temp1.deepClone() );
+                    out.add((T) temp1.deepClone());
                 }
-                
+
             }
-            treeCounter+=treeCopies;
+            treeCounter += treeCopies;
         }
-        
-        k=0;
-        
+
+        k = 0;
+
         /*
-         *Select best fitted for unsigned population slots
-         */
+        *Select best fitted for unsigned population slots
+        */
         Arrays.sort(theRanking.popArray, comp2);
-        while(treeCounter<population.size())
+        while (treeCounter < population.size())
         {
-            temp1=(T) theRanking.popArray[ population.size()-1-k ];
+            temp1 = (T) theRanking.popArray[population.size() - 1 - k];
             if (!temp1.isOnPop())
             {
                 out.add(temp1);
@@ -112,39 +113,40 @@ public class TreeSelectorProportional extends TreeSelector
             }
             else
             {
-                out.add( (T)temp1.deepClone() );
+                out.add((T) temp1.deepClone());
             }
-            
+
             k++;
             treeCounter++;
         }
-        
-        return(out);
+
+        return (out);
     }
-    
-    
+
+
 }
 
-class TreeFitnessComparatorDec implements Comparator<Individual>
-{    
-  
-    public int compare(Individual o1, Individual o2) {
-        double f1=o1.readFitness()-Math.floor(o1.readFitness());
-        double f2=o2.readFitness()-Math.floor(o2.readFitness());
-        
+class IndFitnessComparatorDec implements Comparator<Individual>
+{
+
+    public int compare(Individual o1, Individual o2)
+    {
+        double f1 = o1.readFitness() - Math.floor(o1.readFitness());
+        double f2 = o2.readFitness() - Math.floor(o2.readFitness());
+
         if (f1 < f2)
         {
-            return(-1);
+            return (-1);
         }
-        else if (f1>f2)
+        else if (f1 > f2)
         {
-            return(1);
+            return (1);
         }
         else
         {
-            return(0);
+            return (0);
         }
-               
+
     }
-    
+
 }

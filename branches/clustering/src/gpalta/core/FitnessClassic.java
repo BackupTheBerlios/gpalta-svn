@@ -28,11 +28,12 @@ import java.io.*;
 
 /**
  * Implementation of the classic fitness used in GP
+ *
  * @author neven
  */
 public class FitnessClassic implements Fitness
 {
-    
+
     private Output desiredOutputs;
     private double[] weights;
 
@@ -68,7 +69,7 @@ public class FitnessClassic implements Fitness
         }
     }
 
-    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights) 
+    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
         this.desiredOutputs = desiredOutputs;
         this.weights = weights;
@@ -77,16 +78,16 @@ public class FitnessClassic implements Fitness
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         double error = 0;
-        for (int i=0; i<data.nSamples; i++)
+        for (int i = 0; i < data.nSamples; i++)
         {
-            error += Math.pow (outputs.getArray(0)[i] - desiredOutputs.getArray(0)[i], 2);
+            error += Math.pow(outputs.getArray(0)[i] - desiredOutputs.getArray(0)[i], 2);
         }
-        ind.setFitness(1/(1+Math.sqrt(error)));
+        ind.setFitness(1 / (1 + Math.sqrt(error)));
     }
 
     public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         return raw;
     }
-    
+
 }
