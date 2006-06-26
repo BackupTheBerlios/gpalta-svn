@@ -30,7 +30,7 @@ import java.util.*;
 /**
  * Holds the GP parameters. See Config.txt for descriptions
  */
-public class Config
+public class Config implements Serializable
 {
 
     // --------------- Files -------------------

@@ -1,1 +1,1 @@
-start /belownormal java -cp GPalta.jar;plot.jar gpalta.gui/GPaltaGUI
+start /belownormal java -cp GPalta.jar;jchart2d.jar gpalta.gui/GPaltaGUI

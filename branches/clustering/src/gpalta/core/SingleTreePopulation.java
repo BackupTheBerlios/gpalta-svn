@@ -28,11 +28,12 @@ import gpalta.core.Tree;
 import gpalta.ops.*;
 
 import java.util.*;
+import java.io.Serializable;
 
 /**
  * @author neven
  */
-public class SingleTreePopulation implements Population
+public class SingleTreePopulation implements Population, Serializable
 {
     private List<Tree> treeList;
     private Config config;

@@ -25,11 +25,19 @@
 package gpalta.gui;
 
 import java.awt.datatransfer.StringSelection;
+import java.awt.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.List;
+import java.text.DecimalFormat;
 
-import ptolemy.plot.Plot;
 import gpalta.core.*;
+import info.monitorenter.gui.chart.Chart2D;
+import info.monitorenter.gui.chart.ITrace2D;
+import info.monitorenter.gui.chart.labelformatters.LabelFormatterNumber;
+import info.monitorenter.gui.chart.rangepolicies.RangePolicyFixedViewport;
+import info.monitorenter.gui.chart.traces.Trace2DBijective;
+import info.monitorenter.util.Range;
 
 /**
  * @author neven
@@ -44,7 +52,8 @@ public class GPaltaGUI extends javax.swing.JFrame
     public boolean stopAtNextGen;
     private boolean first;
     private int nGenDone;
-    private Plot plot;
+    private Chart2D plot;
+    private ITrace2D trace;
     private boolean usePlot;
     public boolean stopSaveQuit;
     private Timer timer;
@@ -502,31 +511,28 @@ public class GPaltaGUI extends javax.swing.JFrame
 
     private void plotInit()
     {
-        if (plot != null)
+        if (plot == null)
         {
-            panelPlot.remove(plot);
-        }
-        plot = new Plot();
-
-        //plot.setSize(200, 10);
-        plot.setYRange(0, 1);
-        plot.setXRange(0, 50);
-        plot.setXLabel("Generation");
-        //plot.setYLabel("Fitness");
-        if (config.fitness.equals("classifier"))
-        {
-            plot.setTitle("Hit Rate");
-            plot.addLegend(1, "HR0");
-            plot.addLegend(2, "HR1");
+            plot = new Chart2D();
+            panelPlot.add(plot);
+            trace = new Trace2DBijective();
+            trace.setName("Fitness");
+            trace.setColor(Color.RED);
+            plot.getAxisY().setRangePolicy(new RangePolicyFixedViewport(new Range(0 ,1)));
+            plot.getAxisY().setRange(new Range(0, 1));
+            plot.getAxisY().setPaintGrid(true);
+            plot.getAxisY().setMinorTickSpacing(.1);
+            plot.getAxisY().setMajorTickSpacing(.5);
+            plot.getAxisY().setFormatter(new LabelFormatterNumber(new DecimalFormat()));
+            plot.getAxisY().setPaintScale(true);
+            plot.setBackground(plot.getParent().getBackground());
+            plot.addTrace(trace);
         }
         else
         {
-            plot.setTitle("Fitness");
+            trace.removeAllPoints();
         }
-        //Fake points to set ranges correctly when loading from evo file
-        plot.addPoint(3, 0, 0, false);
-        plot.addPoint(3, 0, 1, false);
-        panelPlot.add(plot);
+
     }
 
     private void newEvo(boolean fromFile)
@@ -651,21 +657,7 @@ public class GPaltaGUI extends javax.swing.JFrame
         }
         if (usePlot)
         {
-            if (config.fitness.equals("classifier"))
-            {
-                //plot.addPoint(1, (double)evoStats.generation, evoStats.bestSoFar.hr0, !first);
-                //plot.addPoint(2, (double)evoStats.generation, evoStats.bestSoFar.hr1, !first);
-            }
-            else
-            {
-                plot.addPoint(1, (double) evoStats.generation, evoStats.bestSoFar.readFitness(), !first);
-            }
-            if (evoStats.generation > plot.getXRange()[1])
-            {
-                plot.addPoint(3, plot.getXRange()[1] + 50, 1, false);
-                plot.fillPlot();
-            }
-            //plot.clear(true);
+            trace.addPoint(evoStats.generation, evoStats.bestSoFar.readFitness());
         }
 
         /* The first update is for evaluation of initial population (gen 0), so we
