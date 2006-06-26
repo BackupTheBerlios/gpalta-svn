@@ -122,7 +122,6 @@ public class GPaltaGUI extends javax.swing.JFrame
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jScrollBar1 = new javax.swing.JScrollBar();
         panelTop = new javax.swing.JPanel();
         panelEvolution = new javax.swing.JPanel();
         butNewFromScratch = new javax.swing.JButton();
@@ -146,29 +145,24 @@ public class GPaltaGUI extends javax.swing.JFrame
         jLabel3 = new javax.swing.JLabel();
         textBestSoFar = new javax.swing.JTextArea();
         butCopy = new javax.swing.JButton();
-        panelCentralStats = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        panelText = new javax.swing.JPanel();
         panelStatsNames = new javax.swing.JPanel();
         labelGenName = new javax.swing.JLabel();
         labelBestFitThisName = new javax.swing.JLabel();
         labelAvgFitName = new javax.swing.JLabel();
         labelAvgNodesName = new javax.swing.JLabel();
-        labelFake3 = new javax.swing.JLabel();
+        labelFake1 = new javax.swing.JLabel();
         labelBestSoFar = new javax.swing.JLabel();
         labelBestSoFarFitName = new javax.swing.JLabel();
-        labelBestSoFarHR0Name = new javax.swing.JLabel();
-        labelBestSoFarHR1Name = new javax.swing.JLabel();
         labelBestSoFarNodesName = new javax.swing.JLabel();
         panelStatsValues = new javax.swing.JPanel();
         labelGenValue = new javax.swing.JLabel();
         labelBestFitThisValue = new javax.swing.JLabel();
         labelAvgFitValue = new javax.swing.JLabel();
         labelAvgNodesValue = new javax.swing.JLabel();
-        labelFake4 = new javax.swing.JLabel();
-        labelFake5 = new javax.swing.JLabel();
+        labelFake2 = new javax.swing.JLabel();
+        labelFake3 = new javax.swing.JLabel();
         labelBestSoFarFitValue = new javax.swing.JLabel();
-        labelBestSoFarHR0Value = new javax.swing.JLabel();
-        labelBestSoFarHR1Value = new javax.swing.JLabel();
         labelBestSoFarNodesValue = new javax.swing.JLabel();
         panelPlot = new javax.swing.JPanel();
         panelSpace = new javax.swing.JPanel();
@@ -288,7 +282,7 @@ public class GPaltaGUI extends javax.swing.JFrame
 
         getContentPane().add(panelTop, java.awt.BorderLayout.NORTH);
 
-        panelStats.setLayout(new java.awt.BorderLayout());
+        panelStats.setLayout(new java.awt.BorderLayout(10, 20));
 
         panelStats.setBorder(javax.swing.BorderFactory.createTitledBorder("Statistics"));
         panelStats.setMinimumSize(new java.awt.Dimension(0, 0));
@@ -312,9 +306,7 @@ public class GPaltaGUI extends javax.swing.JFrame
 
         panelStats.add(panelBestSoFar, java.awt.BorderLayout.SOUTH);
 
-        panelCentralStats.setLayout(new javax.swing.BoxLayout(panelCentralStats, javax.swing.BoxLayout.X_AXIS));
-
-        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 20));
+        panelText.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 20));
 
         panelStatsNames.setLayout(new javax.swing.BoxLayout(panelStatsNames, javax.swing.BoxLayout.Y_AXIS));
 
@@ -331,8 +323,8 @@ public class GPaltaGUI extends javax.swing.JFrame
         panelStatsNames.add(labelAvgNodesName);
         labelAvgNodesName.getAccessibleContext().setAccessibleName("Avg nodes this gen: ");
 
-        labelFake3.setText(" ");
-        panelStatsNames.add(labelFake3);
+        labelFake1.setText(" ");
+        panelStatsNames.add(labelFake1);
 
         labelBestSoFar.setText("Best so far");
         panelStatsNames.add(labelBestSoFar);
@@ -340,16 +332,10 @@ public class GPaltaGUI extends javax.swing.JFrame
         labelBestSoFarFitName.setText("Fitness:");
         panelStatsNames.add(labelBestSoFarFitName);
 
-        labelBestSoFarHR0Name.setText("HR0:");
-        panelStatsNames.add(labelBestSoFarHR0Name);
-
-        labelBestSoFarHR1Name.setText("HR1:");
-        panelStatsNames.add(labelBestSoFarHR1Name);
-
         labelBestSoFarNodesName.setText("Nodes:");
         panelStatsNames.add(labelBestSoFarNodesName);
 
-        jPanel2.add(panelStatsNames);
+        panelText.add(panelStatsNames);
 
         panelStatsValues.setLayout(new javax.swing.BoxLayout(panelStatsValues, javax.swing.BoxLayout.Y_AXIS));
 
@@ -366,36 +352,28 @@ public class GPaltaGUI extends javax.swing.JFrame
         labelAvgNodesValue.setText(" ");
         panelStatsValues.add(labelAvgNodesValue);
 
-        labelFake4.setText(" ");
-        panelStatsValues.add(labelFake4);
+        labelFake2.setText(" ");
+        panelStatsValues.add(labelFake2);
 
-        labelFake5.setText(" ");
-        panelStatsValues.add(labelFake5);
+        labelFake3.setText(" ");
+        panelStatsValues.add(labelFake3);
 
         labelBestSoFarFitValue.setText(" ");
         panelStatsValues.add(labelBestSoFarFitValue);
 
-        labelBestSoFarHR0Value.setText(" ");
-        panelStatsValues.add(labelBestSoFarHR0Value);
-
-        labelBestSoFarHR1Value.setText(" ");
-        panelStatsValues.add(labelBestSoFarHR1Value);
-
         labelBestSoFarNodesValue.setText(" ");
         panelStatsValues.add(labelBestSoFarNodesValue);
 
-        jPanel2.add(panelStatsValues);
+        panelText.add(panelStatsValues);
 
-        panelCentralStats.add(jPanel2);
+        panelStats.add(panelText, java.awt.BorderLayout.WEST);
 
         panelPlot.setLayout(new java.awt.BorderLayout(20, 0));
 
         panelPlot.setPreferredSize(new java.awt.Dimension(450, 200));
         panelPlot.add(panelSpace, java.awt.BorderLayout.WEST);
 
-        panelCentralStats.add(panelPlot);
-
-        panelStats.add(panelCentralStats, java.awt.BorderLayout.CENTER);
+        panelStats.add(panelPlot, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(panelStats, java.awt.BorderLayout.CENTER);
 
@@ -638,7 +616,7 @@ public class GPaltaGUI extends javax.swing.JFrame
             labelBestSoFarFitValue.setText("   " + String.format("%.3f", evoStats.bestSoFar.readFitness()));
             //labelBestSoFarHR0Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr0));
             //labelBestSoFarHR1Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr1));
-            //labelBestSoFarNodesValue.setText("   " + evoStats.bestSoFar.nSubNodes);
+            labelBestSoFarNodesValue.setText("   " + evoStats.bestSoFar.getSize());
         }
         if (usePlot)
         {
@@ -696,10 +674,8 @@ public class GPaltaGUI extends javax.swing.JFrame
     private javax.swing.JCheckBox checkSave;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollBar jScrollBar1;
     private javax.swing.JLabel labInfo;
     private javax.swing.JLabel labelAvgFitName;
     private javax.swing.JLabel labelAvgFitValue;
@@ -710,15 +686,11 @@ public class GPaltaGUI extends javax.swing.JFrame
     private javax.swing.JLabel labelBestSoFar;
     private javax.swing.JLabel labelBestSoFarFitName;
     private javax.swing.JLabel labelBestSoFarFitValue;
-    private javax.swing.JLabel labelBestSoFarHR0Name;
-    private javax.swing.JLabel labelBestSoFarHR0Value;
-    private javax.swing.JLabel labelBestSoFarHR1Name;
-    private javax.swing.JLabel labelBestSoFarHR1Value;
     private javax.swing.JLabel labelBestSoFarNodesName;
     private javax.swing.JLabel labelBestSoFarNodesValue;
+    private javax.swing.JLabel labelFake1;
+    private javax.swing.JLabel labelFake2;
     private javax.swing.JLabel labelFake3;
-    private javax.swing.JLabel labelFake4;
-    private javax.swing.JLabel labelFake5;
     private javax.swing.JLabel labelGen;
     private javax.swing.JLabel labelGenName;
     private javax.swing.JLabel labelGenValue;
@@ -735,6 +707,7 @@ public class GPaltaGUI extends javax.swing.JFrame
     private javax.swing.JPanel panelStatsNames;
     private javax.swing.JPanel panelStatsValues;
     private javax.swing.JPanel panelStop;
+    private javax.swing.JPanel panelText;
     private javax.swing.JPanel panelTop;
     private javax.swing.JProgressBar progressBar;
     private javax.swing.JSpinner spinGoN;
