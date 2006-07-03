@@ -134,7 +134,7 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         if (matcher.find())
         {
             parent.setKid(whichKid, nodeFactory.newNode(matcher.group(), parent.getCurrentDepth() + 1));
-            parent.getKid(whichKid).parent = parent;
+            parent.getKid(whichKid).setParent(parent);
         }
         else
         {
@@ -168,10 +168,10 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
                     matcher = op.matcher(expression);
                     if (matcher.find())
                     {
-                        parent.getKid(whichKid).setKid(nKidsDone, nodeFactory.newNode(matcher.group(), parent.getKid(whichKid).currentDepth + 1));
-                        parent.getKid(whichKid).getKid(nKidsDone).parent = parent.getKid(whichKid);
-                        parent.getKid(whichKid).nSubNodes += 1;
-                        parent.getKid(whichKid).maxDepthFromHere = Math.max(parent.getKid(whichKid).maxDepthFromHere, 1);
+                        parent.getKid(whichKid).setKid(nKidsDone, nodeFactory.newNode(matcher.group(), parent.getKid(whichKid).getCurrentDepth() + 1));
+                        parent.getKid(whichKid).getKid(nKidsDone).setParent(parent.getKid(whichKid));
+                        parent.getKid(whichKid).setNSubNodes(parent.getKid(whichKid).getNSubNodes() + 1);
+                        parent.getKid(whichKid).setMaxDepthFromHere(Math.max(parent.getKid(whichKid).getMaxDepthFromHere(), 1));
                     }
                     else
                     {

@@ -33,12 +33,6 @@ public interface NodeParent
 {
     public NodeParent getParent();
 
-    public void setParent(NodeParent n);
-
-    public int getWhichKidOfParent();
-
-    public void setWhichKidOfParent(int whichKidOfParent);
-
     public NodeSet typeOfKids(int i);
 
     public int getNSubNodes();
@@ -56,8 +50,6 @@ public interface NodeParent
     public int nKids();
 
     public int getCurrentDepth();
-
-    public void setCurrentDepth(int currentDepth);
 
     public void newKids();
 }

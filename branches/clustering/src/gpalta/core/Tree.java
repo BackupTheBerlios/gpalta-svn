@@ -35,7 +35,7 @@ public class Tree extends Individual implements NodeParent
     public double hr0;
     public double hr1;
     public boolean fitCalculated;
-    NodeSet type;
+    private NodeSet type;
     private Node[] kids;
 
     /**
@@ -49,12 +49,12 @@ public class Tree extends Individual implements NodeParent
 
     public double eval(DataHolder data, PreviousOutputHolder prev)
     {
-        return kids[0].eval(data, prev);
+        return getKid(0).eval(data, prev);
     }
 
     public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
-        kids[0].evalVect(outVect, evalVectors, data, prev);
+        getKid(0).evalVect(outVect, evalVectors, data, prev);
     }
 
     public int nKids()
@@ -69,7 +69,7 @@ public class Tree extends Individual implements NodeParent
 
     public String toString()
     {
-        return kids[0].toString();
+        return getKid(0).toString();
     }
 
     public Tree(String expression, NodeSet type, NodeFactory nodeFactory)
@@ -77,7 +77,7 @@ public class Tree extends Individual implements NodeParent
         this.type = type;
         newKids();
         Node.parse(expression, this, 0, nodeFactory);
-        kids[0].setParent(this);
+        getKid(0).setParent(this);
     }
 
     public Individual deepClone()
@@ -86,21 +86,12 @@ public class Tree extends Individual implements NodeParent
         try
         {
             out = (Tree) super.clone();
+            out.newKids();
+            out.setKid(0, getKid(0).deepClone(0));
         }
         catch (CloneNotSupportedException e)
         {
             Logger.log(e);
-        }
-
-        if (nKids() > 0)
-        {
-            out.newKids();
-        }
-
-        for (int i = 0; i < nKids(); i++)
-        {
-            out.setKid(i, getKid(i).deepClone(0));
-            out.getKid(i).setParent(out);
         }
         return out;
     }
@@ -115,22 +106,9 @@ public class Tree extends Individual implements NodeParent
         return null;
     }
 
-    public void setParent(NodeParent n)
-    {
-    }
-
-    public int getWhichKidOfParent()
-    {
-        return -1;
-    }
-
-    public void setWhichKidOfParent(int whichKidOfParent)
-    {
-    }
-
     public int getNSubNodes()
     {
-        return kids[0].getNSubNodes() + 1;
+        return getKid(0).getNSubNodes() + 1;
     }
 
     public void setNSubNodes(int nSubNodes)
@@ -149,7 +127,7 @@ public class Tree extends Individual implements NodeParent
 
     public int getMaxDepthFromHere()
     {
-        return 1 + kids[0].getMaxDepthFromHere();
+        return 1 + getKid(0).getMaxDepthFromHere();
     }
 
     public void setMaxDepthFromHere(int maxDepthFromHere)
@@ -159,10 +137,6 @@ public class Tree extends Individual implements NodeParent
     public int getCurrentDepth()
     {
         return -1;
-    }
-
-    public void setCurrentDepth(int currentDepth)
-    {
     }
 
     public void newKids()
