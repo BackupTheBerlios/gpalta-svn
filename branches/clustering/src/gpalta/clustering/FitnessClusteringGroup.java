@@ -31,10 +31,10 @@ import gpalta.core.*;
  */
 public class FitnessClusteringGroup implements Fitness
 {
-    private double[][] prototypes;
-    private double[][] prob;
-    private Config config;
-    private double m;
+    protected double[][] prototypes;
+    protected double[][] prob;
+    protected Config config;
+    protected double m;
 
     public void init(Config config, DataHolder data, String fileName)
     {
@@ -83,7 +83,7 @@ public class FitnessClusteringGroup implements Fitness
         }
     }
 
-    private double penalizedFitness(double fitness, int depth)
+    protected double penalizedFitness(double fitness, int depth)
     {
         return (1 - .1 * depth / config.maxDepth) * fitness;
     }

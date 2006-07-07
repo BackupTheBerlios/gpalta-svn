@@ -107,11 +107,20 @@ public class Evolution
         else if (config.fitness.equals("clustering"))
         {
             if (config.useMultiTree)
-                fitness = new FitnessClusteringGroup();
-            else if (config.useSoftPertenence)
-                fitness = new FitnessClusteringFuzzy();
+            {
+                if (config.useSoftPertenence)
+                    fitness = new FitnessClusteringGroupFuzzy();
+                else
+                    fitness = new FitnessClusteringGroup();
+            }
             else
-                fitness = new FitnessClustering();
+            {
+                if (config.useSoftPertenence)
+                    fitness = new FitnessClusteringFuzzy();
+                else
+                    fitness = new FitnessClustering();
+            }
+
         }
         else
         {
