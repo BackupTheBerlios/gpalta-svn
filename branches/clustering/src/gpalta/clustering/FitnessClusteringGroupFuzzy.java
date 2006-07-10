@@ -24,18 +24,33 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
             for (int wSample = 0; wSample < data.nSamples; wSample++)
             {
                 double sampleError = 0;
-
                 for (int wVar = 0; wVar < data.nVars; wVar++)
                     sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar + 1)[wSample], 2);
                 protoError += prob[wClass][wSample] * sampleError;
 
             }
-            //if (protoError == 0)
-            //    protoError = Double.MAX_VALUE;
             error += protoError;
         }
+
+        double[][] maxProb = Common.copy(prob);
+        Common.maxPerColInline(maxProb);
+        for (int wClass = 0; wClass < config.nClasses; wClass++)
+        {
+            if (Common.sum(maxProb[wClass]) < 1)
+            {
+                error = Double.MAX_VALUE;
+                break;
+            }
+            if (Common.sum(prob[wClass]) < 0.1*data.nSamples)
+            {
+                error = Double.MAX_VALUE;
+                break;
+            }
+        }
+
         double fitness = 1 / (1 + error);
         ind.setFitness(fitness);
+
         Tree t;
         for (int i = 0; i < config.nClasses; i++)
         {

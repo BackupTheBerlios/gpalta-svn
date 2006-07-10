@@ -90,51 +90,14 @@ public class FitnessClusteringGroup implements Fitness
 
     private void calcProto(Output outputs, DataHolder data)
     {
-        //calculate prototypes for each class:
-        /*for (int wClass=0; wClass<config.nClasses; wClass++)
-        {
-            double sumProbThisClass = 0;
-            for (int wSample=0; wSample<data.nSamples; wSample++)
-            {
-                prob[wClass][wSample] = Math.pow(outputs.getArray(wClass)[wSample], m);
-                sumProbThisClass += prob[wClass][wSample];
-            }
-            
-            for (int wVar=0; wVar<data.nVars; wVar++)
-            {
-                prototypes[wClass][wVar] = 0;
-                for (int wSample=0; wSample<data.nSamples; wSample++)
-                {
-                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
-                }
-                if (sumProbThisClass!=0)
-                    prototypes[wClass][wVar] /= sumProbThisClass;
-            }
-        }*/
-
         for (int wSample = 0; wSample < data.nSamples; wSample++)
-        {
-            double maxProb = 0;
-            int winner = 0;
-            double p;
             for (int wClass = 0; wClass < config.nClasses; wClass++)
-            {
-                prob[wClass][wSample] = 0;
-                if ((p = outputs.getArray(wClass)[wSample]) > maxProb)
-                {
-                    maxProb = p;
-                    winner = wClass;
-                }
-            }
-            prob[winner][wSample] = 1;
-        }
+                prob[wClass][wSample] = outputs.getArray(wClass)[wSample];
+        Common.maxPerColInline(prob);
+
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
-            double sumProbThisClass = 0;
-            for (int wSample = 0; wSample < data.nSamples; wSample++)
-            {
-                sumProbThisClass += prob[wClass][wSample];
-            }
+            double sumProbThisClass = Common.sum(prob[wClass]);
 
             for (int wVar = 0; wVar < data.nVars; wVar++)
             {

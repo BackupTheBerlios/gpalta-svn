@@ -137,4 +137,81 @@ public abstract class Common
         return mT;
     }
 
+    public static void maxPerRowInline(double[][] m)
+    {
+        for (int i=0; i<m.length; i++)
+        {
+            int maxi = maxI(m[i]);
+            for (int j=0; j<m[i].length; j++)
+            {
+                m[i][j] = 0;
+            }
+            m[i][maxi] = 1;
+        }
+    }
+
+    public static void maxPerColInline(double[][] m)
+    {
+        for (int wCol =0; wCol <m[0].length; wCol++)
+        {
+            int winner = 0;
+            double maxx = 0;
+            for (int wRow =0; wRow <m.length; wRow++)
+            {
+                if (m[wRow][wCol] > maxx)
+                {
+                    winner = wRow;
+                    maxx = m[wRow][wCol];
+                }
+            }
+            for (int wRow =0; wRow <m.length; wRow++)
+            {
+                m[wRow][wCol] = 0;
+            }
+            m[winner][wCol] = 1;
+        }
+    }
+
+    public static int maxI(double[] x)
+    {
+        int maxi = 0;
+        double maxx = 0;
+        for (int i=0; i<x.length; i++)
+        {
+            if (x[i] > maxx)
+            {
+                maxx = x[i];
+                maxi = i;
+            }
+        }
+        return maxi;
+    }
+
+    public static double sum(double[] x)
+    {
+        double sum=0;
+        for (int i=0; i<x.length; i++)
+        {
+            sum += x[i];
+        }
+        return sum;
+    }
+
+    public static double[][] copy(double[][] m)
+    {
+        double[][] out = new double[m.length][];
+        for (int i=0; i<m.length; i++)
+        {
+            out[i] = copy(m[i]);
+        }
+        return out;
+    }
+
+    public static double[] copy(double[] x)
+    {
+        double[] out = new double[x.length];
+        System.arraycopy(x, 0, out, 0, x.length);
+        return out;
+    }
+
 }
