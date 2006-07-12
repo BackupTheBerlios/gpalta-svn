@@ -214,4 +214,17 @@ public abstract class Common
         return out;
     }
 
+    public static double dist(double[] x1, double[] x2, int n)
+    {
+        double d = 0;
+        for (int i=0; i<x1.length; i++)
+            d += Math.pow(Math.abs(x1[i] - x2[i]), n);
+        return Math.pow(d, (double)1/n);
+    }
+
+    public static double dist2(double[] x1, double[] x2)
+    {
+        return dist(x1, x2, 2);
+    }
+
 }

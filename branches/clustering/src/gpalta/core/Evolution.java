@@ -109,7 +109,7 @@ public class Evolution
             if (config.useMultiTree)
             {
                 if (config.useSoftPertenence)
-                    fitness = new FitnessClusteringGroupFuzzy();
+                    fitness = new FitnessClusteringGroupSum();
                 else
                     fitness = new FitnessClusteringGroup();
             }

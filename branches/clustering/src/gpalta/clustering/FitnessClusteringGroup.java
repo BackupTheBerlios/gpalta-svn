@@ -88,7 +88,7 @@ public class FitnessClusteringGroup implements Fitness
         return (1 - .1 * depth / config.maxDepth) * fitness;
     }
 
-    private void calcProto(Output outputs, DataHolder data)
+    protected void calcProto(Output outputs, DataHolder data)
     {
         for (int wSample = 0; wSample < data.nSamples; wSample++)
             for (int wClass = 0; wClass < config.nClasses; wClass++)

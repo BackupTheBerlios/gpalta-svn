@@ -12,9 +12,25 @@ import gpalta.core.*;
 public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
 {
 
+    private double[][] prob2;
+
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         calcProto(outputs, data);
+
+        for (int wSample=0; wSample<data.nSamples; wSample++)
+        {
+            for (int wClass = 0; wClass < config.nClasses; wClass++)
+            {
+                prob2[wSample][wClass] = 0;
+                for (int wVar = 0; wVar < data.nVars; wVar++)
+                    prob2[wSample][wClass] += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar + 1)[wSample], 2);
+            }
+            double sumProb = Common.sum(prob2[wSample]);
+            for (int wClass = 0; wClass < config.nClasses; wClass++)
+                prob2[wSample][wClass] /= sumProb;
+
+        }
 
         //calculate total error:
         double error = 0;
@@ -26,13 +42,13 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
                 double sampleError = 0;
                 for (int wVar = 0; wVar < data.nVars; wVar++)
                     sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar + 1)[wSample], 2);
-                protoError += prob[wClass][wSample] * sampleError;
+                protoError += prob2[wSample][wClass] * sampleError;
 
             }
             error += protoError;
         }
 
-        double[][] maxProb = Common.copy(prob);
+        /*double[][] maxProb = Common.copy(prob);
         Common.maxPerColInline(maxProb);
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
@@ -46,7 +62,7 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
                 error = Double.MAX_VALUE;
                 break;
             }
-        }
+        }*/
 
         double fitness = 1 / (1 + error);
         ind.setFitness(fitness);
@@ -60,7 +76,7 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
         }
     }
 
-    private void calcProto(Output outputs, DataHolder data)
+    /*private void calcProto(Output outputs, DataHolder data)
     {
         //calculate prototypes for each class:
         for (int wClass=0; wClass<config.nClasses; wClass++)
@@ -84,5 +100,12 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
             }
         }
 
+    }*/
+
+    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
+    {
+        super.init(config, data, desiredOutputs, weights);
+        prob2 = new double[data.nSamples][config.nClasses];
     }
+
 }
