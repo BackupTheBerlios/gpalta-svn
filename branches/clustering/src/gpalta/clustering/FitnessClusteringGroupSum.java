@@ -9,7 +9,8 @@ import gpalta.core.*;
  * Time: 05:58:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FitnessClusteringGroupSum extends FitnessClusteringGroup
+public class
+        FitnessClusteringGroupSum extends FitnessClusteringGroup
 {
     private double[][] d;
     public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
@@ -22,7 +23,7 @@ public class FitnessClusteringGroupSum extends FitnessClusteringGroup
         double error = 0;
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
-            double nThisClass = Common.sum(prob[wClass]);
+            int nThisClass = (int)Common.sum(prob[wClass]);
             double errorThisClass = 0;
             for (int s1=0; s1 < data.nSamples-1; s1++)
             {
@@ -35,7 +36,8 @@ public class FitnessClusteringGroupSum extends FitnessClusteringGroup
                     }
                 }
             }
-            error += errorThisClass/nThisClass;
+            int comb = (nThisClass)*(nThisClass-1)/2;
+            error += errorThisClass/comb;
         }
 
         double fitness = 1 / (1 + error);
