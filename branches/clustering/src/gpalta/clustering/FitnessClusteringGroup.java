@@ -55,23 +55,27 @@ public class FitnessClusteringGroup implements Fitness
 
         //calculate total error:
         double error = 0;
+        double[] x = new double[data.nVars];
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
             double protoError = 0;
             for (int wSample = 0; wSample < data.nSamples; wSample++)
             {
-                double sampleError = 0;
                 if (prob[wClass][wSample] != 0)
                 {
                     for (int wVar = 0; wVar < data.nVars; wVar++)
-                        sampleError += Math.pow(prototypes[wClass][wVar] - data.getDataVect(wVar + 1)[wSample], 2);
-                    protoError += prob[wClass][wSample] * Math.sqrt(sampleError);
+                        x[wVar] = data.getDataVect(wVar + 1)[wSample];
+                    protoError += Common.dist2(prototypes[wClass], x);
                 }
             }
-            //if (protoError == 0)
-            //    protoError = Double.MAX_VALUE;
+//            double sumProbThisClass = Common.sum(prob[wClass]);
+//            if (sumProbThisClass!= 0)
+//                protoError /= sumProbThisClass;
+//            else
+//                protoError = Double.MAX_VALUE;
             error += protoError;
         }
+        error /= config.nClasses;
         double fitness = 1 / (1 + error);
         ind.setFitness(fitness);
         Tree t;
@@ -85,7 +89,7 @@ public class FitnessClusteringGroup implements Fitness
 
     protected double penalizedFitness(double fitness, int depth)
     {
-        return (1 - .1 * depth / config.maxDepth) * fitness;
+        return (1 - config.sizePenalization * depth / config.maxDepth) * fitness;
     }
 
     protected void calcProto(Output outputs, DataHolder data)

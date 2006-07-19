@@ -82,8 +82,7 @@ public class SingleTreePopulation implements Population, Serializable
     public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         Output raw = getRawOutput(ind, evalVectors, data, prev);
-        Output processed = f.getProcessedOutput(raw, ind, evalVectors, data, prev);
-        return processed;
+        return f.getProcessedOutput(raw, ind, evalVectors, data, prev);
     }
 
     public Individual get(int which)

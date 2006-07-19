@@ -87,6 +87,11 @@ public class Config implements Serializable
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;
 
+    /* fitness will be: 
+     * f' = (1-sizePenalization*treeDepth/maxDepth)*f
+     */
+    public double sizePenalization = 0.1;
+
     /* For the classifier fitness: (kind of obselete options for GPVAD)*/
     /* How much each SNR is more important than the next one: (Must be smaller than 1/3) */
     public double deltaSNR = 0.05;
