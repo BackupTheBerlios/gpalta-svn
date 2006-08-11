@@ -45,16 +45,14 @@ public class Evolution
     private Ranking theRanking;
     public Fitness fitness;
     private DataHolder dataHolder;
-    private PreviousOutputHolder previousOutputHolder;
     public int generation;
     public Config config;
     private NodeFactory nodeFactory;
     public EvolutionStats evoStats;
-    private EvalVectors evalVectors;
+    private TempOutputFactory tempOutputFactory;
 
     private void initCommon(Config config, DataHolder initializedData, boolean initPop)
     {
-        previousOutputHolder = new PreviousOutputHolder(config);
         nodeFactory = new NodeFactory(config, initializedData);
 
         treeOp = new TreeOperator(config, nodeFactory);
@@ -99,17 +97,12 @@ public class Evolution
             }
         }
 
-
-        if (config.fitness.equals("classifier"))
-        {
-            fitness = new FitnessClassifier();
-        }
-        else if (config.fitness.equals("clustering"))
+        if (config.fitness.equals("clustering"))
         {
             if (config.useMultiTree)
             {
                 if (config.useSoftPertenence)
-                    fitness = new FitnessClusteringGroupSum();
+                    fitness = new FitnessClusteringGroupGaussMix();
                 else
                     fitness = new FitnessClusteringGroup();
             }
@@ -127,9 +120,9 @@ public class Evolution
             fitness = new FitnessClassic();
         }
 
-        if (config.nPreviousOutput == 0 && config.useVect)
+        if (config.useVect)
         {
-            evalVectors = new EvalVectors(dataHolder.nSamples);
+            tempOutputFactory = new TempOutputFactory(config.outputDimension, dataHolder.nSamples);
         }
 
         evoStats = new EvolutionStats();
@@ -197,7 +190,7 @@ public class Evolution
      */
     public synchronized void eval()
     {
-        population.eval(fitness, evalVectors, dataHolder, previousOutputHolder);
+        population.eval(fitness, tempOutputFactory, dataHolder);
         Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
@@ -232,7 +225,7 @@ public class Evolution
      */
     public synchronized Output getRawOutput(Individual ind)
     {
-        return population.getRawOutput(ind, evalVectors, dataHolder, previousOutputHolder);
+        return population.getRawOutput(ind, tempOutputFactory, dataHolder);
     }
 
     /**
@@ -243,7 +236,7 @@ public class Evolution
      */
     public synchronized Output getProcessedOutput(Individual ind)
     {
-        return population.getProcessedOutput(ind, fitness, evalVectors, dataHolder, previousOutputHolder);
+        return population.getProcessedOutput(ind, fitness, tempOutputFactory, dataHolder);
     }
 
     /**

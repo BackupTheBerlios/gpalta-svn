@@ -32,28 +32,24 @@ import gpalta.core.*;
 public class Divide extends Node
 {
 
-    public double eval(DataHolder data, PreviousOutputHolder prev)
+    public double eval(DataHolder data)
     {
-        double resultKid1 = getKid(1).eval(data, prev);
+        double resultKid1 = getKid(1).eval(data);
         if (resultKid1 == 0)
             return 1;
         else
-            return (getKid(0).eval(data, prev) / resultKid1);
+            return (getKid(0).eval(data) / resultKid1);
     }
 
-    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
     {
-        getKid(0).evalVect(outVect, evalVectors, data, prev);
-        double[] resultKid2 = evalVectors.get();
-        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
-        for (int i = 0; i < data.nSamples; i++)
+        for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            if (resultKid2[i] == 0)
-                outVect[i] = 1;
+            if (kidOutVect[1][wSample] == 0)
+                outVect[wSample] = 1;
             else
-                outVect[i] = outVect[i] / resultKid2[i];
+                outVect[wSample] = kidOutVect[0][wSample] / kidOutVect[1][wSample];
         }
-        evalVectors.release();
     }
 
     public int nKids()

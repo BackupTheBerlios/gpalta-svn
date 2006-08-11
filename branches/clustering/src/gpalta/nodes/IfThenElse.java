@@ -32,32 +32,24 @@ import gpalta.core.*;
 public class IfThenElse extends Node
 {
 
-    public double eval(DataHolder data, PreviousOutputHolder prev)
+    public double eval(DataHolder data)
     {
-        if (getKid(0).eval(data, prev) != 0)
+        if (getKid(0).eval(data) != 0)
         {
-            return getKid(1).eval(data, prev);
+            return getKid(1).eval(data);
         }
         else
         {
-            return getKid(2).eval(data, prev);
+            return getKid(2).eval(data);
         }
     }
 
-    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
     {
-        //Is there a way to not evaluate both kids?
-        getKid(0).evalVect(outVect, evalVectors, data, prev);
-        double[] resultKid2 = evalVectors.get();
-        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
-        double[] resultKid3 = evalVectors.get();
-        getKid(2).evalVect(resultKid3, evalVectors, data, prev);
-        for (int i = 0; i < data.nSamples; i++)
+        for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[i] = (outVect[i] != 0 ? resultKid2[i] : resultKid3[i]);
+            outVect[wSample] = (kidOutVect[0][wSample] !=0 ? kidOutVect[1][wSample] : kidOutVect[2][wSample]);
         }
-        evalVectors.release();
-        evalVectors.release();
     }
 
     public int nKids()

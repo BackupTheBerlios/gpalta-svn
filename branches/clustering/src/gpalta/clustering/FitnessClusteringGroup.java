@@ -49,7 +49,7 @@ public class FitnessClusteringGroup implements Fitness
         prob = new double[config.nClasses][data.nSamples];
     }
 
-    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         calcProto(outputs, data);
 
@@ -68,7 +68,7 @@ public class FitnessClusteringGroup implements Fitness
                     protoError += Common.dist2(prototypes[wClass], x);
                 }
             }
-//            double sumProbThisClass = Common.sum(prob[wClass]);
+//            double sumProbThisClass = Common.sum(pxy[wClass]);
 //            if (sumProbThisClass!= 0)
 //                protoError /= sumProbThisClass;
 //            else
@@ -116,7 +116,7 @@ public class FitnessClusteringGroup implements Fitness
         }
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         ClusteringOutput processed = new ClusteringOutput(config.nClasses, data.nSamples);
         for (int i = 0; i < config.nClasses; i++)

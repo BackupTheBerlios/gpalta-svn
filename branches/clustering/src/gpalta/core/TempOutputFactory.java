@@ -1,5 +1,5 @@
 /*
- * EvalVectors.java
+ * TempOutputFactory.java
  *
  * Created on 11 de noviembre de 2005, 04:35 PM
  *
@@ -27,44 +27,46 @@ package gpalta.core;
 import java.util.*;
 
 /**
- * Hold vectors in which the nodes will be evaluated (when using evalVect)
+ * Hold outputs in which the nodes will be evaluated (when using evalVect)
  * This is done to avoid allocating memory every time a node is evaluated,
  * greatly improving execution speed with large data sets
  *
  * @author neven
  */
-public class EvalVectors
+public class TempOutputFactory
 {
 
-    private List<double[]> vectors;
-    private int currentEvalVector;
+    private List<Output> outputs;
+    private int currentOutput;
     private int vectorSize;
+    private int outputDimension;
 
     /**
-     * Creates a new instance of EvalVectors
+     * Creates a new instance of TempOutputFactory
      *
      * @param vectorSize The size of each array (number of samples)
      */
-    public EvalVectors(int vectorSize)
+    public TempOutputFactory(int outputDimension, int vectorSize)
     {
         this.vectorSize = vectorSize;
-        vectors = new ArrayList<double[]>(0);
-        currentEvalVector = -1;
+        this.outputDimension = outputDimension;
+        outputs = new ArrayList<Output>(0);
+        currentOutput = -1;
     }
 
     /**
      * Get a new vector. If previously allocated arrays are available, it will
      * return one of them. Else, it will allocate memory for a new one
      */
-    public synchronized double[] get()
+    public synchronized Output get()
     {
-        currentEvalVector++;
-        if (currentEvalVector == vectors.size())
+        currentOutput++;
+        if (currentOutput == outputs.size())
         {
             //Logger.log("Adding new realEvalVector, " + currentRealEvalVector);
-            vectors.add(new double[vectorSize]);
+            outputs.add(new Output(outputDimension, vectorSize));
         }
-        return vectors.get(currentEvalVector);
+        return outputs.get(currentOutput);
     }
 
     /**
@@ -76,7 +78,7 @@ public class EvalVectors
      */
     public synchronized void release()
     {
-        currentEvalVector--;
+        currentOutput--;
     }
 
 }

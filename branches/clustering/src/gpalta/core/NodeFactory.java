@@ -38,6 +38,7 @@ import java.util.*;
 public class NodeFactory
 {
     private Config config;
+    private DataHolder data;
     private NodeSet[] nodeSets;
     public NodeSet treeRoot;
 
@@ -47,6 +48,7 @@ public class NodeFactory
     public NodeFactory(Config config, DataHolder data)
     {
         this.config = config;
+        this.data = data;
         try
         {
             FileInputStream in = new FileInputStream(config.nodeConfigFileName);
@@ -199,7 +201,7 @@ public class NodeFactory
         {
             Logger.log(e);
         }
-        outNode.init(config);
+        outNode.init(config, data);
         outNode.setCurrentDepth(currentGlobalDepth);
         return outNode;
     }

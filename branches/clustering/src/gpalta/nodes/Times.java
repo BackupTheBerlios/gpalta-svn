@@ -32,21 +32,17 @@ import gpalta.core.*;
 public class Times extends Node
 {
 
-    public double eval(DataHolder data, PreviousOutputHolder prev)
+    public double eval(DataHolder data)
     {
-        return (getKid(0).eval(data, prev) * getKid(1).eval(data, prev));
+        return (getKid(0).eval(data) * getKid(1).eval(data));
     }
 
-    public void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
     {
-        getKid(0).evalVect(outVect, evalVectors, data, prev);
-        double[] resultKid2 = evalVectors.get();
-        getKid(1).evalVect(resultKid2, evalVectors, data, prev);
-        for (int i = 0; i < data.nSamples; i++)
+        for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[i] = outVect[i] * resultKid2[i];
+            outVect[wSample] = (kidOutVect[0][wSample] * kidOutVect[1][wSample]);
         }
-        evalVectors.release();
     }
 
     public int nKids()

@@ -32,15 +32,15 @@ import java.io.Serializable;
 public class Output implements Cloneable, Serializable
 {
     private double[][] data;
-    private int nArrays;
+    private int dim;
 
     /**
      * Creates a new instance of Output
      */
-    public Output(int nArrays, int nSamples)
+    public Output(int dim, int nSamples)
     {
-        data = new double[nArrays][nSamples];
-        this.nArrays = nArrays;
+        data = new double[dim][nSamples];
+        this.dim = dim;
     }
 
     public Object clone()
@@ -51,7 +51,7 @@ public class Output implements Cloneable, Serializable
             /* Remember to clone each array and their contents */
             out = (Output) super.clone();
             out.data = new double[data.length][];
-            for (int i = 0; i < nArrays; i++)
+            for (int i = 0; i < dim; i++)
                 out.setArray(i, getArrayCopy(i));
         }
         catch (CloneNotSupportedException e)
@@ -78,9 +78,9 @@ public class Output implements Cloneable, Serializable
         return out;
     }
 
-    public int nArrays()
+    public int getDim()
     {
-        return nArrays;
+        return dim;
     }
 
 }

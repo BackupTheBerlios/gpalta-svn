@@ -47,14 +47,44 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
 
     private NodeSet[] kidsType;
 
-    public void init(Config config)
+    public void init(Config config, DataHolder data)
     {
 
     }
 
-    public abstract double eval(DataHolder data, PreviousOutputHolder prev);
+    public abstract double eval(DataHolder data);
 
-    public abstract void evalVect(double[] outVect, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    public void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data)
+    {
+        if (nKids() > 0)
+        {
+            Output[] kidOuts = new Output[nKids()];
+            for (int wKid=0; wKid<nKids(); wKid++)
+            {
+                kidOuts[wKid] = tempOutputFactory.get();
+                getKid(wKid).evalVect(kidOuts[wKid], tempOutputFactory, data);
+            }
+
+            double[][] kidOutVects = new double[nKids()][];
+            for (int wDim=0; wDim<out.getDim(); wDim++)
+            {
+                for (int wKid=0; wKid<nKids(); wKid++)
+                {
+                    kidOutVects[wKid] = kidOuts[wKid].getArray(wDim);
+                }
+                evalVect(out.getArray(wDim), kidOutVects, data);
+            }
+            for (int wKid=0; wKid<nKids(); wKid++)
+                tempOutputFactory.release();
+        }
+        else
+        {
+            for (int wDim=0; wDim<out.getDim(); wDim++)
+                evalVect(out.getArray(wDim), null, data);
+        }
+    }
+
+    protected abstract void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data);
 
     public void setTypeOfKids(int whichKid, NodeSet t)
     {
@@ -68,10 +98,7 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         return kidsType[whichKid];
     }
 
-    public int nKids()
-    {
-        return 0;
-    }
+    public abstract int nKids();
 
     public abstract String name();
 

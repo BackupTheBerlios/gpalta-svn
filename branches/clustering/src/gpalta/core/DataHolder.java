@@ -42,6 +42,8 @@ public class DataHolder
     * as a vector.
     */
     private double[][] data;
+    private double[][] dataT;
+    private double[][] ranges;
     public int nSamples;
     private int currentSample;
     public int nVars;
@@ -63,9 +65,11 @@ public class DataHolder
     {
         try
         {
-            data = Common.transpose(Common.readFromFile(fileName, "\\s+"));
+            dataT = Common.readFromFile(fileName, "\\s+");
+            data = Common.transpose(dataT);
             nVars = data.length;
             nSamples = data[0].length;
+            calcRange();
             Logger.log("Finished reading " + nSamples + " samples from file \"" + fileName + "\"");
         }
 
@@ -85,9 +89,28 @@ public class DataHolder
     public DataHolder(double[][] data)
     {
         this.data = data;
+        dataT = Common.transpose(data);
         nVars = data.length;
         nSamples = data[0].length;
         currentSample = 0;
+        calcRange();
+    }
+
+    private void calcRange()
+    {
+        ranges = new double[nVars][2];
+        for (int wVar=0; wVar<nVars; wVar++)
+        {
+            double min = Double.MAX_VALUE;
+            double max = Double.MIN_VALUE;
+            for (int wSample=0; wSample<nSamples; wSample++)
+            {
+                min = Math.min(min, data[wVar][wSample]);
+                max = Math.max(max, data[wVar][wSample]);
+            }
+            ranges[wVar][0] = min;
+            ranges[wVar][1] = max;
+        }
     }
 
     /**
@@ -106,6 +129,26 @@ public class DataHolder
     public void update()
     {
         currentSample++;
+    }
+
+    public double getMin(int whichVar)
+    {
+        return ranges[whichVar-1][0];
+    }
+
+    public double getMax(int whichVar)
+    {
+        return ranges[whichVar-1][1];
+    }
+
+    public double[] getAllVars()
+    {
+        return dataT[currentSample];
+    }
+
+    public double[] getAllVars(int wSample)
+    {
+        return dataT[wSample];
     }
 
 }

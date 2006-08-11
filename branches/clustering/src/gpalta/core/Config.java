@@ -81,7 +81,7 @@ public class Config implements Serializable
     public String rankingType = "Raw";
 
     //---------------- Fitness -----------------------
-    /* generic or classifier */
+    /* generic or clustering */
     public String fitness = "generic";
 
     /* stop if fitness reaches this value: */
@@ -92,16 +92,9 @@ public class Config implements Serializable
      */
     public double sizePenalization = 0.1;
 
-    /* For the classifier fitness: (kind of obselete options for GPVAD)*/
-    /* How much each SNR is more important than the next one: (Must be smaller than 1/3) */
-    public double deltaSNR = 0.05;
-    public double continuityImportance = 0.001;
-    /* How much important is voice over silence: */
-    public double kHR1 = 4;
-
     //For the clustering fitness:
     public int nClasses = 5;
-    public boolean useMultiTree;
+    public boolean useMultiTree = false;
     public boolean useSoftPertenence = false;
     public double m = 2;
     public double scale = 1;
@@ -123,6 +116,8 @@ public class Config implements Serializable
      */
     public boolean useVect = false;
 
+    public int outputDimension = 1;
+
     /* If true, trees that haven't changed from the past generation will remember
     * their fitness and won't be evaluated again.
     * WARNING: do not use if some values change between generations (e.g. cicling
@@ -133,12 +128,6 @@ public class Config implements Serializable
     /* These two for non interactive mode */
     public boolean nonInteractive = false;
     public int nDaysToRun = 1;
-
-    /* include previous outputs as inputs (how many) */
-    public int nPreviousOutput = 0;
-    /* wheter previous outputs are real or logic nodes */
-    public boolean usePreviousOutputAsReal = false;
-
 
     /**
      * Reads config from a property file. The file must contain a value for all

@@ -24,10 +24,6 @@
 
 package gpalta.core;
 
-import gpalta.nodes.*;
-
-import java.util.List;
-
 /**
  * Hold desired outputs for fitness cases, and calculates the fitness for a given
  * Tree
@@ -68,8 +64,8 @@ public interface Fitness
      * @return The output of the Tree for every sample, or null if the Tree wasn't
      *         evaluated
      */
-    void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data);
 
-    Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev);
+    Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data);
 
 }

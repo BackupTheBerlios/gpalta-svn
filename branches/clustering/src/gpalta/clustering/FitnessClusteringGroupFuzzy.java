@@ -14,7 +14,7 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
 
     private double[][] prob2;
 
-    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         calcProto(outputs, data);
 
@@ -48,7 +48,7 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
             error += protoError;
         }
 
-        /*double[][] maxProb = Common.copy(prob);
+        /*double[][] maxProb = Common.copy(pxy);
         Common.maxPerColInline(maxProb);
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
@@ -57,7 +57,7 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
                 error = Double.MAX_VALUE;
                 break;
             }
-            if (Common.sum(prob[wClass]) < 0.1*data.nSamples)
+            if (Common.sum(pxy[wClass]) < 0.1*data.nSamples)
             {
                 error = Double.MAX_VALUE;
                 break;
@@ -84,8 +84,8 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
             double sumProbThisClass = 0;
             for (int wSample=0; wSample<data.nSamples; wSample++)
             {
-                prob[wClass][wSample] = Math.pow(outputs.getArray(wClass)[wSample], m);
-                sumProbThisClass += prob[wClass][wSample];
+                pxy[wClass][wSample] = Math.pow(outputs.getArray(wClass)[wSample], m);
+                sumProbThisClass += pxy[wClass][wSample];
             }
 
             for (int wVar=0; wVar<data.nVars; wVar++)
@@ -93,7 +93,7 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
                 prototypes[wClass][wVar] = 0;
                 for (int wSample=0; wSample<data.nSamples; wSample++)
                 {
-                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
+                    prototypes[wClass][wVar] += pxy[wClass][wSample] * data.getDataVect(wVar+1)[wSample];
                 }
                 if (sumProbThisClass!=0)
                     prototypes[wClass][wVar] /= sumProbThisClass;

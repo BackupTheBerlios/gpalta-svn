@@ -25,9 +25,6 @@
 package gpalta.clustering;
 
 import gpalta.core.*;
-import gpalta.nodes.*;
-
-import java.util.*;
 
 /**
  * @author neven
@@ -59,7 +56,7 @@ public class FitnessClusteringFuzzy implements Fitness
         results = new double[data.nSamples];
     }
 
-    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
 
         for (int i = 0; i < data.nSamples; i++)
@@ -68,7 +65,7 @@ public class FitnessClusteringFuzzy implements Fitness
         //assign pertenence probabilities (U matrix) without normalizing (possibilistic)
         for (int wSample = 0; wSample < data.nSamples; wSample++)
             for (int wClass = 0; wClass < config.nClasses; wClass++)
-                //prob[wClass][wSample] = 1 / (1 + Math.pow(config.scale * Math.abs(classCenters[wClass] - results[wSample]), m));
+                //pxy[wClass][wSample] = 1 / (1 + Math.pow(config.scale * Math.abs(classCenters[wClass] - results[wSample]), m));
                 prob[wClass][wSample] = Math.exp(-4 * Math.pow(classCenters[wClass] - results[wSample], 2));
 
         //calculate prototypes for each class:
@@ -108,7 +105,7 @@ public class FitnessClusteringFuzzy implements Fitness
 
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         ClusteringOutput processed = new ClusteringOutput(1, data.nSamples);
         processed.setArray(0, raw.getArrayCopy(0));

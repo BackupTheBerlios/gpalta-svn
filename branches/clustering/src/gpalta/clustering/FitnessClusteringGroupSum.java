@@ -1,10 +1,5 @@
 package gpalta.clustering;
 
-import gpalta.core.*;
-
-import java.util.Arrays;
-import java.util.Comparator;
-
 /**
  * Created by IntelliJ IDEA.
  * User: neven
@@ -12,12 +7,12 @@ import java.util.Comparator;
  * Time: 05:58:06 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FitnessClusteringGroupSum extends FitnessClusteringGroup
+/*public class FitnessClusteringGroupSum extends FitnessClusteringGroup
 {
     public double[][] d;
     public double paretoRadius;
     public IndexedDistance[][] id;
-    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, TempOutputFactory evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         for (int wSample = 0; wSample < data.nSamples; wSample++)
             for (int wClass = 0; wClass < config.nClasses; wClass++)
@@ -28,7 +23,7 @@ public class FitnessClusteringGroupSum extends FitnessClusteringGroup
         double nTot = 0;
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
-            //double nThisClass = Common.sum(prob[wClass]);
+            //double nThisClass = Common.sum(pxy[wClass]);
             double nThisClass = 0;
             double errorThisClass = 0;
             int nSumThisClass = 0;
@@ -71,7 +66,7 @@ public class FitnessClusteringGroupSum extends FitnessClusteringGroup
         }
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory evalVectors, DataHolder data, PreviousOutputHolder prev)
     {
         return raw;
     }
@@ -155,3 +150,4 @@ class IndexedDistanceComparator implements Comparator<IndexedDistance>
     }
 
 }
+*/

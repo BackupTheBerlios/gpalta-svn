@@ -25,7 +25,6 @@
 package gpalta.clustering;
 
 import gpalta.core.*;
-import gpalta.nodes.*;
 
 import java.util.*;
 
@@ -56,7 +55,7 @@ public class FitnessClustering implements Fitness
         results = new double[data.nSamples];
     }
 
-    public void calculate(Output outputs, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         for (int i = 0; i < data.nSamples; i++)
             results[i] = config.scale * Math.tanh(outputs.getArray(0)[i]);
@@ -111,7 +110,7 @@ public class FitnessClustering implements Fitness
         ind.setFitness(1 / (1 + error));
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         ClusteringOutput processed = new ClusteringOutput(1, data.nSamples);
         processed.setArray(0, raw.getArrayCopy(0));

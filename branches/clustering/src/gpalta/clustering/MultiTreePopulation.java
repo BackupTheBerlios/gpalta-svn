@@ -41,14 +41,14 @@ public class MultiTreePopulation implements Population, Serializable
     private Config config;
     private Output out;
 
-    public void eval(Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         for (BufferedTree t : treeList)
         {
             t.setFitness(0);
             if (!config.rememberLastEval || !t.fitCalculated)
             {
-                getOutput(t, t.out, evalVectors, data, prev);
+                getOutput(t, t.out, tempOutputFactory, data);
                 t.fitCalculated = true;
             }
         }
@@ -56,56 +56,50 @@ public class MultiTreePopulation implements Population, Serializable
         {
             for (int i = 0; i < config.nClasses; i++)
             {
-                out.setArray(i, g.getTree(i).out.getArray(0));
+                for (int wDim=0; wDim<config.outputDimension; wDim++)
+                    out.setArray(i*config.outputDimension+wDim, g.getTree(i).out.getArray(wDim));
             }
-            f.calculate(out, g, evalVectors, data, prev);
+            f.calculate(out, g, tempOutputFactory, data);
         }
 
     }
 
-    private void getOutput(Tree t, Output o, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    private void getOutput(Tree t, Output o, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         double[] results = o.getArray(0);
         data.reset();
-        prev.reset();
-        if (config.nPreviousOutput == 0 && config.useVect)
+        if (config.useVect)
         {
-            t.evalVect(results, evalVectors, data, prev);
+            t.evalVect(o, tempOutputFactory, data);
         }
         else
         {
             for (int i = 0; i < data.nSamples; i++)
             {
-                results[i] = t.eval(data, prev);
+                results[i] = t.eval(data);
                 data.update();
-                prev.update(results[i]);
             }
         }
-        Common.sigmoid(results);
+        //Common.sigmoid(results);
     }
 
-    public Output getRawOutput(Individual ind, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        Output out = new Output(config.nClasses, data.nSamples);
+        Output out = new Output(config.nClasses * config.outputDimension, data.nSamples);
         TreeGroup ind2 = (TreeGroup) ind;
         for (int i = 0; i < config.nClasses; i++)
         {
-            if (!ind2.getTree(i).fitCalculated)
-            {
-                getOutput(ind2.getTree(i), ind2.getTree(i).out, evalVectors, data, prev);
-            }
-            else
-            {
-                out.setArray(i, ind2.getTree(i).out.getArrayCopy(0));
-            }
+            assert ind2.getTree(i).fitCalculated;
+            for (int wDim=0; wDim<config.outputDimension; wDim++)
+                out.setArray(i*config.outputDimension+wDim, ind2.getTree(i).out.getArrayCopy(wDim));
         }
         return out;
     }
 
-    public Output getProcessedOutput(Individual ind, Fitness f, EvalVectors evalVectors, DataHolder data, PreviousOutputHolder prev)
+    public Output getProcessedOutput(Individual ind, Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        Output raw = getRawOutput(ind, evalVectors, data, prev);
-        return f.getProcessedOutput(raw, ind, evalVectors, data, prev);
+        Output raw = getRawOutput(ind, tempOutputFactory, data);
+        return f.getProcessedOutput(raw, ind, tempOutputFactory, data);
     }
 
     public Individual get(int which)
@@ -125,12 +119,13 @@ public class MultiTreePopulation implements Population, Serializable
         for (int i = 0; i < config.nTrees; i++)
         {
             BufferedTree t = new BufferedTree(builder.treeRoot());
-            t.out = new Output(1, data.nSamples);
+            t.out = new Output(config.outputDimension, data.nSamples);
+            //t.groupList = new ArrayList<TreeGroup>();
             treeList.add(t);
         }
         builder.build(treeList);
         asignTrees(treeList, treeGroups);
-        out = new Output(config.nClasses, data.nSamples);
+        out = new Output(config.nClasses * config.outputDimension, data.nSamples);
     }
 
     public void doSelection(IndSelector sel)
@@ -155,8 +150,9 @@ public class MultiTreePopulation implements Population, Serializable
                 //if a tree didn't get selected, its isOnPop will be false
                 if (g.getTree(i) == null || !g.getTree(i).isOnPop())
                 {
-                    //treeList.getTree(perm[treePointer]).groups.add(g);
                     g.setTree(i, trees.get(perm[treePointer]));
+                    //trees.get(perm[treePointer]).groupList.add(g);
+                    trees.get(perm[treePointer]).nGroups++;
                     if (++treePointer == config.nTrees)
                     {
                         treePointer = 0;
