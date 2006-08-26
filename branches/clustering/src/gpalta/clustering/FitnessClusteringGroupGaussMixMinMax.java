@@ -9,7 +9,7 @@ import gpalta.core.*;
  * Time: 10:03:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FitnessClusteringGroupGaussMix implements Fitness
+public class FitnessClusteringGroupGaussMixMinMax implements Fitness
 {
     private double[][] d;
     private int[] min;

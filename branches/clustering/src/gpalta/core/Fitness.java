@@ -61,8 +61,6 @@ public interface Fitness
      * (and maybe some other stats, like hr0 and hr1 for classifiers),
      * recording them in the tree.
      *
-     * @return The output of the Tree for every sample, or null if the Tree wasn't
-     *         evaluated
      */
     void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data);
 

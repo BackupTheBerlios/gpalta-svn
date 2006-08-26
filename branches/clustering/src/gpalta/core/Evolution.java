@@ -26,6 +26,8 @@ package gpalta.core;
 
 import gpalta.clustering.*;
 import gpalta.ops.*;
+import gpalta.classifier.FitnessClassifier;
+import gpalta.classifier.MultiTreePopulationClassifier;
 
 import java.io.*;
 
@@ -102,7 +104,7 @@ public class Evolution
             if (config.useMultiTree)
             {
                 if (config.useSoftPertenence)
-                    fitness = new FitnessClusteringGroupGaussMix();
+                    fitness = new FitnessClusteringGroupGaussMixMinMax();
                 else
                     fitness = new FitnessClusteringGroup();
             }
@@ -114,6 +116,10 @@ public class Evolution
                     fitness = new FitnessClustering();
             }
 
+        }
+        else if (config.fitness.equals("classifier"))
+        {
+            fitness = new FitnessClassifier();
         }
         else
         {
@@ -129,7 +135,10 @@ public class Evolution
         if (initPop)
         {
             if (config.useMultiTree)
-                population = new MultiTreePopulation();
+                if (config.fitness.equals("classifier"))
+                    population = new MultiTreePopulationClassifier();
+                else
+                    population = new MultiTreePopulation();
             else
                 population = new SingleTreePopulation();
             population.init(config, initializedData, treeBuilder);
@@ -141,11 +150,11 @@ public class Evolution
     }
 
     /**
-     * Creates a new instance of Evolution, loading data from file
+     * Creates a new Evolution, loading data from file
      *
      * @param config  The evolution configuration
-     * @param initPop If true, the population is randomly initialized. Else,
-     *                nothing is done (population will be later read from a file)
+     * @param initPop If true, the population is randomly initialized. Else, nothing is done
+     *                (population will be later read from a file)
      */
     public Evolution(Config config, boolean initPop)
     {
@@ -160,16 +169,15 @@ public class Evolution
     }
 
     /**
-     * Creates a new instance of Evolution, using the given data, desiredOutputs
-     * and weights
+     * Creates a new instance of Evolution, using the given data, desiredOutputs and weights
      *
      * @param config         The evolution configuration
-     * @param data           The current problem's data, where every row correponds to all
-     *                       the samples for a variable.
+     * @param data           The current problem's data, where every row correponds to all the
+     *                       samples for a variable.
      * @param desiredOutputs The desired outputs
      * @param weights        The weight (importance) of each sample
-     * @param initPop        If true, the population is randomly initialized. Else,
-     *                       nothing is done (population will be later read from a file)
+     * @param initPop        If true, the population is randomly initialized. Else, nothing is done
+     *                       (population will be later read from a file)
      */
     public Evolution(Config config, double[][] data, double[] desiredOutputs, double[] weights, boolean initPop)
     {
@@ -209,6 +217,7 @@ public class Evolution
         {
             evoStats.bestSoFar = bestThisGen.deepClone();
             evoStats.bestTreeChanged = true;
+            evoStats.bestGen = generation;
         }
 
         evoStats.avgFit /= config.populationSize;
@@ -218,10 +227,10 @@ public class Evolution
     }
 
     /**
-     * Evaluate a single tree
+     * Evaluate a single Individual and get its "raw" output for every sample. Raw means that the
+     * result is obtained only from the Individual, and not modified by the Fitness
      *
-     * @return The output of the Tree for every sample, or null if the Tree wasn't
-     *         evaluated
+     * @return The "raw" output of the Individual for every sample
      */
     public synchronized Output getRawOutput(Individual ind)
     {
@@ -229,10 +238,9 @@ public class Evolution
     }
 
     /**
-     * Evaluate a single tree
+     * Evaluate a single Individual and get its output after being further processed by the Fitness
      *
-     * @return The output of the Tree for every sample, or null if the Tree wasn't
-     *         evaluated
+     * @return The "processed" output of the Individual for every sample
      */
     public synchronized Output getProcessedOutput(Individual ind)
     {
@@ -240,8 +248,8 @@ public class Evolution
     }
 
     /**
-     * Evolve one generation. Assumes the current population is already evaluated
-     * and doesn't evaluate the evolved one
+     * Evolve one generation. Assumes the current population is already evaluated and doesn't
+     * evaluate the evolved one
      */
     public synchronized void evolve()
     {
@@ -252,16 +260,14 @@ public class Evolution
 
 
     /**
-     * Save Evolution to file.
-     * TODO: We should do something to check that the saved info is correct.
-     * Maybe more things should be saved. For instance, if the file was saved
-     * with a grater maxDepth than it is now, there would be nodes with larger
-     * depth than current maxDepth, and an attempt to mutate those nodes would
-     * result in an error.
+     * Save Evolution to file. TODO: We should do something to check that the saved info is correct.
+     * Maybe more things should be saved. For instance, if the file was saved with a grater maxDepth
+     * than it is now, there would be nodes with larger depth than current maxDepth, and an attempt
+     * to mutate those nodes would result in an error.
      *
      * @param fileName The file to write to
-     * @throws IOException if a problem is encountered while writing (controlling
-     *                     classes should do something about it)
+     * @throws IOException if a problem is encountered while writing (controlling classes should do
+     *                     something about it)
      */
     public synchronized void save(String fileName) throws IOException
     {
@@ -287,18 +293,16 @@ public class Evolution
     }
 
     /**
-     * Read Evolution from file.
-     * TODO: We should do something to check that the saved info is correct.
-     * Maybe more things should be saved. For instance, if the file was saved
-     * with a grater maxDepth than it is now, there would be nodes with larger
-     * depth than current maxDepth, and an attempt to mutate those nodes would
-     * result in an error.
+     * Read Evolution from file. TODO: We should do something to check that the saved info is
+     * correct. Maybe more things should be saved. For instance, if the file was saved with a grater
+     * maxDepth than it is now, there would be nodes with larger depth than current maxDepth, and an
+     * attempt to mutate those nodes would result in an error.
      *
      * @param fileName The file to be read
-     * @throws IOException            if a problem is encountered while reading (controlling
-     *                                classes should do something about it)
-     * @throws ClassNotFoundException if class read doesn't match existing classes
-     *                                (probably old data in file)
+     * @throws IOException            if a problem is encountered while reading (controlling classes
+     *                                should do something about it)
+     * @throws ClassNotFoundException if class read doesn't match existing classes (probably old
+     *                                data in file)
      */
     public synchronized void read(String fileName) throws IOException, ClassNotFoundException
     {

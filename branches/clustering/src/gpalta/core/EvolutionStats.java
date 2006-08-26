@@ -40,5 +40,6 @@ public class EvolutionStats
     public int generation;
     public double avgFit;
     public double avgNodes;
+    public int bestGen;
 
 }

@@ -47,43 +47,75 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
 
     private NodeSet[] kidsType;
 
+    /**
+     * Initialize the Node. Override this if the node has a state that needs to be specified when
+     * created
+     *
+     * @param config
+     * @param data
+     */
     public void init(Config config, DataHolder data)
     {
 
     }
 
+    /**
+     * Evaluate the Node for a sinlge sample. All Nodes must override this method. The Node is
+     * responsible for evaluating its children, if any.
+     *
+     * @param data
+     * @return The output of the Node
+     */
     public abstract double eval(DataHolder data);
 
+    /**
+     * Evaluate a Node for all samples (vectorial evaluation), using Output objects for storing the
+     * results. Override this method only if the Node has a special behabior with respect to
+     * multiple dimension outputs
+     *
+     * @param out
+     * @param tempOutputFactory
+     * @param data
+     */
     public void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         if (nKids() > 0)
         {
             Output[] kidOuts = new Output[nKids()];
-            for (int wKid=0; wKid<nKids(); wKid++)
+            for (int wKid = 0; wKid < nKids(); wKid++)
             {
                 kidOuts[wKid] = tempOutputFactory.get();
                 getKid(wKid).evalVect(kidOuts[wKid], tempOutputFactory, data);
             }
 
             double[][] kidOutVects = new double[nKids()][];
-            for (int wDim=0; wDim<out.getDim(); wDim++)
+            for (int wDim = 0; wDim < out.getDim(); wDim++)
             {
-                for (int wKid=0; wKid<nKids(); wKid++)
+                for (int wKid = 0; wKid < nKids(); wKid++)
                 {
                     kidOutVects[wKid] = kidOuts[wKid].getArray(wDim);
                 }
                 evalVect(out.getArray(wDim), kidOutVects, data);
             }
-            for (int wKid=0; wKid<nKids(); wKid++)
+            for (int wKid = 0; wKid < nKids(); wKid++)
                 tempOutputFactory.release();
         }
         else
         {
-            for (int wDim=0; wDim<out.getDim(); wDim++)
+            for (int wDim = 0; wDim < out.getDim(); wDim++)
                 evalVect(out.getArray(wDim), null, data);
         }
     }
 
+    /**
+     * Evaluate the Node for all samples (vectorial evaluation). All Nodes must override this
+     * method
+     *
+     * @param outVect    The array where the outout must be stored
+     * @param kidOutVect A matrix holding the outputs of this Node's kids. Each row holds the output
+     *                   for each kid
+     * @param data       The problem's data
+     */
     protected abstract void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data);
 
     public void setTypeOfKids(int whichKid, NodeSet t)
@@ -98,8 +130,18 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         return kidsType[whichKid];
     }
 
+    /**
+     * Read the number of kids of the Node
+     *
+     * @return The number of kids this Node has
+     */
     public abstract int nKids();
 
+    /**
+     * Get the Node's short name (such as "plus", "minus", "x1", etc)
+     *
+     * @return The Node's name
+     */
     public abstract String name();
 
     public String toString()

@@ -32,8 +32,6 @@ import gpalta.nodes.*;
 public class Tree extends Individual implements NodeParent
 
 {
-    public double hr0;
-    public double hr1;
     public boolean fitCalculated;
     private NodeSet type;
     private Node[] kids;
@@ -69,7 +67,10 @@ public class Tree extends Individual implements NodeParent
 
     public String toString()
     {
-        return getKid(0).toString();
+        if (getKid(0)!=null)
+            return getKid(0).toString();
+        else
+            return ("null");
     }
 
     public Tree(String expression, NodeSet type, NodeFactory nodeFactory)
@@ -88,6 +89,7 @@ public class Tree extends Individual implements NodeParent
             out = (Tree) super.clone();
             out.newKids();
             out.setKid(0, getKid(0).deepClone(0));
+            out.getKid(0).setParent(out);
         }
         catch (CloneNotSupportedException e)
         {

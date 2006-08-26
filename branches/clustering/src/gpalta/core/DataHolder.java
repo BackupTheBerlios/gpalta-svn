@@ -98,7 +98,7 @@ public class DataHolder
 
     private void calcRange()
     {
-        ranges = new double[nVars][2];
+        ranges = new double[nVars][3];
         for (int wVar=0; wVar<nVars; wVar++)
         {
             double min = Double.MAX_VALUE;
@@ -110,6 +110,7 @@ public class DataHolder
             }
             ranges[wVar][0] = min;
             ranges[wVar][1] = max;
+            ranges[wVar][2] = max-min;
         }
     }
 
@@ -141,6 +142,11 @@ public class DataHolder
         return ranges[whichVar-1][1];
     }
 
+    public double getRange(int wVar)
+    {
+        return ranges[wVar-1][2];
+    }
+
     public double[] getAllVars()
     {
         return dataT[currentSample];
@@ -150,5 +156,7 @@ public class DataHolder
     {
         return dataT[wSample];
     }
+
+
 
 }

@@ -40,7 +40,6 @@ public abstract class Common
     public static java.util.Random globalRandom = new java.util.Random();
 
     private static int lastN;
-    private static int[] permutation;
 
     /**
      * Efficient permutation algorithm, O(n)
@@ -51,16 +50,10 @@ public abstract class Common
      */
     public static int[] randPerm(int n)
     {
-        /* If we need a permutation of the same size as the last time, we can
-         * use the same array whithout reinitializing it.
-         */
-        if (n != lastN)
+        int[] permutation = new int[n];
+        for (int i = 0; i < n; i++)
         {
-            permutation = new int[n];
-            for (int i = 0; i < n; i++)
-            {
-                permutation[i] = i;
-            }
+            permutation[i] = i;
         }
         lastN = n;
 
@@ -224,7 +217,14 @@ public abstract class Common
 
     public static double dist2(double[] x1, double[] x2)
     {
-        return dist(x1, x2, 2);
+        double d = 0;
+        double p;
+        for (int i=0; i<x1.length; i++)
+        {
+            p = x1[i] - x2[i];
+            d += p*p;
+        }
+        return Math.sqrt(d);
     }
 
 }

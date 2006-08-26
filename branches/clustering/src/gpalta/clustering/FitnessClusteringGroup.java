@@ -55,35 +55,45 @@ public class FitnessClusteringGroup implements Fitness
 
         //calculate total error:
         double error = 0;
-        double[] x = new double[data.nVars];
+        double[] x;
+        double[] protoError = new double[config.nClasses];
+        int[] nEachClass = new int[config.nClasses];
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
-            double protoError = 0;
+            protoError[wClass] = 0;
+            nEachClass[wClass] = 0;
             for (int wSample = 0; wSample < data.nSamples; wSample++)
             {
                 if (prob[wClass][wSample] != 0)
                 {
-                    for (int wVar = 0; wVar < data.nVars; wVar++)
-                        x[wVar] = data.getDataVect(wVar + 1)[wSample];
-                    protoError += Common.dist2(prototypes[wClass], x);
+                    x = data.getAllVars(wSample);
+                    //protoError[wClass] += Common.dist2(prototypes[wClass], x);
+                    nEachClass[wClass]++;
+
+                    double sampleError = 0;
+                    for (int wVar=0; wVar<data.nVars; wVar++)
+                        sampleError += Math.abs(prototypes[wClass][wVar]-x[wVar])/data.getRange(wVar+1);
+                    protoError[wClass] += sampleError/data.nVars;
                 }
             }
-//            double sumProbThisClass = Common.sum(pxy[wClass]);
-//            if (sumProbThisClass!= 0)
-//                protoError /= sumProbThisClass;
-//            else
-//                protoError = Double.MAX_VALUE;
-            error += protoError;
+            error += protoError[wClass];
         }
         error /= config.nClasses;
         double fitness = 1 / (1 + error);
         ind.setFitness(fitness);
-        Tree t;
+        BufferedTree t;
         for (int i = 0; i < config.nClasses; i++)
         {
             t = ((TreeGroup) ind).getTree(i);
+
+            //average
+            t.setFitness(t.readFitness() + penalizedFitness(1 / (1 + protoError[i]/nEachClass[i]), t.getMaxDepthFromHere())/t.nGroups);
+
+            /*
+            //max
             if (fitness > t.readFitness())
-                t.setFitness(penalizedFitness(fitness, t.getMaxDepthFromHere()));
+                t.setFitness(penalizedFitness(1 / (1 + protoError[i]/nEachClass[i]), t.getMaxDepthFromHere()));
+            */
         }
     }
 
