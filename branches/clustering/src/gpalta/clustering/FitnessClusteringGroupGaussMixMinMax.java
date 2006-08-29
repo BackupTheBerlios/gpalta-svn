@@ -9,7 +9,7 @@ import gpalta.core.*;
  * Time: 10:03:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FitnessClusteringGroupGaussMixMinMax implements Fitness
+public class FitnessClusteringGroupGaussMixMinMax extends FitnessGroup
 {
     private double[][] d;
     private int[] min;
@@ -65,15 +65,10 @@ public class FitnessClusteringGroupGaussMixMinMax implements Fitness
             avgSize += ((TreeGroup) ind).getTree(wClass).getMaxDepthFromHere();
         ind.setFitness(penalizedFitness(fitness, (int)Math.round(avgSize/config.nClasses)));
         */
-        ind.setFitness(fitness);
-        BufferedTree t;
+        double[] treeFitness = new double[config.nClasses];
         for (int i = 0; i < config.nClasses; i++)
-        {
-            t = ((TreeGroup) ind).getTree(i);
-//            if (fitness > t.readFitness())
-//                t.setFitness(penalizedFitness(fitness, t.getMaxDepthFromHere()));
-            t.setFitness(t.readFitness() + penalizedFitness(fitness, t.getMaxDepthFromHere())/t.nGroups);
-        }
+            treeFitness[i] = fitness;
+        assignFitness(ind, fitness, treeFitness, config);
     }
 
     private void calcDist(Output outputs, DataHolder data, Individual ind)

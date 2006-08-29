@@ -97,7 +97,6 @@ public class Config implements Serializable
     public boolean useMultiTree = false;
     public boolean useSoftPertenence = false;
     public double m = 2;
-    public double scale = 1;
     public int nTrees = 100;
 
     //------------ General behavior ------------

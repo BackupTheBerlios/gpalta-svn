@@ -29,7 +29,7 @@ import gpalta.core.*;
 /**
  * @author neven
  */
-public class FitnessClusteringGroup implements Fitness
+public class FitnessClusteringGroup extends FitnessGroup
 {
     protected double[][] prototypes;
     protected double[][] prob;
@@ -77,36 +77,16 @@ public class FitnessClusteringGroup implements Fitness
                 }
             }
             error += protoError[wClass];
+            protoError[wClass] = 1 / (1 + protoError[wClass]/nEachClass[wClass]);
         }
         error /= config.nClasses;
-        double fitness = 1 / (1 + error);
-        ind.setFitness(fitness);
-        BufferedTree t;
-        for (int i = 0; i < config.nClasses; i++)
-        {
-            t = ((TreeGroup) ind).getTree(i);
-
-            //average
-            t.setFitness(t.readFitness() + penalizedFitness(1 / (1 + protoError[i]/nEachClass[i]), t.getMaxDepthFromHere())/t.nGroups);
-
-            /*
-            //max
-            if (fitness > t.readFitness())
-                t.setFitness(penalizedFitness(1 / (1 + protoError[i]/nEachClass[i]), t.getMaxDepthFromHere()));
-            */
-        }
-    }
-
-    protected double penalizedFitness(double fitness, int depth)
-    {
-        return (1 - config.sizePenalization * depth / config.maxDepth) * fitness;
+        assignFitness(ind, 1 / (1 + error), protoError, config);
     }
 
     protected void calcProto(Output outputs, DataHolder data)
     {
-        for (int wSample = 0; wSample < data.nSamples; wSample++)
-            for (int wClass = 0; wClass < config.nClasses; wClass++)
-                prob[wClass][wSample] = outputs.getArray(wClass)[wSample];
+        for (int wClass = 0; wClass < config.nClasses; wClass++)
+            System.arraycopy(outputs.getArray(wClass), 0, prob[wClass], 0, data.nSamples);
         Common.maxPerColInline(prob);
 
         for (int wClass = 0; wClass < config.nClasses; wClass++)

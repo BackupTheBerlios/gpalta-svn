@@ -65,15 +65,10 @@ public class FitnessClusteringGroupFuzzy extends FitnessClusteringGroup
         }*/
 
         double fitness = 1 / (1 + error);
-        ind.setFitness(fitness);
-
-        Tree t;
+        double[] treeFitness = new double[config.nClasses];
         for (int i = 0; i < config.nClasses; i++)
-        {
-            t = ((TreeGroup) ind).getTree(i);
-            if (fitness > t.readFitness())
-                t.setFitness(penalizedFitness(fitness, t.getMaxDepthFromHere()));
-        }
+            treeFitness[i] = fitness;
+        assignFitness(ind, fitness, treeFitness, config);
     }
 
     /*private void calcProto(Output outputs, DataHolder data)

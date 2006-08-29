@@ -4,12 +4,13 @@ import gpalta.core.*;
 import gpalta.clustering.BufferedTree;
 import gpalta.clustering.TreeGroup;
 import gpalta.clustering.ClusteringOutput;
+import gpalta.clustering.FitnessGroup;
 
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 24-08-2006 Time: 12:36:39 PM To change this template
  * use File | Settings | File Templates.
  */
-public class FitnessClassifier implements Fitness
+public class FitnessClassifier extends FitnessGroup
 {
     private double[][] prob;
     private double[][] pReal;
@@ -57,19 +58,9 @@ public class FitnessClassifier implements Fitness
             //ce[wClass] = crossEntropy(prob[wClass], pReal[wClass]);
         }
         ind.setFitness(1 / (1+ Common.sum(ce)/config.nClasses));
-        BufferedTree t;
-        for (int i = 0; i < config.nClasses; i++)
-        {
-            t = ((TreeGroup) ind).getTree(i);
-
-            //average
-            t.setFitness(t.readFitness() + penalizedFitness(1 / (1 + ce[i]), t.getMaxDepthFromHere())/t.nGroups);
-        }
-    }
-
-    private double penalizedFitness(double fitness, int depth)
-    {
-        return (1 - config.sizePenalization * depth / config.maxDepth) * fitness;
+        for (int wClass=0; wClass<config.nClasses; wClass++)
+            ce[wClass] = 1 / (1 + ce[wClass]);
+        assignFitness(ind, 1 / (1+ Common.sum(ce)/config.nClasses), ce, config);
     }
 
     public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)

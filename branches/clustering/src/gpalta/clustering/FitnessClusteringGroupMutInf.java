@@ -9,7 +9,7 @@ import gpalta.core.*;
  * Time: 10:57:45 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FitnessClusteringGroupMutInf implements Fitness
+public class FitnessClusteringGroupMutInf extends FitnessGroup
 {
     private double[][] pxc;
     private double[] pc;
@@ -35,15 +35,10 @@ public class FitnessClusteringGroupMutInf implements Fitness
     {
         calcProb(outputs, data, ind);
         double fitness = mutualInformation(px, pc, pxc);
-        ind.setFitness(fitness);
-        BufferedTree t;
+        double[] treeFitness = new double[config.nClasses];
         for (int i = 0; i < config.nClasses; i++)
-        {
-            t = ((TreeGroup) ind).getTree(i);
-            //if (fitness > t.readFitness())
-            //    t.setFitness(penalizedFitness(fitness, t.getMaxDepthFromHere()));
-            t.setFitness(t.readFitness() + penalizedFitness(fitness, t.getMaxDepthFromHere())/t.nGroups);
-        }
+            treeFitness[i] = fitness;
+        assignFitness(ind, fitness, treeFitness, config);
     }
 
     private void calcProb(Output outputs, DataHolder data, Individual ind)
@@ -76,11 +71,6 @@ public class FitnessClusteringGroupMutInf implements Fitness
             mi += py[y] * s;
         }
         return mi/Math.log(2);
-    }
-
-    protected double penalizedFitness(double fitness, int depth)
-    {
-        return (1 - config.sizePenalization * depth / config.maxDepth) * fitness;
     }
 
     public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)

@@ -110,10 +110,7 @@ public class Evolution
             }
             else
             {
-                if (config.useSoftPertenence)
-                    fitness = new FitnessClusteringFuzzy();
-                else
-                    fitness = new FitnessClustering();
+                //error
             }
 
         }

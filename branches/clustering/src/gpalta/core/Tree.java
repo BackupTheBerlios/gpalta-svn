@@ -30,7 +30,6 @@ import gpalta.nodes.*;
  * @author neven
  */
 public class Tree extends Individual implements NodeParent
-
 {
     public boolean fitCalculated;
     private NodeSet type;
