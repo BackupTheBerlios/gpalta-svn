@@ -34,7 +34,6 @@ public class FitnessClusteringGroup extends FitnessGroup
     protected double[][] prototypes;
     protected double[][] prob;
     protected Config config;
-    protected double m;
 
     public void init(Config config, DataHolder data, String fileName)
     {
@@ -44,7 +43,6 @@ public class FitnessClusteringGroup extends FitnessGroup
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
         this.config = config;
-        this.m = config.m;
         prototypes = new double[config.nClasses][data.nVars];
         prob = new double[config.nClasses][data.nSamples];
     }

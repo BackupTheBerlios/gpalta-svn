@@ -35,7 +35,6 @@ import java.util.ArrayList;
 public class BufferedTree extends Tree
 {
     public Output out;
-    //public List<TreeGroup> groupList;
     public int nGroups;
 
     /**

@@ -120,7 +120,6 @@ public class MultiTreePopulation implements Population, Serializable
         {
             BufferedTree t = new BufferedTree(builder.treeRoot());
             t.out = new Output(config.outputDimension, data.nSamples);
-            //t.groupList = new ArrayList<TreeGroup>();
             treeList.add(t);
         }
         builder.build(treeList);
@@ -151,7 +150,6 @@ public class MultiTreePopulation implements Population, Serializable
                 if (g.getTree(i) == null || !g.getTree(i).isOnPop())
                 {
                     g.setTree(i, trees.get(perm[treePointer]));
-                    //trees.get(perm[treePointer]).groupList.add(g);
                     trees.get(perm[treePointer]).nGroups++;
                     if (++treePointer == config.nTrees)
                     {
