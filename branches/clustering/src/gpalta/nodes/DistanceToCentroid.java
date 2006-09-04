@@ -32,7 +32,10 @@ public class DistanceToCentroid extends Node
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
             x = data.getAllVars(wSample);
-            outVect[wSample] = Common.dist2(x,c);
+            outVect[wSample] = 0;
+            for (int wVar=0; wVar<data.nVars; wVar++)
+                outVect[wSample] += Math.abs(c[wVar]-x[wVar])/data.getRange(wVar+1);
+            outVect[wSample] /= data.nVars;
         }
     }
 

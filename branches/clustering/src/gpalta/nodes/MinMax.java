@@ -41,6 +41,9 @@ public class MinMax extends Node
         {
             maxs[wSample] = Math.max(outVectKid1[wSample], outVectKid2[wSample]);
         }
+
+        tempOutputFactory.release();
+        tempOutputFactory.release();
     }
 
     public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)

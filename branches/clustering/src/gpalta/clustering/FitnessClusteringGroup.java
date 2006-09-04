@@ -76,6 +76,7 @@ public class FitnessClusteringGroup extends FitnessGroup
             }
             error += protoError[wClass];
             protoError[wClass] = 1 / (1 + protoError[wClass]/nEachClass[wClass]);
+            //protoError[wClass] = 1 / (1 + protoError[wClass]);
         }
         error /= config.nClasses;
         assignFitness(ind, 1 / (1 + error), protoError, config);
@@ -87,6 +88,7 @@ public class FitnessClusteringGroup extends FitnessGroup
             System.arraycopy(outputs.getArray(wClass), 0, prob[wClass], 0, data.nSamples);
         Common.maxPerColInline(prob);
 
+        double[] x;
         for (int wClass = 0; wClass < config.nClasses; wClass++)
         {
             double sumProbThisClass = Common.sum(prob[wClass]);
@@ -94,12 +96,24 @@ public class FitnessClusteringGroup extends FitnessGroup
             for (int wVar = 0; wVar < data.nVars; wVar++)
             {
                 prototypes[wClass][wVar] = 0;
+            }
+            if (sumProbThisClass != 0)
+            {
                 for (int wSample = 0; wSample < data.nSamples; wSample++)
                 {
-                    prototypes[wClass][wVar] += prob[wClass][wSample] * data.getDataVect(wVar + 1)[wSample];
+                    if (prob[wClass][wSample] != 0)
+                    {
+                        x = data.getAllVars(wSample);
+                        for (int wVar = 0; wVar < data.nVars; wVar++)
+                        {
+                            prototypes[wClass][wVar] += x[wVar];
+                        }
+                    }
                 }
-                if (sumProbThisClass != 0)
+                for (int wVar = 0; wVar < data.nVars; wVar++)
+                {
                     prototypes[wClass][wVar] /= sumProbThisClass;
+                }
             }
         }
     }

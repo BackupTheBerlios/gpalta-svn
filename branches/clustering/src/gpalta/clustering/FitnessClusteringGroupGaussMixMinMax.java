@@ -37,38 +37,19 @@ public class FitnessClusteringGroupGaussMixMinMax extends FitnessGroup
     {
         calcDist(outputs, data, ind);
         nPerClass = new int[config.nClasses];
+        double[] classError = new double[config.nClasses];
         for (int wSample=0; wSample<data.nSamples; wSample++)
             nPerClass[min[wSample]]++;
         int totBasis = 0;
         for (int wClass=0; wClass<config.nClasses; wClass++)
             totBasis += nBasis[wClass];
-        double error = 0;
         for (int wSample=0; wSample<data.nSamples; wSample++)
-            error += d[min[wSample]][wSample];// * nBasis[min[wSample]];
-
-        /*
-        double error2 = 0;
-
-        calcProto(data);
-
-        double[] x;
-        for (int wSample=0; wSample<data.nSamples; wSample++)
-        {
-            x = data.getAllVars(wSample);
-            error2 += Common.dist2(proto[min[wSample]], x);
-        }
-        */
-
-        double fitness = 1 / (1+error);
-        /*
+            classError[min[wSample]] += d[min[wSample]][wSample];
+        double error = Common.sum(classError);
         for (int wClass=0; wClass<config.nClasses; wClass++)
-            avgSize += ((TreeGroup) ind).getTree(wClass).getMaxDepthFromHere();
-        ind.setFitness(penalizedFitness(fitness, (int)Math.round(avgSize/config.nClasses)));
-        */
-        double[] treeFitness = new double[config.nClasses];
-        for (int i = 0; i < config.nClasses; i++)
-            treeFitness[i] = fitness;
-        assignFitness(ind, fitness, treeFitness, config);
+            classError[wClass] = 1 / (1 + classError[wClass]/nPerClass[wClass]);
+
+        assignFitness(ind, 1 / (1+error), classError, config);
     }
 
     private void calcDist(Output outputs, DataHolder data, Individual ind)
