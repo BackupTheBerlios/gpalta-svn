@@ -7,8 +7,9 @@ package gpalta.clustering;
  * Time: 05:58:06 PM
  * To change this template use File | Settings | File Templates.
  */
-/*public class FitnessClusteringGroupSum extends FitnessClusteringGroup
+public class FitnessClusteringGroupSum
 {
+    /*
     public double[][] d;
     public double paretoRadius;
     public IndexedDistance[][] id;
@@ -116,8 +117,9 @@ package gpalta.clustering;
             }
         }
     }
+    */
 }
-
+/*
 class IndexedDistance
 {
     public int index;

@@ -21,11 +21,13 @@ public abstract class FitnessGroup implements Fitness
             //average
             t.setFitness(t.readFitness() + penalizedFitness(treeFitness[i], t.getMaxDepthFromHere(), config)/t.nGroups);
 
-            /*
+
             //max
-            if (fitness > t.readFitness())
-                t.setFitness(penalizedFitness(treeFitness[i]));
+            /*
+            if (treeFitness[i] > t.readFitness())
+                t.setFitness(penalizedFitness(treeFitness[i], t.getMaxDepthFromHere(), config));
             */
+
         }
     }
 

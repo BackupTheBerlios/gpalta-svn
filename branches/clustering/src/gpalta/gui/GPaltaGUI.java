@@ -54,6 +54,7 @@ public class GPaltaGUI extends javax.swing.JFrame
     private int nGenDone;
     private Chart2D plot;
     private ITrace2D trace;
+    private ITrace2D traceMean;
     private boolean usePlot;
     public boolean stopSaveQuit;
     private Timer timer;
@@ -479,8 +480,11 @@ public class GPaltaGUI extends javax.swing.JFrame
             plot = new Chart2D();
             panelPlot.add(plot);
             trace = new Trace2DBijective();
-            trace.setName("Fitness");
+            trace.setName("Best fitness so far");
             trace.setColor(Color.RED);
+            traceMean = new Trace2DBijective();
+            traceMean.setName("Mean fitness");
+            traceMean.setColor(Color.BLUE);
             plot.getAxisY().setRangePolicy(new RangePolicyFixedViewport(new Range(0 ,1)));
             plot.getAxisY().setRange(new Range(0, 1));
             plot.getAxisY().setPaintGrid(true);
@@ -490,10 +494,12 @@ public class GPaltaGUI extends javax.swing.JFrame
             plot.getAxisY().setPaintScale(true);
             plot.setBackground(plot.getParent().getBackground());
             plot.addTrace(trace);
+            plot.addTrace(traceMean);
         }
         else
         {
             trace.removeAllPoints();
+            traceMean.removeAllPoints();
         }
 
     }
@@ -621,6 +627,7 @@ public class GPaltaGUI extends javax.swing.JFrame
         if (usePlot)
         {
             trace.addPoint(evoStats.generation, evoStats.bestSoFar.readFitness());
+            traceMean.addPoint(evoStats.generation, evoStats.avgFit);
         }
 
         /* The first update is for evaluation of initial population (gen 0), so we

@@ -75,7 +75,10 @@ public class FitnessClusteringGroup extends FitnessGroup
                 }
             }
             error += protoError[wClass];
-            protoError[wClass] = 1 / (1 + protoError[wClass]/nEachClass[wClass]);
+            if (nEachClass[wClass] != 0)
+                protoError[wClass] = 1 / (1 + protoError[wClass]/nEachClass[wClass]);
+            else
+                protoError[wClass] = 0;    
             //protoError[wClass] = 1 / (1 + protoError[wClass]);
         }
         error /= config.nClasses;

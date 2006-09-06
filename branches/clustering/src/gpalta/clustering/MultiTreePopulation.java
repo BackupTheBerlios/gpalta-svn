@@ -40,6 +40,7 @@ public class MultiTreePopulation implements Population, Serializable
     private List<TreeGroup> treeGroups;
     private Config config;
     private Output out;
+    public double meanTreeFit;
 
     public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
     {
@@ -61,7 +62,10 @@ public class MultiTreePopulation implements Population, Serializable
             }
             f.calculate(out, g, tempOutputFactory, data);
         }
-
+        meanTreeFit = 0;
+        for (BufferedTree t : treeList)
+            meanTreeFit += t.readFitness();
+        meanTreeFit /= config.nTrees;
     }
 
     private void getOutput(Tree t, Output o, TempOutputFactory tempOutputFactory, DataHolder data)
@@ -141,7 +145,16 @@ public class MultiTreePopulation implements Population, Serializable
     private void asignTrees(List<BufferedTree> trees, List<TreeGroup> groups)
     {
         int treePointer = 0;
-        int[] perm = Common.randPerm(config.nTrees);
+        //first we use the new trees:
+        List<BufferedTree> newTrees = new ArrayList<BufferedTree>();
+        for (BufferedTree t : treeList)
+            if (t.nGroups==0)
+                newTrees.add(t);
+        int nNewTrees = newTrees.size();
+        BufferedTree[] sortedTrees = newTrees.toArray(new BufferedTree[nNewTrees]);
+        Arrays.sort(sortedTrees, new IndFitnessComparator());
+        BufferedTree[] allSortedTrees;
+        boolean first = true;
         for (TreeGroup g : groups)
         {
             for (int i = 0; i < config.nClasses; i++)
@@ -149,12 +162,20 @@ public class MultiTreePopulation implements Population, Serializable
                 //if a tree didn't get selected, its isOnPop will be false
                 if (g.getTree(i) == null || !g.getTree(i).isOnPop())
                 {
-                    g.setTree(i, trees.get(perm[treePointer]));
-                    trees.get(perm[treePointer]).nGroups++;
-                    if (++treePointer == config.nTrees)
+                    g.setTree(i, sortedTrees[treePointer]);
+                    sortedTrees[treePointer].nGroups++;
+                    if (++treePointer == nNewTrees)
                     {
+                        if (first)
+                        {
+                            //then we use all the trees:
+                            first = false;
+                            allSortedTrees = treeList.toArray(new BufferedTree[config.nTrees]);
+                            Arrays.sort(allSortedTrees, new IndFitnessComparator());
+                            nNewTrees = config.nTrees;
+                            sortedTrees = allSortedTrees;
+                        }
                         treePointer = 0;
-                        perm = Common.randPerm(config.nTrees);
                     }
                 }
             }

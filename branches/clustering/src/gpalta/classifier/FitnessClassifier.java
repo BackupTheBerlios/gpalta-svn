@@ -57,10 +57,10 @@ public class FitnessClassifier extends FitnessGroup
             ce[wClass] = crossEntropy(pReal[wClass], prob[wClass]);
             //ce[wClass] = crossEntropy(prob[wClass], pReal[wClass]);
         }
-        ind.setFitness(1 / (1+ Common.sum(ce)/config.nClasses));
+        double fit = 1 / (1+ Common.sum(ce)/config.nClasses);
         for (int wClass=0; wClass<config.nClasses; wClass++)
             ce[wClass] = 1 / (1 + ce[wClass]);
-        assignFitness(ind, 1 / (1+ Common.sum(ce)/config.nClasses), ce, config);
+        assignFitness(ind, fit , ce, config);
     }
 
     public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
