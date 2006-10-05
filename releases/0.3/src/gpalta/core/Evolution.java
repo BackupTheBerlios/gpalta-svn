@@ -24,10 +24,7 @@
 
 package gpalta.core;
 
-import gpalta.clustering.*;
 import gpalta.ops.*;
-import gpalta.classifier.FitnessClassifier;
-import gpalta.classifier.MultiTreePopulationClassifier;
 
 import java.io.*;
 
@@ -102,6 +99,7 @@ public class Evolution
 
         if (config.fitness.equals("clustering"))
         {
+            /*
             if (config.useMultiTree)
             {
                 if (config.useSoftPertenence)
@@ -113,11 +111,12 @@ public class Evolution
             {
                 //error
             }
+            */
 
         }
         else if (config.fitness.equals("classifier"))
         {
-            fitness = new FitnessClassifier();
+            //fitness = new FitnessClassifier();
         }
         else
         {
@@ -133,10 +132,14 @@ public class Evolution
         if (initPop)
         {
             if (config.useMultiTree)
+            {
+                /*
                 if (config.fitness.equals("classifier"))
                     population = new MultiTreePopulationClassifier();
                 else
                     population = new MultiTreePopulation();
+                */
+            }
             else
                 population = new SingleTreePopulation();
             population.init(config, initializedData, treeBuilder);
@@ -248,7 +251,7 @@ public class Evolution
     public synchronized Output getRawOutput(Individual ind, double[][] data)
     {
         DataHolder tmpDataHolder = new DataHolder(data);
-        TempOutputFactory tmpOutFact = new TempOutputFactory(((TreeGroup) ind).nTrees(), data[0].length);
+        TempOutputFactory tmpOutFact = new TempOutputFactory(1, data[0].length);
         return population.getRawOutput(ind, tmpOutFact, tmpDataHolder);
     }
 
