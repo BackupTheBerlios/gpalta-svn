@@ -27,9 +27,9 @@ package gpalta.core;
 import java.util.*;
 
 /**
- * Hold outputs in which the nodes will be evaluated (when using evalVect)
- * This is done to avoid allocating memory every time a node is evaluated,
- * greatly improving execution speed with large data sets
+ * Hold outputs in which the nodes will be evaluated (when using evalVect) This is done to avoid
+ * allocating memory every time a node is evaluated, greatly improving execution speed with large
+ * data sets
  *
  * @author neven
  */
@@ -55,8 +55,8 @@ public class TempOutputFactory
     }
 
     /**
-     * Get a new vector. If previously allocated arrays are available, it will
-     * return one of them. Else, it will allocate memory for a new one
+     * Get a new output object. If previously allocated outputs are available (not already in use),
+     * it will return one of them. Else, it will allocate memory for a new one
      */
     public synchronized Output get()
     {
@@ -70,10 +70,9 @@ public class TempOutputFactory
     }
 
     /**
-     * Tell that the latest requested vector is no longer needed by the Node.
-     * The Node that requested an array must release it inmediately after
-     * stopping using it, or every time a node of that kind is evaluated,
-     * an array will be created and never released, leading to HUGE
+     * Tell that the latest requested output object is no longer needed by the Node. The Node that
+     * requested an array must release it inmediately after stopping using it, or every time a node
+     * of that kind is evaluated, an output will be created and never released, leading to HUGE
      * MEMORY LEAKS.
      */
     public synchronized void release()

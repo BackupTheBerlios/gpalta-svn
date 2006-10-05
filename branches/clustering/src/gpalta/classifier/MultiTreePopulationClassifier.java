@@ -31,7 +31,7 @@ public class MultiTreePopulationClassifier implements Population, Serializable
                 t.setFitness(0);
                 if (!config.rememberLastEval || !t.fitCalculated)
                 {
-                    getOutput(t, t.out, tempOutputFactory, data);
+                    getOutput(t, t.getOutput(), tempOutputFactory, data);
                     t.fitCalculated = true;
                 }
             }
@@ -41,8 +41,7 @@ public class MultiTreePopulationClassifier implements Population, Serializable
         {
             for (int i = 0; i < config.nClasses; i++)
             {
-                for (int wDim=0; wDim<config.outputDimension; wDim++)
-                    out.setArray(i*config.outputDimension+wDim, g.getTree(i).out.getArray(wDim));
+                out.setArray(i, g.getTree(i).getOutput().getArray(0));
             }
             f.calculate(out, g, tempOutputFactory, data);
         }
@@ -70,13 +69,12 @@ public class MultiTreePopulationClassifier implements Population, Serializable
 
     public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        Output out = new Output(config.nClasses * config.outputDimension, data.nSamples);
+        Output out = new Output(config.nClasses, 0);
         TreeGroup ind2 = (TreeGroup) ind;
         for (int i = 0; i < config.nClasses; i++)
         {
             assert ind2.getTree(i).fitCalculated;
-            for (int wDim=0; wDim<config.outputDimension; wDim++)
-                out.setArray(i*config.outputDimension+wDim, ind2.getTree(i).out.getArrayCopy(wDim));
+            out.setArray(i, ind2.getTree(i).getOutput().getArrayCopy(0));
         }
         return out;
     }
@@ -107,7 +105,7 @@ public class MultiTreePopulationClassifier implements Population, Serializable
             for (int i = 0; i < config.nTrees/config.nClasses; i++)
             {
                 BufferedTree t = new BufferedTree(builder.treeRoot());
-                t.out = new Output(config.outputDimension, data.nSamples);
+                t.setOutput(new Output(1, data.nSamples));
                 //t.groupList = new ArrayList<TreeGroup>();
                 treeList[wClass].add(t);
             }
@@ -116,7 +114,7 @@ public class MultiTreePopulationClassifier implements Population, Serializable
         }
         asignTrees(treeList, treeGroups);
 
-        out = new Output(config.nClasses * config.outputDimension, data.nSamples);
+        out = new Output(config.nClasses, data.nSamples);
     }
 
     public void doSelection(IndSelector sel)

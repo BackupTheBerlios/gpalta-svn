@@ -27,6 +27,10 @@ package gpalta.core;
 import java.io.Serializable;
 
 /**
+ * Individuals are the objects that form the population and are modified throughout the evolution.
+ * The most common kind of Individual is a Tree, and this is what most applications should use. This
+ * class can be extended to create other types of evolutionary objects
+ *
  * @author neven
  */
 public abstract class Individual implements Cloneable, Serializable
@@ -34,25 +38,59 @@ public abstract class Individual implements Cloneable, Serializable
     private double fitness;
     private boolean isOnPop;
 
+    /**
+     * Get the size of this Individual, hopefully without recalculating it (ie. in the case of a
+     * Tree, without descending every node). In most cases, this will mean the number of nodes
+     * present in the Individual
+     */
     public abstract int getSize();
 
+    /**
+     * Get a new, totally independent copy of this individual. Subclasses must implement this method
+     * properly, in order to insure that two instances are not modified unintentionally
+     */
     public abstract Individual deepClone();
 
+    /**
+     * Get a copy of this Individual, that not necessarily insures independece between both copies.
+     * By defalut, this method calls deepClone. Subclasses should override it sould they see the
+     * need.
+     */
+    public Individual semiDeepClone()
+    {
+        return deepClone();
+    }
+
+
+    /**
+     * Read this individual's fitness, without recalculating it
+     */
     public double readFitness()
     {
         return fitness;
     }
 
+    /**
+     * Store the fitness, so it doesn't need to be recalculated
+     *
+     * @param fit The fitness value
+     */
     public void setFitness(double fit)
     {
         fitness = fit;
     }
 
+    /**
+     * Record that this Individual was selected and is part of the population
+     */
     public void setOnPop(boolean flag)
     {
         isOnPop = flag;
     }
 
+    /**
+     * Ask whether this Individual is already part of the population
+     */
     public boolean isOnPop()
     {
         return isOnPop;

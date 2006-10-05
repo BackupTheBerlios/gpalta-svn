@@ -91,6 +91,14 @@ public class TreeOperator
         Node tmp = selector.pickRandomNode(tree);
         //Choose a random depth between 1 and (config.maxDepth - currentDepth)
         int depthFromHere = 1 + Common.globalRandom.nextInt(config.maxDepth - tmp.getCurrentDepth() + 1);
+        /* If the root node is selected and the NodeSet it belongs to doesn't
+         * have any terminals, do not ask for a terminal (ie make sure depthFromHere >= 2)
+         */
+        if (tmp.getCurrentDepth()==0)
+        {
+            if (depthFromHere == 1 && tmp.getParent().typeOfKids(0).getTerminals().size()==0)
+                depthFromHere = 2 + Common.globalRandom.nextInt(config.maxDepth - tmp.getCurrentDepth());
+        }
         //System.out.println("Mut: " + tmp.currentDepth + " " + depthFromHere);
         nodeBuilder.build(tmp.getParent(), tmp.getWhichKidOfParent(), depthFromHere);
         updateParents(tmp);

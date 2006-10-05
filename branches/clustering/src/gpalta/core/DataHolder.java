@@ -3,7 +3,7 @@
  *
  * Created on 12 de mayo de 2005, 02:43 AM
  *
- * Copyright (C) 2005 Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2005, 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -28,9 +28,6 @@ import java.io.*;
 
 /**
  * Holds the problem's data and provides methods to access it.
- * It's no longer abstract, so an instance must be created and passed around
- * This was done to fix a problen when passing a large matrix from Matlab
- * (the data sometimes 'dissapeared' if this class was abstract)
  *
  * @author neven
  */
@@ -48,11 +45,21 @@ public class DataHolder
     private int currentSample;
     public int nVars;
 
+    /**
+     * Get the current value for a variable
+     * @param whichVar The variable (between 1 and nVars)
+     * @return The current value
+     */
     public double getData(int whichVar)
     {
         return data[whichVar - 1][currentSample];
     }
 
+    /**
+     * Get all values (in all samples) for a variable
+     * @param whichVar The variable (between 1 and nVars)
+     * @return an array with the values the variable takes for every sample
+     */
     public double[] getDataVect(int whichVar)
     {
         return data[whichVar - 1];
@@ -132,27 +139,48 @@ public class DataHolder
         currentSample++;
     }
 
+    /**
+     * Get the minimum value of a certain variable
+     * @param whichVar The variable (between 1 and nVars)
+     */
     public double getMin(int whichVar)
     {
         return ranges[whichVar-1][0];
     }
 
+    /**
+     * Get the maximum value of a certain variable
+     * @param whichVar The variable (between 1 and nVars)
+     */
     public double getMax(int whichVar)
     {
         return ranges[whichVar-1][1];
     }
 
+    /**
+     * Get the range (maximum - minimum) of a certain variable
+     * @param wVar The variable (between 1 and nVars)
+     */
     public double getRange(int wVar)
     {
         return ranges[wVar-1][2];
     }
 
-    public double[] getAllVars()
+    /**
+     * Get the current sample (all variables)
+     * @return an array with the whole sample
+     */
+    public double[] getCurrentSample()
     {
         return dataT[currentSample];
     }
 
-    public double[] getAllVars(int wSample)
+    /**
+     * Get a sample (all variables)
+     * @param wSample Which sample (between 0 and nSamples)
+     * @return an array with the whole sample
+     */
+    public double[] getSample(int wSample)
     {
         return dataT[wSample];
     }

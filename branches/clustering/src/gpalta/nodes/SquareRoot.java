@@ -1,7 +1,7 @@
 /*
- * Exponential.java
+ * SquareRoot.java
  *
- * Created on 02-08-2006, 10:37:58 PM
+ * Created on 04-10-2006, 07:33:07 PM
  *
  * Copyright (C) 2006 Neven Boric <nboric@gmail.com>
  *
@@ -25,31 +25,29 @@
 package gpalta.nodes;
 
 import gpalta.core.DataHolder;
-import gpalta.core.TempOutputFactory;
-import gpalta.core.Output;
 
-public class Exponential extends Node
+public class SquareRoot extends Node
 {
     public double eval(DataHolder data)
     {
-        return Math.exp(getKid(0).eval(data));
+        return Math.sqrt(getKid(0).eval(data));
     }
 
     public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = Math.exp(kidOutVect[0][wSample]);
+            outVect[wSample] = Math.sqrt(kidOutVect[0][wSample]);
         }
-    }
-
-    public String name()
-    {
-        return "exp";  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public int nKids()
     {
         return 1;
+    }
+
+    public String name()
+    {
+        return "sqrt";
     }
 }

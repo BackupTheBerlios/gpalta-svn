@@ -27,6 +27,8 @@ package gpalta.core;
 import java.io.Serializable;
 
 /**
+ * Stores the outputs of an individual. It can be used to represent multi-dimensional outputs
+ *
  * @author neven
  */
 public class Output implements Cloneable, Serializable
@@ -61,23 +63,52 @@ public class Output implements Cloneable, Serializable
         return out;
     }
 
-    public double[] getArray(int which)
+    /**
+     * Get an array representing outputs for each sample
+     *
+     * @param wDim Which dimension of the output to get. For uni-dimensional problems, this should
+     *             be zero
+     * @return A pointer to the actual array. A pointer is returned instead of a copy for
+     *         efficiency. Modifying the contents of this array can be problematic if this output
+     *         object is associated with an individual
+     */
+    public double[] getArray(int wDim)
     {
-        return data[which];
+        return data[wDim];
     }
 
-    public void setArray(int which, double[] array)
+    /**
+     * Register an array to this Output object. Note that this will only set a pointer to the actual
+     * array. This is done to avoid calling a method for every sample. Setting all the values on an
+     * array and then linking to it is much faster than calling a method every time. Consequently,
+     * if this output is going to be stored, caution must be taken to not modify the contents of the
+     * pointed array unintentionally.
+     *
+     * @param wDim
+     * @param array
+     */
+    public void setArray(int wDim, double[] array)
     {
-        data[which] = array;
+        data[wDim] = array;
     }
 
-    public double[] getArrayCopy(int which)
+    /**
+     * Get an independent array representing outputs for each sample
+     *
+     * @param wDim Wich dimension of the output to get. For uni-dimensional problems, this should be
+     *             zero
+     * @return A new array with all the outputs
+     */
+    public double[] getArrayCopy(int wDim)
     {
-        double[] out = new double[data[which].length];
-        System.arraycopy(data[which], 0, out, 0, data[which].length);
+        double[] out = new double[data[wDim].length];
+        System.arraycopy(data[wDim], 0, out, 0, data[wDim].length);
         return out;
     }
 
+    /**
+     * Get the dimension (number of scalar outputs per sample) of this Output
+     */
     public int getDim()
     {
         return dim;

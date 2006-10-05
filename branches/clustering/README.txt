@@ -65,39 +65,10 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Important notice:
 
-GPalta is currently distributed including a copy of PtPlot, a plotting library
-from the Ptolemy system:
-http://ptolemy.eecs.berkeley.edu/java/ptplot/index.htm
+GPalta uses JChart2d for plotting inside the graphical interface.
+JChart2D is a minimalistic charting library published under the LGPL.
+For more details, see the project web page:
+http://jchart2d.sourceforge.net
 
-It is my understanding that this inclusion is in no violation of either the GPL
-license under wich GPalta is distributed, or the copyright agreement of PtPlot,
-stated below:
 
-Copyright agreement for PtPlot
 
-Copyright (c) 1995-2005 The Regents of the
-University of California.  All rights reserved.
-
-Permission is hereby granted, without written
-agreement and without license or royalty fees, to
-use, copy, modify, and distribute this software
-and its documentation for any purpose, provided
-that the above copyright notice and the following
-two paragraphs appear in all copies of this
-software.
-
-IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE
-LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL,
-INCIDENTAL, OR CONSEQUENTIAL DAMAGES ARISING OUT
-OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION,
-EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN
-ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-THE UNIVERSITY OF CALIFORNIA SPECIFICALLY
-DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT
-LIMITED TO, THE IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN
-"AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA
-HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT,
-UPDATES, ENHANCEMENTS, OR MODIFICATIONS.

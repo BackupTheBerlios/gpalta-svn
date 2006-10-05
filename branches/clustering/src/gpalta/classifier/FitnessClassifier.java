@@ -17,7 +17,6 @@ public class FitnessClassifier extends FitnessGroup
     private Config config;
     public void init(Config config, DataHolder data, String fileName)
     {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)

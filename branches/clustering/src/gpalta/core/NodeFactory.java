@@ -43,7 +43,8 @@ public class NodeFactory
     public NodeSet treeRoot;
 
     /**
-     * Read Node config from file config.nodeConfigFileName
+     * Read Node config from file config.nodeConfigFileName, including available nodes and their
+     * possible connections
      */
     public NodeFactory(Config config, DataHolder data)
     {
@@ -67,35 +68,42 @@ public class NodeFactory
             for (i = 0; i < sets.length; i++)
             {
                 nodeSets[i] = new NodeSet(sets[i]);
+                String[] nodes;
                 tmp = props.getProperty(sets[i] + "Functions");
                 if (tmp == null)
                     Logger.log("Warning: when reading " + config.nodeConfigFileName + ", no functions found for set " + sets[i]);
-                String[] nodes = tmp.split(separator);
-                for (j = 0; j < nodes.length; j++)
+                else
                 {
-                    Class cl = Class.forName("gpalta.nodes." + nodes[j]);
-                    java.lang.reflect.Constructor co = cl.getConstructor();
-                    nodeSets[i].addFunction((Node) co.newInstance());
+                    nodes = tmp.split(separator);
+                    for (j = 0; j < nodes.length; j++)
+                    {
+                        Class cl = Class.forName("gpalta.nodes." + nodes[j]);
+                        java.lang.reflect.Constructor co = cl.getConstructor();
+                        nodeSets[i].addFunction((Node) co.newInstance());
+                    }
                 }
                 tmp = props.getProperty(sets[i] + "Terminals");
                 if (tmp == null)
                     Logger.log("Warning: when reading " + config.nodeConfigFileName + ", no terminals found for set " + sets[i]);
-                nodes = tmp.split(separator);
-                for (j = 0; j < nodes.length; j++)
+                else
                 {
-                    Class cl = Class.forName("gpalta.nodes." + nodes[j]);
-                    if (nodes[j].contains("Var"))
+                    nodes = tmp.split(separator);
+                    for (j = 0; j < nodes.length; j++)
                     {
-                        for (k = 0; k < data.nVars; k++)
+                        Class cl = Class.forName("gpalta.nodes." + nodes[j]);
+                        if (nodes[j].contains("Var"))
                         {
-                            java.lang.reflect.Constructor[] co = cl.getConstructors();
-                            nodeSets[i].addTerminal((Node) co[0].newInstance(k + 1));
+                            for (k = 0; k < data.nVars; k++)
+                            {
+                                java.lang.reflect.Constructor[] co = cl.getConstructors();
+                                nodeSets[i].addTerminal((Node) co[0].newInstance(k + 1));
+                            }
                         }
-                    }
-                    else
-                    {
-                        java.lang.reflect.Constructor co = cl.getConstructor();
-                        nodeSets[i].addTerminal((Node) co.newInstance());
+                        else
+                        {
+                            java.lang.reflect.Constructor co = cl.getConstructor();
+                            nodeSets[i].addTerminal((Node) co.newInstance());
+                        }
                     }
                 }
             }
@@ -180,8 +188,8 @@ public class NodeFactory
     }
 
     /**
-     * Obtain a new Node randomly chosen from the given list.
-     * The Node is cloned and initialized, so it can be used separatedly
+     * Obtain a new Node randomly chosen from the given list. The Node is cloned and initialized, so
+     * it can be used separatedly
      *
      * @param l                  The list of Nodes from which to choose
      * @param currentGlobalDepth The depth of the requested Node in the Tree
@@ -216,6 +224,16 @@ public class NodeFactory
         return false;
     }
 
+    /**
+     * Obtain a new Node from a type that matches the given string. It will try to correctly detect
+     * RealVar and constant nodes. The Node is cloned and initialized, so it can be used
+     * separatedly
+     *
+     * @param name               The type of the requested Node. It must coincide with one of the
+     *                           class names of available Nodes, unless it represents a variable or
+     *                           constant terminal
+     * @param currentGlobalDepth The depth of the requested Node in the Tree
+     */
     public Node newNode(String name, int currentGlobalDepth)
     {
         System.out.println(name);

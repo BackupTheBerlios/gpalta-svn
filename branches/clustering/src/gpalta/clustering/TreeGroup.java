@@ -26,26 +26,37 @@ package gpalta.clustering;
 
 import gpalta.core.*;
 
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * @author neven
  */
 public class TreeGroup extends Individual
 {
-    private BufferedTree[] trees;
+    private List<BufferedTree> treeList;
+    private List<Integer> samplesWon;
 
     /**
      * Creates a new instance of TreeGroup
      */
     public TreeGroup(int nTrees)
     {
-        trees = new BufferedTree[nTrees];
+        treeList = new ArrayList<BufferedTree>(nTrees);
+        for (int i=0; i<nTrees; i++)
+            treeList.add(null);
+    }
+
+    public int nTrees()
+    {
+        return treeList.size();
     }
 
     public int getSize()
     {
         int nodes = 0;
-        for (int i = 0; i < trees.length; i++)
-            nodes += trees[i].getSize();
+        for (int i = 0; i < nTrees(); i++)
+            nodes += treeList.get(i).getSize();
         return nodes;
     }
 
@@ -56,9 +67,27 @@ public class TreeGroup extends Individual
         {
             out = (TreeGroup) clone();
             /* Remember to also clone the tree array and each tree */
-            out.trees = new BufferedTree[trees.length];
-            for (int i = 0; i < trees.length; i++)
-                out.setTree(i, (BufferedTree) getTree(i).deepClone());
+            out.treeList = new ArrayList<BufferedTree>(nTrees());
+            for (int i = 0; i < nTrees(); i++)
+                out.treeList.add(i, (BufferedTree) getTree(i).deepClone());
+        }
+        catch (CloneNotSupportedException ex)
+        {
+            Logger.log(ex);
+        }
+        return out;
+    }
+
+    public Individual semiDeepClone()
+    {
+        TreeGroup out = null;
+        try
+        {
+            out = (TreeGroup) clone();
+            /* Remember to also clone the tree array and each tree */
+            out.treeList = new ArrayList<BufferedTree>(nTrees());
+            for (int i = 0; i < nTrees(); i++)
+                out.treeList.add(i, getTree(i));
         }
         catch (CloneNotSupportedException ex)
         {
@@ -69,12 +98,56 @@ public class TreeGroup extends Individual
 
     public void setTree(int pos, BufferedTree t)
     {
-        trees[pos] = t;
+        treeList.set(pos, t);
     }
 
     public BufferedTree getTree(int pos)
     {
-        return trees[pos];
+        return treeList.get(pos);
     }
 
+    public void oneMoreCluster()
+    {
+        treeList.add(null);
+    }
+
+    public void oneLessCluster()
+    {
+        if (nTrees()!=2)
+        {
+            double minFit = getTree(0).readFitness();
+            int min = 0;
+            for (int i=1; i<nTrees(); i++)
+            {
+                if (getTree(i).readFitness() < minFit)
+                {
+                    min = i;
+                    minFit = getTree(i).readFitness();
+                }
+            }
+            treeList.remove(min);
+        }
+    }
+
+    public void removeEmptyClusters()
+    {
+        int nClusters = nTrees();
+        if (nClusters < 2)
+        {
+            int removed = 0;
+            for (int i=0; i < nClusters; i++)
+            {
+                if (samplesWon.get(i-removed) == 0)
+                {
+                    treeList.remove(i-removed);
+                    samplesWon.remove(i-removed);
+                }
+            }
+        }
+    }
+
+    public void setSamplesWon(int wCluster, int nSamples)
+    {
+        samplesWon.set(wCluster, nSamples);
+    }
 }

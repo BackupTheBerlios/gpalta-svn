@@ -1,5 +1,5 @@
 /*
- * IndSelector.java
+ * IndSelectorTournament.java
  *
  * Created on 19 de mayo de 2005, 05:20 PM
  *
@@ -53,6 +53,11 @@ public class IndSelectorTournament extends IndSelector
      */
     public <T extends Individual> List<T> select(List<T> population)
     {
+        return select(population, true);
+    }
+
+    public <T extends Individual> List<T> select(List<T> population, boolean useDeepClone)
+    {
         List<T> out = new ArrayList<T>();
         for (T t : population)
         {
@@ -86,7 +91,11 @@ public class IndSelectorTournament extends IndSelector
                 */
                 if (population.get(perm[indMaxFit]).isOnPop())
                 {
-                    T tmp = (T) population.get(perm[indMaxFit]).deepClone();
+                    T tmp;
+                    if (useDeepClone)
+                        tmp = (T) population.get(perm[indMaxFit]).deepClone();
+                    else
+                        tmp = (T) population.get(perm[indMaxFit]).semiDeepClone(); 
                     tmp.setOnPop(true);
                     out.add(tmp);
                 }

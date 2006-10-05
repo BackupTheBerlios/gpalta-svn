@@ -30,7 +30,7 @@ import java.util.*;
 import gpalta.nodes.*;
 
 /**
- * Simple class that define a set of Nodes. It has three subsets: functions,
+ * Simple class that defines a set of Nodes. It has three subsets: functions,
  * terminals and all. The "all" list should contain both functions and terminals
  *
  * @author neven

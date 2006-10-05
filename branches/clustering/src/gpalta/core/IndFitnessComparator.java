@@ -27,7 +27,7 @@ package gpalta.core;
 import java.util.*;
 
 /**
- * Implements a comparator for Trees based on their fitness
+ * Implements a comparator for Individuals based on their fitness
  *
  * @author DSP
  */

@@ -55,14 +55,13 @@ stopFitness = 0.99
 
 # fitness will be: 
 # f' = (1-sizePenalization*treeDepth/maxDepth)*f
-sizePenalization = 0.1
+sizePenalization = 0
 
 # For the clustering fitness:
-nClasses = 5
+nClasses = 2
 useMultiTree = false
 nTrees = 100
 useSoftPertenence = false
-m = 2
 
 #------------ General behavior ------------
 # Use vectorial evaluation
@@ -80,14 +79,12 @@ m = 2
 
 useVect = true
 
-outputDimension = 1
-
 # If true, trees that haven't changed from the past generation will remember
 # their fitness and won't be evaluated again.
 # WARNING: do not use if some values change between generations (e.g. cicling
 # fitness cases, random components in terminals, etc.)
 
-rememberLastEval = false
+rememberLastEval = true
 
 # These two for non interactive mode
 nonInteractive = false

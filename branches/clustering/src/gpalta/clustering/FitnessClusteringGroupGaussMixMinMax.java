@@ -1,7 +1,5 @@
 package gpalta.clustering;
 
-import gpalta.core.*;
-
 /**
  * Created by IntelliJ IDEA.
  * User: nvn
@@ -9,8 +7,9 @@ import gpalta.core.*;
  * Time: 10:03:32 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FitnessClusteringGroupGaussMixMinMax extends FitnessGroup
+public class FitnessClusteringGroupGaussMixMinMax //extends FitnessGroup
 {
+    /*
     private double[][] d;
     private int[] min;
     private int[] nBasis;
@@ -85,7 +84,7 @@ public class FitnessClusteringGroupGaussMixMinMax extends FitnessGroup
         double[] x;
         for (int wSample=0; wSample<data.nSamples; wSample++)
         {
-            x = data.getAllVars(wSample);
+            x = data.getCurrentSample(wSample);
             for (int wVar=0; wVar<data.nVars; wVar++)
                 proto[min[wSample]][wVar] += x[wVar];
         }
@@ -110,6 +109,7 @@ public class FitnessClusteringGroupGaussMixMinMax extends FitnessGroup
         processed.setPertenenceCopy(d);
         return processed;
     }
+    */
 }
 
 

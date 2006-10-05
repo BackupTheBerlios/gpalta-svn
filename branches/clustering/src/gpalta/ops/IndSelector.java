@@ -43,4 +43,9 @@ public abstract class IndSelector
      */
     public abstract <T extends Individual> List<T> select(List<T> population);
 
+    public <T extends Individual> List<T> select(List<T> population, boolean useDeepClone)
+    {
+        return select(population);
+    }
+
 }

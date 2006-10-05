@@ -89,21 +89,17 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             }
 
             double[][] kidOutVects = new double[nKids()][];
-            for (int wDim = 0; wDim < out.getDim(); wDim++)
+            for (int wKid = 0; wKid < nKids(); wKid++)
             {
-                for (int wKid = 0; wKid < nKids(); wKid++)
-                {
-                    kidOutVects[wKid] = kidOuts[wKid].getArray(wDim);
-                }
-                evalVect(out.getArray(wDim), kidOutVects, data);
+                kidOutVects[wKid] = kidOuts[wKid].getArray(0);
             }
+            evalVect(out.getArray(0), kidOutVects, data);
             for (int wKid = 0; wKid < nKids(); wKid++)
                 tempOutputFactory.release();
         }
         else
         {
-            for (int wDim = 0; wDim < out.getDim(); wDim++)
-                evalVect(out.getArray(wDim), null, data);
+            evalVect(out.getArray(0), null, data);
         }
     }
 
@@ -152,9 +148,12 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             out += "(";
         }
         out += name();
-        for (int i = 0; i < nKids(); i++)
+        if (kids!=null)
         {
-            out += " " + getKid(i);
+            for (int i = 0; i < nKids(); i++)
+            {
+                out += " " + getKid(i);
+            }
         }
         if (nKids() > 0)
         {

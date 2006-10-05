@@ -33,7 +33,8 @@ import java.io.*;
 
 
 /**
- * Holds the population and performs evolution
+ * This is the highest level class of GPalta and stores the whole state of the system. Users should
+ * create an instance of Evolution and use it to perform all aspects of a GP run.
  *
  * @author neven
  */
@@ -104,7 +105,7 @@ public class Evolution
             if (config.useMultiTree)
             {
                 if (config.useSoftPertenence)
-                    fitness = new FitnessClusteringGroupGaussMixMinMax();
+                    fitness = new FitnessClusteringGroupMutInf();
                 else
                     fitness = new FitnessClusteringGroup();
             }
@@ -125,7 +126,7 @@ public class Evolution
 
         if (config.useVect)
         {
-            tempOutputFactory = new TempOutputFactory(config.outputDimension, dataHolder.nSamples);
+            tempOutputFactory = new TempOutputFactory(1, dataHolder.nSamples);
         }
 
         evoStats = new EvolutionStats();
@@ -225,13 +226,30 @@ public class Evolution
 
     /**
      * Evaluate a single Individual and get its "raw" output for every sample. Raw means that the
-     * result is obtained only from the Individual, and not modified by the Fitness
+     * result is obtained only from the Individual, and not modified by the Fitness. The individual
+     * will be evaluated on the problem data currently stored.
      *
      * @return The "raw" output of the Individual for every sample
      */
     public synchronized Output getRawOutput(Individual ind)
     {
         return population.getRawOutput(ind, tempOutputFactory, dataHolder);
+    }
+
+    /**
+     * Evaluate a single Individual and get its "raw" output for every sample, using the supplied
+     * data matrix, instead of the one used in evolution. Raw means that the result is obtained only
+     * from the Individual, and not modified by the Fitness
+     *
+     * @param ind  The individual to evaluate
+     * @param data A matrix with all the samples in which to evaluate the individual
+     * @return The "raw" output of the Individual for every sample in the given data matrix
+     */
+    public synchronized Output getRawOutput(Individual ind, double[][] data)
+    {
+        DataHolder tmpDataHolder = new DataHolder(data);
+        TempOutputFactory tmpOutFact = new TempOutputFactory(((TreeGroup) ind).nTrees(), data[0].length);
+        return population.getRawOutput(ind, tmpOutFact, tmpDataHolder);
     }
 
     /**
@@ -252,7 +270,7 @@ public class Evolution
     {
         population.doSelection(indSelector);
         population.evolve(treeOp);
-        generation ++;
+        generation++;
     }
 
 

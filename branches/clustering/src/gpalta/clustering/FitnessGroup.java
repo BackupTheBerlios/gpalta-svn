@@ -12,11 +12,12 @@ public abstract class FitnessGroup implements Fitness
 {
     protected void assignFitness(Individual ind, double groupFitness, double[] treeFitness, Config config)
     {
-        ind.setFitness(groupFitness);
+        TreeGroup ind2 = (TreeGroup) ind;
+        ind2.setFitness(groupFitness);
         BufferedTree t;
-        for (int i = 0; i < config.nClasses; i++)
+        for (int i = 0; i < ind2.nTrees(); i++)
         {
-            t = ((TreeGroup) ind).getTree(i);
+            t = ind2.getTree(i);
 
             //average
             t.setFitness(t.readFitness() + penalizedFitness(treeFitness[i], t.getMaxDepthFromHere(), config)/t.nGroups);

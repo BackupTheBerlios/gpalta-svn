@@ -90,13 +90,12 @@ public class Config implements Serializable
     /* fitness will be: 
      * f' = (1-sizePenalization*treeDepth/maxDepth)*f
      */
-    public double sizePenalization = 0.1;
+    public double sizePenalization = 0;
 
     //For the clustering fitness:
-    public int nClasses = 5;
+    public int nClasses = 2;
     public boolean useMultiTree = false;
     public boolean useSoftPertenence = false;
-    public double m = 2;
     public int nTrees = 100;
 
     //------------ General behavior ------------
@@ -114,8 +113,6 @@ public class Config implements Serializable
      * or cause problems when nodes have side effects (perform actions)
      */
     public boolean useVect = false;
-
-    public int outputDimension = 1;
 
     /* If true, trees that haven't changed from the past generation will remember
     * their fitness and won't be evaluated again.

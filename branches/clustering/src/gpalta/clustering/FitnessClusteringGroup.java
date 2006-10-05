@@ -32,7 +32,8 @@ import gpalta.core.*;
 public class FitnessClusteringGroup extends FitnessGroup
 {
     protected double[][] prototypes;
-    protected double[][] prob;
+    protected int[] winner;
+    protected int[] nPerCluster;
     protected Config config;
 
     public void init(Config config, DataHolder data, String fileName)
@@ -43,8 +44,7 @@ public class FitnessClusteringGroup extends FitnessGroup
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
         this.config = config;
-        prototypes = new double[config.nClasses][data.nVars];
-        prob = new double[config.nClasses][data.nSamples];
+        winner = new int[data.nSamples];
     }
 
     public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
@@ -54,79 +54,112 @@ public class FitnessClusteringGroup extends FitnessGroup
         //calculate total error:
         double error = 0;
         double[] x;
-        double[] protoError = new double[config.nClasses];
-        int[] nEachClass = new int[config.nClasses];
-        for (int wClass = 0; wClass < config.nClasses; wClass++)
+        int nClusters = outputs.getDim();
+        TreeGroup ind2 = (TreeGroup)ind;
+        if (ind2.nTrees() != nClusters)
+            System.out.println("a");
+        double[] protoError = new double[nClusters];
+        for (int wSample = 0; wSample < data.nSamples; wSample++)
         {
-            protoError[wClass] = 0;
-            nEachClass[wClass] = 0;
-            for (int wSample = 0; wSample < data.nSamples; wSample++)
-            {
-                if (prob[wClass][wSample] != 0)
-                {
-                    x = data.getAllVars(wSample);
-                    //protoError[wClass] += Common.dist2(prototypes[wClass], x);
-                    nEachClass[wClass]++;
-
-                    double sampleError = 0;
-                    for (int wVar=0; wVar<data.nVars; wVar++)
-                        sampleError += Math.abs(prototypes[wClass][wVar]-x[wVar])/data.getRange(wVar+1);
-                    protoError[wClass] += sampleError/data.nVars;
-                }
-            }
-            error += protoError[wClass];
-            if (nEachClass[wClass] != 0)
-                protoError[wClass] = 1 / (1 + protoError[wClass]/nEachClass[wClass]);
-            else
-                protoError[wClass] = 0;    
-            //protoError[wClass] = 1 / (1 + protoError[wClass]);
+            x = data.getSample(wSample);
+            //protoError[winner[wSample]] += Common.dist2(prototypes[winner[wSample]], x);
+            double sampleError = 0;
+            for (int wVar=0; wVar<data.nVars; wVar++)
+                sampleError += Math.abs(prototypes[winner[wSample]][wVar]-x[wVar])/data.getRange(wVar+1);
+            protoError[winner[wSample]] += sampleError/data.nVars;
         }
-        error /= config.nClasses;
-        assignFitness(ind, 1 / (1 + error), protoError, config);
+        int nRemoved = 0;
+        for (int wCluster = 0; wCluster < nClusters; wCluster++)
+        {
+            error += protoError[wCluster];
+            if (nPerCluster[wCluster] != 0)
+            {
+                protoError[wCluster] = 1 / (1 + protoError[wCluster]/nPerCluster[wCluster]);
+            }
+            else
+            {
+                protoError[wCluster] = 0;
+            }
+        }
+
+        error /= data.nSamples;
+
+        double error2 = 0;
+
+        for (int i = 0; i<nClusters-1; i++)
+        {
+            for (int j=i+1; j<nClusters; j++)
+            {
+                double sampleError = 0;
+                for (int wVar=0; wVar<data.nVars; wVar++)
+                    sampleError += Math.abs(prototypes[i][wVar]-prototypes[j][wVar])/data.getRange(wVar+1);
+                error2 += nPerCluster[i]*nPerCluster[j]*sampleError/data.nVars;
+            }
+        }
+
+        int sumW = 0;
+        for (int i = 0; i<nClusters-1; i++)
+            if (nPerCluster[i] != 0)
+                for (int j=i+1; j<nClusters; j++)
+                    if (nPerCluster[j] != 0)
+                        sumW += nPerCluster[i]*nPerCluster[j];
+
+        if (sumW != 0)
+            error2 /= sumW;
+        else
+            error2 = Double.MIN_VALUE;
+
+        assignFitness(ind,-error+.5*error2, protoError, config);
     }
 
     protected void calcProto(Output outputs, DataHolder data)
     {
-        for (int wClass = 0; wClass < config.nClasses; wClass++)
-            System.arraycopy(outputs.getArray(wClass), 0, prob[wClass], 0, data.nSamples);
-        Common.maxPerColInline(prob);
+        int nClusters = outputs.getDim();
+        double prob[][] = new double[nClusters][0];
+        for (int wCluster = 0; wCluster < nClusters; wCluster++)
+            prob[wCluster] = outputs.getArray(wCluster);
 
-        double[] x;
-        for (int wClass = 0; wClass < config.nClasses; wClass++)
+        nPerCluster = new int[nClusters];
+        for (int wSample=0; wSample< data.nSamples; wSample++)
         {
-            double sumProbThisClass = Common.sum(prob[wClass]);
+            double max = prob[0][wSample];
+            winner[wSample] = 0;
+            for (int wCluster = 1; wCluster <nClusters; wCluster++)
+            {
+                if (prob[wCluster][wSample] > max)
+                {
+                    max = prob[wCluster][wSample];
+                    winner[wSample] = wCluster;
+                }
+            }
+            nPerCluster[winner[wSample]]++;
+        }
 
+        prototypes = new double[nClusters][data.nVars];
+        double[] x;
+        for (int wSample=0; wSample < data.nSamples; wSample++)
+        {
+            x = data.getSample(wSample);
             for (int wVar = 0; wVar < data.nVars; wVar++)
             {
-                prototypes[wClass][wVar] = 0;
-            }
-            if (sumProbThisClass != 0)
-            {
-                for (int wSample = 0; wSample < data.nSamples; wSample++)
-                {
-                    if (prob[wClass][wSample] != 0)
-                    {
-                        x = data.getAllVars(wSample);
-                        for (int wVar = 0; wVar < data.nVars; wVar++)
-                        {
-                            prototypes[wClass][wVar] += x[wVar];
-                        }
-                    }
-                }
-                for (int wVar = 0; wVar < data.nVars; wVar++)
-                {
-                    prototypes[wClass][wVar] /= sumProbThisClass;
-                }
+                prototypes[winner[wSample]][wVar] += x[wVar];
             }
         }
+        for (int wCluster = 0; wCluster <nClusters; wCluster++)
+            if (nPerCluster[wCluster] != 0)
+                for (int wVar = 0; wVar < data.nVars; wVar++)
+                    prototypes[wCluster][wVar] /= nPerCluster[wCluster];
     }
 
     public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        ClusteringOutput processed = new ClusteringOutput(config.nClasses, data.nSamples);
-        for (int i = 0; i < config.nClasses; i++)
+        int nClusters = raw.getDim();
+        ClusteringOutput processed = new ClusteringOutput(nClusters, data.nSamples);
+        double[][] prob = new double[nClusters][];
+        for (int i = 0; i < nClusters; i++)
         {
             processed.setArray(i, raw.getArrayCopy(i));
+            prob[i] = raw.getArrayCopy(i);
         }
         calcProto(raw, data);
         processed.setPrototypesCopy(prototypes);

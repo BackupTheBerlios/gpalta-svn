@@ -3,7 +3,7 @@
  *
  * Created on 11 de mayo de 2005, 12:23 AM
  *
- * Copyright (C) 2005 Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2005, 2006 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -89,6 +89,13 @@ public abstract class Common
         }
     }
 
+    /**
+     * Read a matrix from file
+     * @param fileName The file to read
+     * @param separator Carachter that separates each value
+     * @return a matrix with the file contents
+     * @throws IOException If any errors occur when reading the file
+     */
     public static double[][] readFromFile(String fileName, String separator) throws IOException
     {
         File dataFile = new File(fileName);
@@ -117,6 +124,11 @@ public abstract class Common
         return data;
     }
 
+    /**
+     * Transpose a matrix
+     * @param m The matrix to transpose
+     * @return The transposed matrix
+     */
     public static double[][] transpose(double[][] m)
     {
         int nRows = m.length;
@@ -180,6 +192,11 @@ public abstract class Common
         return maxi;
     }
 
+    /**
+     * Sum of the values of a vector
+     * @param x The vector
+     * @return The sum of all the values
+     */
     public static double sum(double[] x)
     {
         double sum=0;
@@ -190,6 +207,11 @@ public abstract class Common
         return sum;
     }
 
+    /**
+     * Obtain an independent copy of the given matrix
+     * @param m The matrix to copy
+     * @return a new matrix, with the same values as the original
+     */
     public static double[][] copy(double[][] m)
     {
         double[][] out = new double[m.length][];
@@ -200,6 +222,11 @@ public abstract class Common
         return out;
     }
 
+    /**
+     * Obtain a copy of an array
+     * @param x The array to copy
+     * @return a new array, with the same values as the original
+     */
     public static double[] copy(double[] x)
     {
         double[] out = new double[x.length];
@@ -207,6 +234,13 @@ public abstract class Common
         return out;
     }
 
+    /**
+     * N Distance between two vectors
+     * @param x1 one vector
+     * @param x2 the other
+     * @param n
+     * @return  (sum |x1[i] - x2[i]|<sup>n</sup>) <sup>1/n</sup>
+     */
     public static double dist(double[] x1, double[] x2, int n)
     {
         double d = 0;
@@ -215,6 +249,12 @@ public abstract class Common
         return Math.pow(d, (double)1/n);
     }
 
+    /**
+     * Euclidean distance between two vectors
+     * @param x1 one vector
+     * @param x2 the other vector
+     * @return the euclidean distance between them
+     */
     public static double dist2(double[] x1, double[] x2)
     {
         double d = 0;

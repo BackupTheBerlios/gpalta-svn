@@ -1,5 +1,5 @@
 /*
- * RealAdd.java
+ * Plus.java
  *
  * Created on 10 de mayo de 2005, 11:23 PM
  *

@@ -26,15 +26,12 @@ package gpalta.clustering;
 
 import gpalta.core.*;
 
-import java.util.List;
-import java.util.ArrayList;
-
 /**
  * @author neven
  */
 public class BufferedTree extends Tree
 {
-    public Output out;
+    private Output output;
     public int nGroups;
 
     /**
@@ -48,9 +45,18 @@ public class BufferedTree extends Tree
     public Individual deepClone()
     {
         BufferedTree t = (BufferedTree) super.deepClone();
-        t.out = (Output) out.clone();
+        t.setOutput((Output) getOutput().clone());
         t.nGroups = 0;
         return t;
     }
 
+    public Output getOutput()
+    {
+        return output;
+    }
+
+    public void setOutput(Output output)
+    {
+        this.output = output;
+    }
 }

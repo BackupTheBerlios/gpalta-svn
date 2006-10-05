@@ -27,6 +27,9 @@ package gpalta.core;
 import gpalta.ops.*;
 
 /**
+ * Holds the Individuals and performs the most important operations on them: interpreting their
+ * output, and organizing them for selection and for evolution.
+ *
  * @author neven
  */
 public interface Population
@@ -43,6 +46,10 @@ public interface Population
 
     public Output getProcessedOutput(Individual ind, Fitness f, TempOutputFactory tempOutputFactory, DataHolder data);
 
+    /**
+     * Get a certain individual
+     * @param which The individual to get
+     */
     public Individual get(int which);
 
     public void init(Config config, DataHolder data, TreeBuilder builder);

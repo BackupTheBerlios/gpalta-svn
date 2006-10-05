@@ -1,35 +1,14 @@
-/*
- * MultiTreePopulation.java
- *
- * Created on 6 de junio de 2006, 04:09 PM
- *
- * Copyright (C) 2006 Neven Boric <nboric@gmail.com>
- *
- * This file is part of GPalta.
- *
- * GPalta is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * GPalta is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with GPalta; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- */
-
 package gpalta.clustering;
 
 import gpalta.core.*;
-import gpalta.core.Tree;
-import gpalta.ops.*;
+import gpalta.ops.TreeBuilder;
+import gpalta.ops.IndSelector;
+import gpalta.ops.TreeOperator;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author neven
@@ -38,9 +17,10 @@ public class MultiTreePopulation implements Population, Serializable
 {
     private List<BufferedTree> treeList;
     private List<TreeGroup> treeGroups;
+    private TreeGroupOperator tgo;
     private Config config;
-    private Output out;
     public double meanTreeFit;
+    private int n;
 
     public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
     {
@@ -49,16 +29,18 @@ public class MultiTreePopulation implements Population, Serializable
             t.setFitness(0);
             if (!config.rememberLastEval || !t.fitCalculated)
             {
-                getOutput(t, t.out, tempOutputFactory, data);
+                getOutput(t, t.getOutput(), tempOutputFactory, data);
                 t.fitCalculated = true;
             }
         }
+        Output out = new Output(0,0);
         for (TreeGroup g : treeGroups)
         {
-            for (int i = 0; i < config.nClasses; i++)
+            if (out.getDim() != g.nTrees())
+                out = new Output(g.nTrees(), 0);
+            for (int i = 0; i < g.nTrees(); i++)
             {
-                for (int wDim=0; wDim<config.outputDimension; wDim++)
-                    out.setArray(i*config.outputDimension+wDim, g.getTree(i).out.getArray(wDim));
+                out.setArray(i, g.getTree(i).getOutput().getArray(0));
             }
             f.calculate(out, g, tempOutputFactory, data);
         }
@@ -89,13 +71,13 @@ public class MultiTreePopulation implements Population, Serializable
 
     public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        Output out = new Output(config.nClasses * config.outputDimension, data.nSamples);
         TreeGroup ind2 = (TreeGroup) ind;
-        for (int i = 0; i < config.nClasses; i++)
+        Output out = new Output(ind2.nTrees(), 0);
+        Output tmpOut = new Output(1, data.nSamples);
+        for (int i = 0; i < ind2.nTrees(); i++)
         {
-            assert ind2.getTree(i).fitCalculated;
-            for (int wDim=0; wDim<config.outputDimension; wDim++)
-                out.setArray(i*config.outputDimension+wDim, ind2.getTree(i).out.getArrayCopy(wDim));
+            getOutput(ind2.getTree(i), tmpOut, tempOutputFactory, data);
+            out.setArray(i, tmpOut.getArrayCopy(0));
         }
         return out;
     }
@@ -117,47 +99,86 @@ public class MultiTreePopulation implements Population, Serializable
         treeGroups = new ArrayList<TreeGroup>(config.populationSize);
         for (int i = 0; i < config.populationSize; i++)
         {
-            treeGroups.add(new TreeGroup(config.nClasses));
+            treeGroups.add(new TreeGroup(2));
         }
         treeList = new ArrayList<BufferedTree>(config.nTrees);
         for (int i = 0; i < config.nTrees; i++)
         {
             BufferedTree t = new BufferedTree(builder.treeRoot());
-            t.out = new Output(config.outputDimension, data.nSamples);
+            t.setOutput(new Output(1, data.nSamples));
             treeList.add(t);
         }
         builder.build(treeList);
         asignTrees(treeList, treeGroups);
-        out = new Output(config.nClasses * config.outputDimension, data.nSamples);
+        tgo = new TreeGroupOperator();
     }
 
     public void doSelection(IndSelector sel)
     {
+        for (TreeGroup t : treeGroups)
+            t.removeEmptyClusters();
+
         treeList = sel.select(treeList);
+        if (++n == 10)
+        {
+            treeGroups = sel.select(treeGroups, false);
+            n = 0;
+        }
         asignTrees(treeList, treeGroups);
     }
 
     public void evolve(TreeOperator op)
     {
         op.operate(treeList);
+        if (n==0)
+        {
+            tgo.operate(treeGroups);
+            asignTrees(treeList, treeGroups);
+        }
     }
 
     private void asignTrees(List<BufferedTree> trees, List<TreeGroup> groups)
     {
+        for (BufferedTree t : trees)
+        {
+            t.nGroups = 0;
+        }
+        for (TreeGroup g : groups)
+        {
+            for (int i = 0; i < g.nTrees(); i++)
+            {
+                if (g.getTree(i) != null)
+                    g.getTree(i).nGroups++;
+            }
+        }
         int treePointer = 0;
         //first we use the new trees:
         List<BufferedTree> newTrees = new ArrayList<BufferedTree>();
-        for (BufferedTree t : treeList)
+        for (BufferedTree t : trees)
             if (t.nGroups==0)
                 newTrees.add(t);
         int nNewTrees = newTrees.size();
-        BufferedTree[] sortedTrees = newTrees.toArray(new BufferedTree[nNewTrees]);
-        Arrays.sort(sortedTrees, new IndFitnessComparator());
+        BufferedTree[] sortedTrees;
         BufferedTree[] allSortedTrees;
         boolean first = true;
+        if (nNewTrees != 0)
+        {
+            sortedTrees = newTrees.toArray(new BufferedTree[nNewTrees]);
+            Arrays.sort(sortedTrees, new IndFitnessComparator());
+        }
+        else
+        {
+            first = false;
+            allSortedTrees = treeList.toArray(new BufferedTree[config.nTrees]);
+            Arrays.sort(allSortedTrees, new IndFitnessComparator());
+            nNewTrees = config.nTrees;
+            sortedTrees = allSortedTrees;
+        }
+
+
         for (TreeGroup g : groups)
         {
-            for (int i = 0; i < config.nClasses; i++)
+            for (int i = 0; i < g.nTrees(); i++)
             {
                 //if a tree didn't get selected, its isOnPop will be false
                 if (g.getTree(i) == null || !g.getTree(i).isOnPop())

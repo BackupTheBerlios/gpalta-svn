@@ -31,6 +31,9 @@ import java.util.*;
 import java.io.Serializable;
 
 /**
+ * Implements the most common population type on GP: a fixed number of trees, each interpreded
+ * separatedly
+ *
  * @author neven
  */
 public class SingleTreePopulation implements Population, Serializable
@@ -107,7 +110,7 @@ public class SingleTreePopulation implements Population, Serializable
             treeList.add(new Tree(builder.treeRoot()));
         }
         builder.build(treeList);
-        outputs = new Output(config.outputDimension, data.nSamples);
+        outputs = new Output(1, data.nSamples);
     }
 
 }
