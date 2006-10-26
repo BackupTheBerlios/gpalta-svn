@@ -15,7 +15,7 @@ public class TreeGroupOperator
         for (TreeGroup g: population)
         {
             double op = Common.globalRandom.nextDouble();
-            if (op < 0.8)
+            if (op < 0.4)
             {
                 //do nothing
             }
@@ -25,7 +25,7 @@ public class TreeGroupOperator
             }
             else
             {
-                g.oneLessCluster();
+                //g.oneLessCluster();
             }
         }
     }

@@ -43,8 +43,12 @@ public class TreeGroup extends Individual
     public TreeGroup(int nTrees)
     {
         treeList = new ArrayList<BufferedTree>(nTrees);
+        samplesWon = new ArrayList<Integer>(nTrees);
         for (int i=0; i<nTrees; i++)
+        {
             treeList.add(null);
+            samplesWon.add(0);
+        }
     }
 
     public int nTrees()
@@ -68,8 +72,12 @@ public class TreeGroup extends Individual
             out = (TreeGroup) clone();
             /* Remember to also clone the tree array and each tree */
             out.treeList = new ArrayList<BufferedTree>(nTrees());
+            out.samplesWon = new ArrayList<Integer>(nTrees());
             for (int i = 0; i < nTrees(); i++)
+            {
                 out.treeList.add(i, (BufferedTree) getTree(i).deepClone());
+                out.samplesWon.add(0);
+            }
         }
         catch (CloneNotSupportedException ex)
         {
@@ -86,8 +94,12 @@ public class TreeGroup extends Individual
             out = (TreeGroup) clone();
             /* Remember to also clone the tree array and each tree */
             out.treeList = new ArrayList<BufferedTree>(nTrees());
+            out.samplesWon = new ArrayList<Integer>(nTrees());
             for (int i = 0; i < nTrees(); i++)
+            {
                 out.treeList.add(i, getTree(i));
+                out.samplesWon.add(0);
+            }
         }
         catch (CloneNotSupportedException ex)
         {
@@ -109,6 +121,7 @@ public class TreeGroup extends Individual
     public void oneMoreCluster()
     {
         treeList.add(null);
+        samplesWon.add(0);
     }
 
     public void oneLessCluster()
@@ -126,22 +139,25 @@ public class TreeGroup extends Individual
                 }
             }
             treeList.remove(min);
+            samplesWon.remove(min);
         }
     }
 
     public void removeEmptyClusters()
     {
         int nClusters = nTrees();
-        if (nClusters < 2)
+        int removed = 0;
+        if (nTrees()!=samplesWon.size())
+            return;
+        for (int i=0; i < nClusters; i++)
         {
-            int removed = 0;
-            for (int i=0; i < nClusters; i++)
+            if (nTrees()==2)
+                break;
+            if (samplesWon.get(i-removed) == 0)
             {
-                if (samplesWon.get(i-removed) == 0)
-                {
-                    treeList.remove(i-removed);
-                    samplesWon.remove(i-removed);
-                }
+                treeList.remove(i-removed);
+                samplesWon.remove(i-removed);
+                removed++;
             }
         }
     }

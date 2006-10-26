@@ -68,7 +68,6 @@ public class FitnessClusteringGroup extends FitnessGroup
                 sampleError += Math.abs(prototypes[winner[wSample]][wVar]-x[wVar])/data.getRange(wVar+1);
             protoError[winner[wSample]] += sampleError/data.nVars;
         }
-        int nRemoved = 0;
         for (int wCluster = 0; wCluster < nClusters; wCluster++)
         {
             error += protoError[wCluster];
@@ -80,6 +79,7 @@ public class FitnessClusteringGroup extends FitnessGroup
             {
                 protoError[wCluster] = 0;
             }
+            ind2.setSamplesWon(wCluster, nPerCluster[wCluster]);
         }
 
         error /= data.nSamples;
@@ -109,7 +109,7 @@ public class FitnessClusteringGroup extends FitnessGroup
         else
             error2 = Double.MIN_VALUE;
 
-        assignFitness(ind,-error+.5*error2, protoError, config);
+        assignFitness(ind,1/(1+error/error2), protoError, config);
     }
 
     protected void calcProto(Output outputs, DataHolder data)

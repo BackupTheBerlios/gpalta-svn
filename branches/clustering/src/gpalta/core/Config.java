@@ -97,6 +97,7 @@ public class Config implements Serializable
     public boolean useMultiTree = false;
     public boolean useSoftPertenence = false;
     public int nTrees = 100;
+    public boolean autoNClusters = false;
 
     //------------ General behavior ------------
     /* Use vectorial evaluation

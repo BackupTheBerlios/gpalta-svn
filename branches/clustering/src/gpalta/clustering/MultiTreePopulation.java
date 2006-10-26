@@ -45,9 +45,14 @@ public class MultiTreePopulation implements Population, Serializable
             f.calculate(out, g, tempOutputFactory, data);
         }
         meanTreeFit = 0;
+        int nonZero = 0;
         for (BufferedTree t : treeList)
+        {
             meanTreeFit += t.readFitness();
-        meanTreeFit /= config.nTrees;
+            if (t.readFitness() > 0)
+                nonZero++;
+        }
+        meanTreeFit /= nonZero;
     }
 
     private void getOutput(Tree t, Output o, TempOutputFactory tempOutputFactory, DataHolder data)
@@ -66,7 +71,7 @@ public class MultiTreePopulation implements Population, Serializable
                 data.update();
             }
         }
-        //Common.sigmoid(results);
+        Common.sigmoid(results);
     }
 
     public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
@@ -99,7 +104,7 @@ public class MultiTreePopulation implements Population, Serializable
         treeGroups = new ArrayList<TreeGroup>(config.populationSize);
         for (int i = 0; i < config.populationSize; i++)
         {
-            treeGroups.add(new TreeGroup(2));
+            treeGroups.add(new TreeGroup(config.nClasses));
         }
         treeList = new ArrayList<BufferedTree>(config.nTrees);
         for (int i = 0; i < config.nTrees; i++)
@@ -115,14 +120,18 @@ public class MultiTreePopulation implements Population, Serializable
 
     public void doSelection(IndSelector sel)
     {
-        for (TreeGroup t : treeGroups)
-            t.removeEmptyClusters();
+        if (config.autoNClusters)
+            for (TreeGroup t : treeGroups)
+                t.removeEmptyClusters();
 
         treeList = sel.select(treeList);
-        if (++n == 10)
+        if (config.autoNClusters)
         {
-            treeGroups = sel.select(treeGroups, false);
-            n = 0;
+            if (++n == 10)
+            {
+                treeGroups = sel.select(treeGroups, false);
+                n = 0;
+            }
         }
         asignTrees(treeList, treeGroups);
     }
@@ -130,10 +139,13 @@ public class MultiTreePopulation implements Population, Serializable
     public void evolve(TreeOperator op)
     {
         op.operate(treeList);
-        if (n==0)
+        if (config.autoNClusters)
         {
-            tgo.operate(treeGroups);
-            asignTrees(treeList, treeGroups);
+            if (n==0)
+            {
+                tgo.operate(treeGroups);
+                asignTrees(treeList, treeGroups);
+            }
         }
     }
 
