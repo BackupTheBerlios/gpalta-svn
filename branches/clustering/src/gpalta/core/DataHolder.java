@@ -44,6 +44,7 @@ public class DataHolder
     public int nSamples;
     private int currentSample;
     public int nVars;
+    private double e1;
 
     /**
      * Get the current value for a variable
@@ -106,6 +107,7 @@ public class DataHolder
     private void calcRange()
     {
         ranges = new double[nVars][3];
+        double[] mean = new double[nVars];
         for (int wVar=0; wVar<nVars; wVar++)
         {
             double min = Double.MAX_VALUE;
@@ -118,7 +120,18 @@ public class DataHolder
             ranges[wVar][0] = min;
             ranges[wVar][1] = max;
             ranges[wVar][2] = max-min;
+            for (int wSample=0; wSample<nSamples; wSample++)
+            {
+                mean[wVar] += data[wVar][wSample];
+            }
+            mean[wVar] /= nSamples;
         }
+        e1 = 0;
+        for (int wSample=0; wSample<nSamples; wSample++)
+        {
+            e1 += Common.dist2(mean, dataT[wSample]);
+        }
+
     }
 
     /**
@@ -185,6 +198,9 @@ public class DataHolder
         return dataT[wSample];
     }
 
-
+    public double getE1()
+    {
+        return e1;
+    }
 
 }

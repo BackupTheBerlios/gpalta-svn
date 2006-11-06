@@ -62,6 +62,7 @@ nClasses = 2
 useMultiTree = false
 nTrees = 100
 useSoftPertenence = false
+autoNClusters = false
 
 #------------ General behavior ------------
 # Use vectorial evaluation

@@ -8,7 +8,6 @@ import gpalta.ops.TreeOperator;
 import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * @author neven
@@ -71,7 +70,7 @@ public class MultiTreePopulation implements Population, Serializable
                 data.update();
             }
         }
-        Common.sigmoid(results);
+        //Common.sigmoid(results);
     }
 
     public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
@@ -164,29 +163,19 @@ public class MultiTreePopulation implements Population, Serializable
             }
         }
         int treePointer = 0;
-        //first we use the new trees:
-        List<BufferedTree> newTrees = new ArrayList<BufferedTree>();
+        //first we use unassigned trees:
+        List<BufferedTree> unassignedTrees = new ArrayList<BufferedTree>();
         for (BufferedTree t : trees)
             if (t.nGroups==0)
-                newTrees.add(t);
-        int nNewTrees = newTrees.size();
-        BufferedTree[] sortedTrees;
-        BufferedTree[] allSortedTrees;
-        boolean first = true;
-        if (nNewTrees != 0)
+                unassignedTrees.add(t);
+        int nUnassigned = unassignedTrees.size();
+        boolean usingUnassigned = true;
+        if (nUnassigned == 0)
         {
-            sortedTrees = newTrees.toArray(new BufferedTree[nNewTrees]);
-            Arrays.sort(sortedTrees, new IndFitnessComparator());
+            usingUnassigned = false;
+            nUnassigned = config.nTrees;
+            unassignedTrees = trees;
         }
-        else
-        {
-            first = false;
-            allSortedTrees = treeList.toArray(new BufferedTree[config.nTrees]);
-            Arrays.sort(allSortedTrees, new IndFitnessComparator());
-            nNewTrees = config.nTrees;
-            sortedTrees = allSortedTrees;
-        }
-
 
         for (TreeGroup g : groups)
         {
@@ -195,18 +184,16 @@ public class MultiTreePopulation implements Population, Serializable
                 //if a tree didn't get selected, its isOnPop will be false
                 if (g.getTree(i) == null || !g.getTree(i).isOnPop())
                 {
-                    g.setTree(i, sortedTrees[treePointer]);
-                    sortedTrees[treePointer].nGroups++;
-                    if (++treePointer == nNewTrees)
+                    g.setTree(i, unassignedTrees.get(treePointer));
+                    unassignedTrees.get(treePointer).nGroups++;
+                    if (++treePointer == nUnassigned)
                     {
-                        if (first)
+                        if (usingUnassigned)
                         {
                             //then we use all the trees:
-                            first = false;
-                            allSortedTrees = treeList.toArray(new BufferedTree[config.nTrees]);
-                            Arrays.sort(allSortedTrees, new IndFitnessComparator());
-                            nNewTrees = config.nTrees;
-                            sortedTrees = allSortedTrees;
+                            usingUnassigned = false;
+                            nUnassigned = config.nTrees;
+                            unassignedTrees = trees;
                         }
                         treePointer = 0;
                     }
