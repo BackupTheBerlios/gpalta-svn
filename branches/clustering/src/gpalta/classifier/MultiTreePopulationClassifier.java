@@ -21,6 +21,7 @@ public class MultiTreePopulationClassifier implements Population, Serializable
     private List<TreeGroup> treeGroups;
     private Config config;
     private Output out;
+    private int nTreesPerClass;
 
     public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
     {
@@ -98,11 +99,17 @@ public class MultiTreePopulationClassifier implements Population, Serializable
         {
             treeGroups.add(new TreeGroup(config.nClasses));
         }
+
         treeList = new ArrayList[config.nClasses];
+
+        nTreesPerClass = config.nTrees/config.nClasses;
+        if (config.selectionMethod.equals("tournament"))
+            nTreesPerClass += (config.nTrees/config.nClasses)%config.tournamentSize;
+
         for (int wClass=0; wClass<config.nClasses; wClass++)
         {
-            treeList[wClass] = new ArrayList<BufferedTree>(config.nTrees);
-            for (int i = 0; i < config.nTrees/config.nClasses; i++)
+            treeList[wClass] = new ArrayList<BufferedTree>(nTreesPerClass);
+            for (int i = 0; i < nTreesPerClass; i++)
             {
                 BufferedTree t = new BufferedTree(builder.treeRoot());
                 t.setOutput(new Output(1, data.nSamples));
@@ -138,7 +145,6 @@ public class MultiTreePopulationClassifier implements Population, Serializable
     {
 
         int[][] perm = new int[config.nClasses][];
-        int nTreesPerClass = config.nTrees/config.nClasses;
         for (int i = 0; i < config.nClasses; i++)
             perm[i] = Common.randPerm(nTreesPerClass);
         for (int wClass=0; wClass<config.nClasses; wClass++)
