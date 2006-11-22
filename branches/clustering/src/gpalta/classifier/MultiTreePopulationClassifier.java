@@ -71,11 +71,12 @@ public class MultiTreePopulationClassifier implements Population, Serializable
     public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         Output out = new Output(config.nClasses, 0);
+        Output tmpOut = new Output(1, data.nSamples);
         TreeGroup ind2 = (TreeGroup) ind;
         for (int i = 0; i < config.nClasses; i++)
         {
-            assert ind2.getTree(i).fitCalculated;
-            out.setArray(i, ind2.getTree(i).getOutput().getArrayCopy(0));
+            getOutput(ind2.getTree(i), tmpOut, tempOutputFactory, data);
+            out.setArray(i, tmpOut.getArrayCopy(0));
         }
         return out;
     }

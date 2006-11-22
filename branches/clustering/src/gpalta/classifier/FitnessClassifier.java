@@ -22,7 +22,7 @@ public class FitnessClassifier extends FitnessGroup
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
         this.config = config;
-        prob = new double[config.nClasses][data.nSamples];
+        prob = new double[config.nClasses][];
         pReal = new double[config.nClasses][data.nSamples];
         double[] tmp = desiredOutputs.getArray(0);
         /*

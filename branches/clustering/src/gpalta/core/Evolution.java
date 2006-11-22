@@ -269,6 +269,22 @@ public class Evolution
     }
 
     /**
+     * Evaluate a single Individual and get its "raw" output for every sample, using the supplied
+     * data matrix, instead of the one used in evolution. Raw means that the result is obtained only
+     * from the Individual, and not modified by the Fitness
+     *
+     * @param ind  The individual to evaluate
+     * @param data A matrix with all the samples in which to evaluate the individual
+     * @return The "raw" output of the Individual for every sample in the given data matrix
+     */
+    public synchronized Output getProcessedOutput(Individual ind, double[][] data)
+    {
+        DataHolder tmpDataHolder = new DataHolder(data);
+        TempOutputFactory tmpOutFact = new TempOutputFactory(((TreeGroup) ind).nTrees(), data[0].length);
+        return population.getProcessedOutput(ind, fitness, tmpOutFact, tmpDataHolder);
+    }
+
+    /**
      * Evolve one generation. Assumes the current population is already evaluated and doesn't
      * evaluate the evolved one
      */
