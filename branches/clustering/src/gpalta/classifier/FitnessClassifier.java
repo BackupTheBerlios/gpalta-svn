@@ -39,18 +39,19 @@ public class FitnessClassifier extends FitnessGroup
         double[] ce = new double[config.nClasses];
         for (int wClass=0; wClass<config.nClasses; wClass++)
         {
-            prob[wClass] = outputs.getArray(wClass);
+            prob[wClass] = outputs.getArrayCopy(wClass);
         }
-        /*
+
         for (int wSample=0; wSample<data.nSamples; wSample++)
         {
             double sum = 0;
             for (int wClass=0; wClass<config.nClasses; wClass++)
                 sum += prob[wClass][wSample];
-            for (int wClass=0; wClass<config.nClasses; wClass++)
-                prob[wClass][wSample] /= sum;
+            if (sum != 0)
+                for (int wClass=0; wClass<config.nClasses; wClass++)
+                    prob[wClass][wSample] /= sum;
         }
-        */
+
         for (int wClass=0; wClass<config.nClasses; wClass++)
         {
             ce[wClass] = crossEntropy(pReal[wClass], prob[wClass]);
@@ -89,4 +90,5 @@ public class FitnessClassifier extends FitnessGroup
         //return out / Math.log(2);
         return out;
     }
+
 }
