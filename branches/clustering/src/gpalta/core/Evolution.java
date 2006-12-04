@@ -217,7 +217,8 @@ public class Evolution
         }
 
         evoStats.bestTreeChanged = false;
-        if (bestThisGen.readFitness() > evoStats.bestSoFar.readFitness())
+        if (bestThisGen.readFitness() > evoStats.bestSoFar.readFitness()
+            || (bestThisGen.readFitness() == evoStats.bestSoFar.readFitness() && bestThisGen.getSize() < evoStats.bestSoFar.getSize()))
         {
             evoStats.bestSoFar = bestThisGen.deepClone();
             evoStats.bestTreeChanged = true;

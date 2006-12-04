@@ -57,7 +57,30 @@ public class FitnessClassifier extends FitnessGroup
             ce[wClass] = crossEntropy(pReal[wClass], prob[wClass]);
             //ce[wClass] = crossEntropy(prob[wClass], pReal[wClass]);
         }
-        double fit = 1 / (1+ Common.sum(ce)/config.nClasses);
+
+        int[] winner = new int[data.nSamples];
+        for (int wSample=0; wSample<data.nSamples; wSample++)
+        {
+            double max = prob[0][wSample];
+            for (int wClass=1; wClass<config.nClasses; wClass++)
+            {
+                if (prob[wClass][wSample] > max)
+                {
+                    max = prob[wClass][wSample];
+                    winner[wSample] = wClass;
+                }
+            }
+        }
+
+        int err = 0;
+        for (int wSample=0; wSample<data.nSamples; wSample++)
+        {
+            if (pReal[winner[wSample]][wSample] != 1)
+                err++;
+        }
+
+        //double fit = 1 / (1+ Common.sum(ce)/config.nClasses);
+        double fit = 1 / (1+ (double)err/data.nSamples);
         for (int wClass=0; wClass<config.nClasses; wClass++)
             ce[wClass] = 1 / (1 + ce[wClass]);
         assignFitness(ind, fit , ce, config);
