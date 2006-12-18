@@ -28,6 +28,8 @@ import gpalta.clustering.*;
 import gpalta.ops.*;
 import gpalta.classifier.FitnessClassifier;
 import gpalta.classifier.MultiTreePopulationClassifier;
+import gpalta.classifier.FitnessClassifierIT;
+import gpalta.classifier.FitnessClassifierIP;
 
 import java.io.*;
 
@@ -117,7 +119,7 @@ public class Evolution
         }
         else if (config.fitness.equals("classifier"))
         {
-            fitness = new FitnessClassifier();
+            fitness = new FitnessClassifierIT();
         }
         else
         {

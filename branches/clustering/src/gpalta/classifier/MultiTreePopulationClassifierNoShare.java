@@ -15,7 +15,7 @@ import java.util.ArrayList;
  * Created by IntelliJ IDEA. User: nvn Date: 24-08-2006 Time: 02:31:24 PM To change this template
  * use File | Settings | File Templates.
  */
-public class MultiTreePopulationClassifier implements Population, Serializable
+public class MultiTreePopulationClassifierNoShare implements Population, Serializable
 {
     private List<BufferedTree>[] treeList;
     private List<TreeGroup> treeGroups;
