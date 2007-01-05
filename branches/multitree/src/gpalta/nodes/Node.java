@@ -77,29 +77,29 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
      * @param tempOutputFactory
      * @param data
      */
-    public void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void evalVect(SingleOutput out, TempOutputFactory tempOutputFactory, DataHolder data)
     {
         if (nKids() > 0)
         {
-            Output[] kidOuts = new Output[nKids()];
+            SingleOutput[] kidOuts = new SingleOutput[nKids()];
             for (int wKid = 0; wKid < nKids(); wKid++)
             {
-                kidOuts[wKid] = tempOutputFactory.get();
+                kidOuts[wKid] = (SingleOutput)tempOutputFactory.get();
                 getKid(wKid).evalVect(kidOuts[wKid], tempOutputFactory, data);
             }
 
             double[][] kidOutVects = new double[nKids()][];
             for (int wKid = 0; wKid < nKids(); wKid++)
             {
-                kidOutVects[wKid] = kidOuts[wKid].getArray(0);
+                kidOutVects[wKid] = kidOuts[wKid].x;
             }
-            evalVect(out.getArray(0), kidOutVects, data);
+            evalVect(out.x, kidOutVects, data);
             for (int wKid = 0; wKid < nKids(); wKid++)
                 tempOutputFactory.release();
         }
         else
         {
-            evalVect(out.getArray(0), null, data);
+            evalVect(out.x, null, data);
         }
     }
 

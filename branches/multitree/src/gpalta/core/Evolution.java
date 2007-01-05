@@ -24,14 +24,11 @@
 
 package gpalta.core;
 
-import gpalta.clustering.*;
 import gpalta.ops.*;
-import gpalta.classifier.FitnessClassifier;
-import gpalta.classifier.MultiTreePopulationClassifier;
-import gpalta.classifier.FitnessClassifierIT;
-import gpalta.classifier.FitnessClassifierIP;
+import gpalta.multitree.MultiTreeIndividual;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -64,85 +61,81 @@ public class Evolution
 
         treeBuilder = new TreeBuilder(config, nodeFactory);
 
-        if (config.selectionMethod.equals("tournament"))
+        try
         {
-            indSelector = new IndSelectorTournament(config);
-        }
-        else
-        {
-            if (config.rankingType.equals("Raw"))
+            //selection:
+            Class cl = Class.forName(config.selectionMethod);
+            java.lang.reflect.Constructor[] co = cl.getConstructors();
+            if (co.length != 1)
             {
-                theRanking = new RankingRaw();
-            }
-            else if (config.rankingType.equals("LFR"))
-            {
-                theRanking = new RankingLFR();
+                //How do we know which constructor to use?
             }
             else
             {
-                theRanking = new RankingLFR();
+                Class[] params = co[0].getParameterTypes();
+                if (params.length == 0)
+                {
+                    indSelector = (IndSelector)co[0].newInstance();
+                }
+                else if (params.length == 1 && params[0].getName().equals(Config.class.getName()))
+                {
+                    indSelector = (IndSelector)co[0].newInstance(config);
+                }
+                else if (params.length == 2 && params[0].getName().equals(Config.class.getName()) && params[1].getName().equals(Ranking.class.getName()))
+                {
+                    cl = Class.forName(config.rankingType);
+                    java.lang.reflect.Constructor[] co2 = cl.getConstructors();
+                    if (co2.length == 1 && co2[0].getParameterTypes().length==0)
+                    {
+                        theRanking = (Ranking)co2[0].newInstance();
+                        indSelector = (IndSelector)co[0].newInstance(config, theRanking);
+                    }
+                }
             }
 
+            //fitness:
+            cl = Class.forName(config.fitness);
+            co = cl.getConstructors();
+            if (co[0].getParameterTypes().length == 0)
+            {
+                fitness = (Fitness)co[0].newInstance();
+            }
 
-            if (config.selectionMethod.equals("SUS"))
+            evoStats = new EvolutionStats();
+
+            //population:
+            if (initPop)
             {
-                indSelector = new IndSelectorSUS(config, theRanking);
-            }
-            else if (config.selectionMethod.equals("roulette"))
-            {
-                indSelector = new IndSelectorRoulette(config, theRanking);
-            }
-            else if (config.selectionMethod.equals("proportional"))
-            {
-                indSelector = new IndSelectorProportional(config, theRanking);
-            }
-            else
-            {
-                indSelector = new IndSelectorTournament(config);
+                cl = Class.forName(config.population);
+                co = cl.getConstructors();
+                if (co[0].getParameterTypes().length == 0)
+                {
+                    population = (Population)co[0].newInstance();
+                }
+                population.init(config, initializedData, treeBuilder);
+                evoStats.bestSoFar = population.get(0);
             }
         }
-
-        if (config.fitness.equals("clustering"))
+        catch (IllegalAccessException e)
         {
-            if (config.useMultiTree)
-            {
-                if (config.useSoftPertenence)
-                    fitness = new FitnessClusteringGroupMutInf();
-                else
-                    fitness = new FitnessClusteringGroup();
-            }
-            else
-            {
-                //error
-            }
-
+            Logger.log(e);
         }
-        else if (config.fitness.equals("classifier"))
+        catch (InvocationTargetException e)
         {
-            fitness = new FitnessClassifierIT();
+            Logger.log(e);
         }
-        else
+        catch (InstantiationException e)
         {
-            fitness = new FitnessClassic();
+            Logger.log(e);
+        }
+        catch (ClassNotFoundException e)
+        {
+            Logger.log(e);
         }
 
         if (config.useVect)
         {
             tempOutputFactory = new TempOutputFactory(1, dataHolder.nSamples);
-        }
-
-        evoStats = new EvolutionStats();
-        if (initPop)
-        {
-            if (config.useMultiTree)
-                if (config.fitness.equals("classifier"))
-                    population = new MultiTreePopulationClassifier();
-                else
-                    population = new MultiTreePopulation();
-            else
-                population = new SingleTreePopulation();
-            population.init(config, initializedData, treeBuilder);
-            evoStats.bestSoFar = population.get(0);
         }
 
         generation = 0;
@@ -187,8 +180,8 @@ public class Evolution
 
         initCommon(config, dataHolder, initPop);
 
-        Output des = new Output(1, dataHolder.nSamples);
-        des.setArray(0, desiredOutputs);
+        SingleOutput des = new SingleOutput(dataHolder.nSamples);
+        des.store(desiredOutputs);
         fitness.init(config, dataHolder, des, weights);
 
     }
@@ -208,7 +201,7 @@ public class Evolution
         for (int i = 0; i < config.populationSize; i++)
         {
             Individual ind = population.get(i);
-            if (ind.readFitness() > 0)
+            if (ind.readFitness() != 0)
             {
                 evoStats.avgFit += ind.readFitness();
                 nonZero++;
@@ -257,7 +250,19 @@ public class Evolution
     public synchronized Output getRawOutput(Individual ind, double[][] data)
     {
         DataHolder tmpDataHolder = new DataHolder(data);
-        TempOutputFactory tmpOutFact = new TempOutputFactory(((TreeGroup) ind).nTrees(), data[0].length);
+        TempOutputFactory tmpOutFact;
+        if (ind instanceof Tree)
+        {
+            tmpOutFact = new TempOutputFactory(1, data[0].length);
+        }
+        else if (ind instanceof MultiTreeIndividual)
+        {
+            tmpOutFact = new TempOutputFactory(((MultiTreeIndividual)ind).nTrees(), data[0].length);
+        }
+        else
+        {
+            return null;
+        }
         return population.getRawOutput(ind, tmpOutFact, tmpDataHolder);
     }
 
@@ -283,7 +288,19 @@ public class Evolution
     public synchronized Output getProcessedOutput(Individual ind, double[][] data)
     {
         DataHolder tmpDataHolder = new DataHolder(data);
-        TempOutputFactory tmpOutFact = new TempOutputFactory(((TreeGroup) ind).nTrees(), data[0].length);
+        TempOutputFactory tmpOutFact;
+        if (ind instanceof Tree)
+        {
+            tmpOutFact = new TempOutputFactory(1, data[0].length);
+        }
+        else if (ind instanceof MultiTreeIndividual)
+        {
+            tmpOutFact = new TempOutputFactory(((MultiTreeIndividual)ind).nTrees(), data[0].length);
+        }
+        else
+        {
+            return null;
+        }
         return population.getProcessedOutput(ind, fitness, tmpOutFact, tmpDataHolder);
     }
 

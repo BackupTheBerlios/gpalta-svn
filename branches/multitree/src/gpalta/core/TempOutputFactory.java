@@ -24,6 +24,8 @@
 
 package gpalta.core;
 
+import gpalta.multitree.MultiOutput;
+
 import java.util.*;
 
 /**
@@ -63,8 +65,10 @@ public class TempOutputFactory
         currentOutput++;
         if (currentOutput == outputs.size())
         {
-            //Logger.log("Adding new realEvalVector, " + currentRealEvalVector);
-            outputs.add(new Output(outputDimension, vectorSize));
+            if (outputDimension == 1)
+                outputs.add(new SingleOutput(vectorSize));
+            else
+                outputs.add(new MultiOutput(outputDimension, vectorSize));
         }
         return outputs.get(currentOutput);
     }

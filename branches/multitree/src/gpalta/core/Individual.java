@@ -37,6 +37,7 @@ public abstract class Individual implements Cloneable, Serializable
 {
     private double fitness;
     private boolean isOnPop;
+    public boolean fitCalculated;
 
     /**
      * Get the size of this Individual, hopefully without recalculating it (ie. in the case of a
@@ -95,5 +96,9 @@ public abstract class Individual implements Cloneable, Serializable
     {
         return isOnPop;
     }
+
+    public abstract Output eval(DataHolder data);
+
+    public abstract void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data);
 
 }

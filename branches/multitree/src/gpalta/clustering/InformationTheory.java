@@ -1,4 +1,4 @@
-package gpalta.classifier;
+package gpalta.clustering;
 
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 15-12-2006 Time: 09:07:08 PM To change this template
@@ -91,10 +91,10 @@ public abstract class InformationTheory
         return count;
     }
 
-    public static double gaussianKernel(double[] x, double sigma)
+    public static double gaussianKernel(double[] x, double sigma2)
     {
         double k = x.length;
-        return 1/(Math.pow((2*Math.PI), k/2)*Math.pow(sigma,k))*Math.exp(-innerProduct(x)/(2*sigma*sigma));
+        return 1/Math.pow((2*Math.PI*sigma2), k/2)*Math.exp(-innerProduct(x)/(2*sigma2));
     }
 
     public static double innerProduct(double[] x)
@@ -115,15 +115,28 @@ public abstract class InformationTheory
     public static double informationPotencial(double[] x, double sigma)
     {
         int n=x.length;
+        double sigma2 = Math.sqrt(2)*sigma;
         double out = 0;
         for (int i=0; i<n; i++)
         {
             for (int j=0; j<n; j++)
             {
-                out += gaussianKernel(x[i]-x[j], Math.sqrt(2)*sigma);
+                out += gaussianKernel(x[i]-x[j], sigma2);
             }
         }
         return out/(n*n);
+    }
+
+    public static double entropyEstimator(double[] x, double sigma)
+    {
+        int n=x.length;
+        double sigma2 = Math.sqrt(2)*sigma;
+        double out = gaussianKernel(x[0], sigma2);
+        for (int i=1; i<n; i++)
+        {
+            out += gaussianKernel(x[i]-x[i-1], sigma2);
+        }
+        return -Math.log(out/n)/Math.log(2);
     }
 
     public static double mutualInformation(double[] px, double[] py, double[][] pxy)

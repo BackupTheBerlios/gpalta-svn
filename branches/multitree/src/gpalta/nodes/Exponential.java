@@ -45,7 +45,7 @@ public class Exponential extends Node
 
     public String name()
     {
-        return "exp";  //To change body of implemented methods use File | Settings | File Templates.
+        return "exp";
     }
 
     public int nKids()

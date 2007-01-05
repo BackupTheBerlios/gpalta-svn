@@ -34,7 +34,7 @@ import java.io.*;
 public class DataHolder
 {
 
-    /* Every row in data correponds to all the samples for a variable. 
+    /* Every row in data correponds to all the samples for a variable.
     * This is done to be able to return all the samples for a certain variable
     * as a vector.
     */

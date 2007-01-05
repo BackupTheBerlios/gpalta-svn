@@ -1,9 +1,9 @@
 /*
- * Output.java
+ * Sin.java
  *
- * Created on 31 de mayo de 2006, 11:09 PM
+ * Created on 04-01-2007, 12:43:48 PM
  *
- * Copyright (C) 2006 Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2007 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -22,21 +22,32 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package gpalta.core;
+package gpalta.nodes;
 
-import java.io.Serializable;
+import gpalta.core.DataHolder;
 
-/**
- * Stores the outputs of an individual. It can be used to represent multi-dimensional outputs
- *
- * @author neven
- */
-public abstract class Output implements Cloneable, Serializable
+public class Sin extends Node
 {
+    public double eval(DataHolder data)
+    {
+        return Math.sin(getKid(0).eval(data));
+    }
 
-    /**
-     * Get the dimension (number of scalar outputs per sample) of this Output
-     */
-    public abstract int getDim();
+    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    {
+        for (int wSample=0; wSample<outVect.length; wSample++)
+        {
+            outVect[wSample] = Math.sin(kidOutVect[0][wSample]);
+        }
+    }
 
+    public String name()
+    {
+        return "sin";
+    }
+
+    public int nKids()
+    {
+        return 1;
+    }
 }

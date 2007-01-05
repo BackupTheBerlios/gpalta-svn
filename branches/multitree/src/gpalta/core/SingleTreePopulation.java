@@ -40,7 +40,7 @@ public class SingleTreePopulation implements Population, Serializable
 {
     private List<Tree> treeList;
     private Config config;
-    private Output outputs;
+    private SingleOutput outputs;
 
     public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
     {
@@ -55,9 +55,9 @@ public class SingleTreePopulation implements Population, Serializable
         }
     }
 
-    private void getOutput(Tree t, Output o, TempOutputFactory tempOutputFactory, DataHolder data)
+    private void getOutput(Tree t, SingleOutput o, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        double[] results = o.getArray(0);
+        double[] results = o.x;
         data.reset();
         if (config.useVect)
         {
@@ -67,7 +67,7 @@ public class SingleTreePopulation implements Population, Serializable
         {
             for (int i = 0; i < data.nSamples; i++)
             {
-                results[i] = t.eval(data);
+                results[i] = ((SingleOutput)t.eval(data)).x[0];
                 data.update();
             }
         }
@@ -75,7 +75,7 @@ public class SingleTreePopulation implements Population, Serializable
 
     public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        Output out = new Output(1, data.nSamples);
+        SingleOutput out = new SingleOutput(data.nSamples);
         getOutput((Tree) ind, out, tempOutputFactory, data);
         return out;
     }
@@ -110,7 +110,7 @@ public class SingleTreePopulation implements Population, Serializable
             treeList.add(new Tree(builder.treeRoot()));
         }
         builder.build(treeList);
-        outputs = new Output(1, data.nSamples);
+        outputs = new SingleOutput(data.nSamples);
     }
 
 }

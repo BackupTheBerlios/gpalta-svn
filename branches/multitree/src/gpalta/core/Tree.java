@@ -32,7 +32,6 @@ import gpalta.nodes.*;
  */
 public class Tree extends Individual implements NodeParent
 {
-    public boolean fitCalculated;
     private NodeSet type;
     private Node[] kids;
 
@@ -45,14 +44,16 @@ public class Tree extends Individual implements NodeParent
         newKids();
     }
 
-    public double eval(DataHolder data)
+    public Output eval(DataHolder data)
     {
-        return getKid(0).eval(data);
+        SingleOutput out = new SingleOutput(1);
+        out.x[0] = getKid(0).eval(data);
+        return out;
     }
 
     public void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data)
     {
-        getKid(0).evalVect(out, tempOutputFactory, data);
+        getKid(0).evalVect((SingleOutput)out, tempOutputFactory, data);
     }
 
     public int nKids()

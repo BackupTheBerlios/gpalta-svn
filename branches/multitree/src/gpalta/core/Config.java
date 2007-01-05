@@ -39,11 +39,13 @@ public class Config implements Serializable
     public static String logFileName = "log.txt";
 
     // ----------- Basic GP options ------------
+    public String population = "gpalta.core.SingleTreePopulation";
     public int populationSize = 500;
     public int nGenerations = 1000;
 
     public int maxDepth = 9;
     public int initialMinDepth = 3;
+    public int initialMaxDepth = 6;
 
     /* Upper limits for the probability regions of the tree operations. This means:
     * probability of crossover = upLimitProbCrossOver - 0
@@ -73,16 +75,16 @@ public class Config implements Serializable
 
     // -------------- Selection ---------------
     /* Tree selection methods: tournament, roulette, proportional, SUS */
-    public String selectionMethod = "tournament";
+    public String selectionMethod = "gpalta.ops.IndSelectorTournament";
     /* for tournament selection: */
     public int tournamentSize = 2;
     public double SUSPointerDistance = 0.1;
     /* Population ranking adjustment (unused in case of tournament selection method): Raw, LFR */
-    public String rankingType = "Raw";
+    public String rankingType = "gpalta.ops.RankingRaw";
 
     //---------------- Fitness -----------------------
     /* generic or clustering */
-    public String fitness = "generic";
+    public String fitness = "gpalta.core.FitnessClassic";
 
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;
@@ -94,9 +96,7 @@ public class Config implements Serializable
 
     //For the clustering fitness:
     public int nClasses = 2;
-    public boolean useMultiTree = false;
     public boolean useSoftPertenence = false;
-    public int nTrees = 100;
     public boolean autoNClusters = false;
 
     //------------ General behavior ------------

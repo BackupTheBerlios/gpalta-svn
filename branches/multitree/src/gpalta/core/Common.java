@@ -103,7 +103,7 @@ public abstract class Common
         BufferedReader in = new BufferedReader(new FileReader(dataFile));
 
         //count columns:
-        int nCols = in.readLine().trim().split("\\s+").length;
+        int nCols = in.readLine().trim().split(separator).length;
 
         //count rows:
         int nRows;
@@ -265,6 +265,26 @@ public abstract class Common
             d += p*p;
         }
         return Math.sqrt(d);
+    }
+
+    public static double dotProduct(double[] x, double[] y)
+    {
+        double out = 0;
+        for (int i=0; i<x.length; i++)
+        {
+            out += x[i]*y[i];
+        }
+        return out;
+    }
+
+    public static double variance(double[] x)
+    {
+        double[] x2 = new double[x.length];
+        for (int i=0; i<x.length; i++)
+        {
+            x2[i] = x[i]*x[i];
+        }
+        return sum(x2)/x.length - Math.pow(sum(x)/x.length,2);
     }
 
 }

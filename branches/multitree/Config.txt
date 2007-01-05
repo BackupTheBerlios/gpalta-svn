@@ -6,11 +6,13 @@ nodeConfigFileName = NodeConfig.txt
 logFileName = log.txt
 
 # ----------- Basic GP options ------------
+population = gpalta.core.SingleTreePopulation
 populationSize = 500
 nGenerations = 1000
 
 maxDepth = 9
 initialMinDepth = 3
+initialMaxDepth = 6
 
 # Upper limits for the probability regions of the tree operations. This means:
 # probability of crossover = upLimitProbCrossOver - 0
@@ -39,16 +41,16 @@ probGrowBuild = .5
 
 # -------------- Selection ---------------
 # Tree selection methods: tournament, roulette, proportional, SUS
-selectionMethod = tournament
+selectionMethod = gpalta.ops.IndSelectorTournament
 # for tournament selection:
 tournamentSize = 2
 SUSPointerDistance = 0.1
 # Population ranking adjustment (unused in case of tournament selection method): Raw, LFR
-rankingType = Raw
+rankingType = gpalta.ops.RankingRaw
 
 #---------------- Fitness -----------------------
 # generic or clustering
-fitness = generic
+fitness = gpalta.core.FitnessClassic
 
 # stop if fitness reaches this value:
 stopFitness = 0.99
@@ -59,8 +61,6 @@ sizePenalization = 0
 
 # For the clustering fitness:
 nClasses = 2
-useMultiTree = false
-nTrees = 100
 useSoftPertenence = false
 autoNClusters = false
 

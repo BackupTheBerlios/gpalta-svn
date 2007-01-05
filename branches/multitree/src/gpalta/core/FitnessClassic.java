@@ -34,7 +34,7 @@ import java.io.*;
 public class FitnessClassic implements Fitness
 {
 
-    private Output desiredOutputs;
+    private SingleOutput desiredOutputs;
     private double[] weights;
 
     public void init(Config config, DataHolder data, String fileName)
@@ -42,8 +42,8 @@ public class FitnessClassic implements Fitness
         try
         {
             double[][] matrix = Common.transpose(Common.readFromFile(fileName, "\\s+"));
-            desiredOutputs = new Output(1, 0);
-            desiredOutputs.setArray(0, matrix[0]);
+            desiredOutputs = new SingleOutput(matrix[0].length);
+            desiredOutputs.store(matrix[0]);
             boolean useWeight = false;
             if (matrix.length == 2)
             {
@@ -71,7 +71,7 @@ public class FitnessClassic implements Fitness
 
     public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
     {
-        this.desiredOutputs = desiredOutputs;
+        this.desiredOutputs = (SingleOutput)desiredOutputs;
         this.weights = weights;
     }
 
@@ -80,7 +80,7 @@ public class FitnessClassic implements Fitness
         double error = 0;
         for (int i = 0; i < data.nSamples; i++)
         {
-            error += Math.pow(outputs.getArray(0)[i] - desiredOutputs.getArray(0)[i], 2);
+            error += Math.pow(((SingleOutput)outputs).x[i] - desiredOutputs.x[i], 2);
         }
         ind.setFitness(1 / (1 + Math.sqrt(error)));
     }
