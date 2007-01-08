@@ -75,7 +75,7 @@ public class FitnessClassic implements Fitness
         this.weights = weights;
     }
 
-    public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void calculate(Output outputs, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         double error = 0;
         for (int i = 0; i < data.nSamples; i++)
@@ -85,7 +85,7 @@ public class FitnessClassic implements Fitness
         ind.setFitness(1 / (1 + Math.sqrt(error)));
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
+    public Output getProcessedOutput(Output raw, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         return raw;
     }

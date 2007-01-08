@@ -42,26 +42,26 @@ public class SingleTreePopulation implements Population, Serializable
     private Config config;
     private SingleOutput outputs;
 
-    public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void eval(Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         for (Tree t : treeList)
         {
             if (!config.rememberLastEval || !t.fitCalculated)
             {
-                getOutput(t, outputs, tempOutputFactory, data);
-                f.calculate(outputs, t, tempOutputFactory, data);
+                getOutput(t, outputs, tempVectorFactory, data);
+                f.calculate(outputs, t, tempVectorFactory, data);
                 t.fitCalculated = true;
             }
         }
     }
 
-    private void getOutput(Tree t, SingleOutput o, TempOutputFactory tempOutputFactory, DataHolder data)
+    private void getOutput(Tree t, SingleOutput o, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         double[] results = o.x;
         data.reset();
         if (config.useVect)
         {
-            t.evalVect(o, tempOutputFactory, data);
+            t.evalVect(o, tempVectorFactory, data);
         }
         else
         {
@@ -73,17 +73,17 @@ public class SingleTreePopulation implements Population, Serializable
         }
     }
 
-    public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
+    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         SingleOutput out = new SingleOutput(data.nSamples);
-        getOutput((Tree) ind, out, tempOutputFactory, data);
+        getOutput((Tree) ind, out, tempVectorFactory, data);
         return out;
     }
 
-    public Output getProcessedOutput(Individual ind, Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
+    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
     {
-        Output raw = getRawOutput(ind, tempOutputFactory, data);
-        return f.getProcessedOutput(raw, ind, tempOutputFactory, data);
+        Output raw = getRawOutput(ind, tempVectorFactory, data);
+        return f.getProcessedOutput(raw, ind, tempVectorFactory, data);
     }
 
     public Individual get(int which)

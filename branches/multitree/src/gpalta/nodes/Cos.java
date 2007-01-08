@@ -33,11 +33,11 @@ public class Cos extends Node
         return Math.cos(getKid(0).eval(data));
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = Math.cos(kidOutVect[0][wSample]);
+            outVect[wSample] = Math.cos(kidsOutput[0][wSample]);
         }
     }
 

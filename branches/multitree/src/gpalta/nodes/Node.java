@@ -73,33 +73,32 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
      * results. Override this method only if the Node has a special behabior with respect to
      * multiple dimension outputs
      *
-     * @param out
-     * @param tempOutputFactory
+     * @param outVect
+     * @param tempVectorFactory
      * @param data
      */
-    public void evalVect(SingleOutput out, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void evalVect(double[] outVect, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         if (nKids() > 0)
         {
-            SingleOutput[] kidOuts = new SingleOutput[nKids()];
-            for (int wKid = 0; wKid < nKids(); wKid++)
-            {
-                kidOuts[wKid] = (SingleOutput)tempOutputFactory.get();
-                getKid(wKid).evalVect(kidOuts[wKid], tempOutputFactory, data);
-            }
+            double[][] kidsOutput = new double[nKids()][];
+            kidsOutput[0] = outVect;
 
-            double[][] kidOutVects = new double[nKids()][];
+            for (int wKid = 1; wKid < nKids(); wKid++)
+            {
+                kidsOutput[wKid] = tempVectorFactory.get();
+            }
             for (int wKid = 0; wKid < nKids(); wKid++)
             {
-                kidOutVects[wKid] = kidOuts[wKid].x;
+                getKid(wKid).evalVect(kidsOutput[wKid], tempVectorFactory, data);
             }
-            evalVect(out.x, kidOutVects, data);
-            for (int wKid = 0; wKid < nKids(); wKid++)
-                tempOutputFactory.release();
+            evalVect(outVect, kidsOutput, data);
+            for (int wKid = 1; wKid < nKids(); wKid++)
+                tempVectorFactory.release();
         }
         else
         {
-            evalVect(out.x, null, data);
+            evalVect(outVect,(double[][]) null, data);
         }
     }
 
@@ -108,11 +107,10 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
      * method
      *
      * @param outVect    The array where the outout must be stored
-     * @param kidOutVect A matrix holding the outputs of this Node's kids. Each row holds the output
-     *                   for each kid
+     * @param kidsOutput
      * @param data       The problem's data
      */
-    protected abstract void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data);
+    public abstract void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data);
 
     public void setTypeOfKids(int whichKid, NodeSet t)
     {

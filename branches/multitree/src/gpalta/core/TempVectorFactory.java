@@ -1,5 +1,5 @@
 /*
- * TempOutputFactory.java
+ * TempVectorFactory.java
  *
  * Created on 11 de noviembre de 2005, 04:35 PM
  *
@@ -24,8 +24,6 @@
 
 package gpalta.core;
 
-import gpalta.multitree.MultiOutput;
-
 import java.util.*;
 
 /**
@@ -35,24 +33,22 @@ import java.util.*;
  *
  * @author neven
  */
-public class TempOutputFactory
+public class TempVectorFactory
 {
 
-    private List<Output> outputs;
+    private List<double[]> outputs;
     private int currentOutput;
     private int vectorSize;
-    private int outputDimension;
 
     /**
-     * Creates a new instance of TempOutputFactory
+     * Creates a new instance of TempVectorFactory
      *
      * @param vectorSize The size of each array (number of samples)
      */
-    public TempOutputFactory(int outputDimension, int vectorSize)
+    public TempVectorFactory(int vectorSize)
     {
         this.vectorSize = vectorSize;
-        this.outputDimension = outputDimension;
-        outputs = new ArrayList<Output>(0);
+        outputs = new ArrayList<double[]>(0);
         currentOutput = -1;
     }
 
@@ -60,15 +56,12 @@ public class TempOutputFactory
      * Get a new output object. If previously allocated outputs are available (not already in use),
      * it will return one of them. Else, it will allocate memory for a new one
      */
-    public synchronized Output get()
+    public synchronized double[] get()
     {
         currentOutput++;
         if (currentOutput == outputs.size())
         {
-            if (outputDimension == 1)
-                outputs.add(new SingleOutput(vectorSize));
-            else
-                outputs.add(new MultiOutput(outputDimension, vectorSize));
+            outputs.add(new double[vectorSize]);
         }
         return outputs.get(currentOutput);
     }

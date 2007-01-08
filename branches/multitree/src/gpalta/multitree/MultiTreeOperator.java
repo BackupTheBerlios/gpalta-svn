@@ -54,8 +54,36 @@ public class MultiTreeOperator
                 //Do cross over, except for the last tree:
                 if (i != population.size() - 1)
                 {
-                    int t1 = Common.globalRandom.nextInt(population.get(perm[i]).nTrees());
-                    int t2 = Common.globalRandom.nextInt(population.get(perm[i+1]).nTrees());
+                    int t1, t2;
+                    double probSelectWorst = Common.globalRandom.nextDouble();
+                    if (probSelectWorst < 0.5)
+                    {
+                        double minV = population.get(perm[i]).getTree(0).readFitness();
+                        t1 = 0;
+                        for (int j=1; j<population.get(perm[i]).nTrees(); j++)
+                        {
+                            if (population.get(perm[i]).getTree(j).readFitness() < minV)
+                            {
+                                minV = population.get(perm[i]).getTree(j).readFitness();
+                                t1 = j;
+                            }
+                        }
+                        minV = population.get(perm[i+1]).getTree(0).readFitness();
+                        t2 = 0;
+                        for (int j=1; j<population.get(perm[i+1]).nTrees(); j++)
+                        {
+                            if (population.get(perm[i+1]).getTree(j).readFitness() < minV)
+                            {
+                                minV = population.get(perm[i+1]).getTree(j).readFitness();
+                                t2 = j;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        t1 = Common.globalRandom.nextInt(population.get(perm[i]).nTrees());
+                        t2 = Common.globalRandom.nextInt(population.get(perm[i+1]).nTrees());
+                    }
                     if (treeOp.crossOver(population.get(perm[i]).getTree(t1), population.get(perm[i+1]).getTree(t2)))
                     {
                         population.get(perm[i]).fitCalculated = false;
@@ -66,7 +94,25 @@ public class MultiTreeOperator
             }
             else if (op <= config.upLimitProbMutation)
             {
-                int t1 = Common.globalRandom.nextInt(population.get(perm[i]).nTrees());
+                int t1;
+                double probSelectWorst = Common.globalRandom.nextDouble();
+                if (probSelectWorst < 0.5)
+                {
+                    double minV = population.get(perm[i]).getTree(0).readFitness();
+                    t1 = 0;
+                    for (int j=1; j<population.get(perm[i]).nTrees(); j++)
+                    {
+                        if (population.get(perm[i]).getTree(j).readFitness() < minV)
+                        {
+                            minV = population.get(perm[i]).getTree(j).readFitness();
+                            t1 = j;
+                        }
+                    }
+                }
+                else
+                {
+                    t1 = Common.globalRandom.nextInt(population.get(perm[i]).nTrees());
+                }
                 population.get(perm[i]).fitCalculated = false;
                 treeOp.mutateBuild(population.get(perm[i]).getTree(t1));
             }

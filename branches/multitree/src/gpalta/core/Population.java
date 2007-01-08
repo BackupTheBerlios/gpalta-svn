@@ -35,16 +35,16 @@ import gpalta.ops.*;
 public interface Population
 {
 
-    public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data);
+    public void eval(Fitness f, TempVectorFactory tempVectorFactory, DataHolder data);
 
     /**
      * Get the output directly from the Individual, without further processing
      *
      * @return A totally independent Output object
      */
-    public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data);
+    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, DataHolder data);
 
-    public Output getProcessedOutput(Individual ind, Fitness f, TempOutputFactory tempOutputFactory, DataHolder data);
+    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, DataHolder data);
 
     /**
      * Get a certain individual

@@ -37,11 +37,11 @@ public class Equals extends Node
         return (getKid(0).eval(data) == getKid(1).eval(data) ? 1 : 0);
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = (kidOutVect[0][wSample] == kidOutVect[1][wSample] ? 1 : 0);
+            outVect[wSample] = (kidsOutput[0][wSample] == kidsOutput[1][wSample] ? 1 : 0);
         }
     }
 

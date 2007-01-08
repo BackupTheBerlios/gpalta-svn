@@ -41,14 +41,14 @@ public class Divide extends Node
             return (getKid(0).eval(data) / resultKid1);
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            if (kidOutVect[1][wSample] == 0)
+            if (kidsOutput[1][wSample] == 0)
                 outVect[wSample] = 1;
             else
-                outVect[wSample] = kidOutVect[0][wSample] / kidOutVect[1][wSample];
+                outVect[wSample] = kidsOutput[0][wSample] / kidsOutput[1][wSample];
         }
     }
 

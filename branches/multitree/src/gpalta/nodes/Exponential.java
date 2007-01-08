@@ -25,8 +25,6 @@
 package gpalta.nodes;
 
 import gpalta.core.DataHolder;
-import gpalta.core.TempOutputFactory;
-import gpalta.core.Output;
 
 public class Exponential extends Node
 {
@@ -35,11 +33,11 @@ public class Exponential extends Node
         return Math.exp(getKid(0).eval(data));
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = Math.exp(kidOutVect[0][wSample]);
+            outVect[wSample] = Math.exp(kidsOutput[0][wSample]);
         }
     }
 

@@ -99,6 +99,6 @@ public abstract class Individual implements Cloneable, Serializable
 
     public abstract Output eval(DataHolder data);
 
-    public abstract void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data);
+    public abstract void evalVect(Output out, TempVectorFactory tempVectorFactory, DataHolder data);
 
 }

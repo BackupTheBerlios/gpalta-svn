@@ -43,24 +43,24 @@ public class MultiTreePopulation implements Population
     private Config config;
     private MultiOutput outputs;
 
-    public void eval(Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void eval(Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         for (MultiTreeIndividual mt : multiTreeList)
         {
             if (!config.rememberLastEval || !mt.fitCalculated)
             {
-                getOutput(mt, outputs, tempOutputFactory, data);
-                f.calculate(outputs, mt, tempOutputFactory, data);
+                getOutput(mt, outputs, tempVectorFactory, data);
+                f.calculate(outputs, mt, tempVectorFactory, data);
                 mt.fitCalculated = true;
             }
         }
     }
 
-    private void getOutput(MultiTreeIndividual mt, MultiOutput output, TempOutputFactory tempOutputFactory, DataHolder data)
+    private void getOutput(MultiTreeIndividual mt, MultiOutput output, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         if (config.useVect)
         {
-            mt.evalVect(output, tempOutputFactory, data);
+            mt.evalVect(output, tempVectorFactory, data);
         }
         else
         {
@@ -77,17 +77,17 @@ public class MultiTreePopulation implements Population
         }
     }
 
-    public Output getRawOutput(Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
+    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         MultiOutput out = new MultiOutput(((MultiTreeIndividual)ind).nTrees(), data.nSamples);
-        getOutput((MultiTreeIndividual) ind, out, tempOutputFactory, data);
+        getOutput((MultiTreeIndividual) ind, out, tempVectorFactory, data);
         return out;
     }
 
-    public Output getProcessedOutput(Individual ind, Fitness f, TempOutputFactory tempOutputFactory, DataHolder data)
+    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
     {
-        Output raw = getRawOutput(ind, tempOutputFactory, data);
-        return f.getProcessedOutput(raw, ind, tempOutputFactory, data);
+        Output raw = getRawOutput(ind, tempVectorFactory, data);
+        return f.getProcessedOutput(raw, ind, tempVectorFactory, data);
     }
 
     public Individual get(int which)

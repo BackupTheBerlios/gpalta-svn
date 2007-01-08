@@ -59,7 +59,7 @@ public interface Fitness
      * Evaluates the individual for every sample, and then calculates its fitness. The value is
      * stored in the individual
      */
-    void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data);
+    void calculate(Output outputs, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data);
 
     /**
      * Get the output of the individual for every sample, plus anything the fitness might need
@@ -67,10 +67,10 @@ public interface Fitness
      *
      * @param raw The "raw" output of the individual
      * @param ind The individual to evaluate
-     * @param tempOutputFactory
+     * @param tempVectorFactory
      * @param data The data to evaluate on
      * @return A specialized output for the problem
      */
-    Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data);
+    Output getProcessedOutput(Output raw, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data);
 
 }

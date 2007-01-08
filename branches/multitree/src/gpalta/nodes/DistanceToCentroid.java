@@ -43,7 +43,7 @@ public class DistanceToCentroid extends Node
         return Common.dist2(x,c);
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         double[] x;
         for (int wSample=0; wSample<outVect.length; wSample++)

@@ -33,11 +33,11 @@ public class SquareRoot extends Node
         return Math.sqrt(Math.abs(getKid(0).eval(data)));
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = Math.sqrt(Math.abs(kidOutVect[0][wSample]));
+            outVect[wSample] = Math.sqrt(Math.abs(kidsOutput[0][wSample]));
         }
     }
 

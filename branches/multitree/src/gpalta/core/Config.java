@@ -96,8 +96,6 @@ public class Config implements Serializable
 
     //For the clustering fitness:
     public int nClasses = 2;
-    public boolean useSoftPertenence = false;
-    public boolean autoNClusters = false;
 
     //------------ General behavior ------------
     /* Use vectorial evaluation

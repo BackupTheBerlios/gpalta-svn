@@ -84,13 +84,11 @@ public class MultiTreeIndividual extends Individual
         return out;
     }
 
-    public void evalVect(Output out, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void evalVect(Output out, TempVectorFactory tempVectorFactory, DataHolder data)
     {
-        SingleOutput o = new SingleOutput(data.nSamples);
         for (int i=0; i<nTrees(); i++)
         {
-            getTree(i).evalVect(o, tempOutputFactory, data);
-            ((MultiOutput)out).store(i, o.x);
+            getTree(i).getKid(0).evalVect(((MultiOutput)out).getArray(i), tempVectorFactory, data);
         }
     }
 

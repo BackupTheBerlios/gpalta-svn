@@ -37,11 +37,11 @@ public class Not extends Node
         return (getKid(0).eval(data) == 0 ? 1 : 0);
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = (kidOutVect[0][wSample] == 0 ? 1 : 0);
+            outVect[wSample] = (kidsOutput[0][wSample] == 0 ? 1 : 0);
         }
     }
 

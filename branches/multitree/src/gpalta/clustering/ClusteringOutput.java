@@ -1,7 +1,7 @@
 /*
- * Square.java
+ * ClusteringOutput.java
  *
- * Created on 02-08-2006, 10:49:13 PM
+ * Created on 1 de junio de 2006, 05:52 PM
  *
  * Copyright (C) 2006 Neven Boric <nboric@gmail.com>
  *
@@ -22,32 +22,31 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package gpalta.nodes;
+package gpalta.clustering;
 
-import gpalta.core.DataHolder;
+import gpalta.core.*;
+import gpalta.multitree.MultiOutput;
 
-public class Square extends Node
+/**
+ * @author neven
+ */
+public class ClusteringOutput extends MultiOutput
 {
-    public double eval(DataHolder data)
+    public double[][] prototypes;
+    public double[][] prob;
+
+    public ClusteringOutput(int nArrays, int nSamples)
     {
-        return Math.pow(getKid(0).eval(data), 2);
+        super(nArrays, nSamples);
     }
-    
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+
+    public void setPertenenceCopy(double[][] prob)
     {
-        for (int wSample=0; wSample<outVect.length; wSample++)
+        this.prob = new double[prob.length][prob[0].length];
+        for (int i = 0; i < prob.length; i++)
         {
-            outVect[wSample] = Math.pow(kidsOutput[0][wSample], 2);
+            System.arraycopy(prob[i], 0, this.prob[i], 0, prob[i].length);
         }
     }
 
-    public int nKids()
-    {
-        return 1;
-    }
-
-    public String name()
-    {
-        return "sq";
-    }
 }

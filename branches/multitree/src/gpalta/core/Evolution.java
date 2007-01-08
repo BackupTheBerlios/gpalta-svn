@@ -51,7 +51,7 @@ public class Evolution
     public Config config;
     private NodeFactory nodeFactory;
     public EvolutionStats evoStats;
-    private TempOutputFactory tempOutputFactory;
+    private TempVectorFactory tempVectorFactory;
 
     private void initCommon(Config config, DataHolder initializedData, boolean initPop)
     {
@@ -135,7 +135,7 @@ public class Evolution
 
         if (config.useVect)
         {
-            tempOutputFactory = new TempOutputFactory(1, dataHolder.nSamples);
+            tempVectorFactory = new TempVectorFactory(dataHolder.nSamples);
         }
 
         generation = 0;
@@ -191,7 +191,7 @@ public class Evolution
      */
     public synchronized void eval()
     {
-        population.eval(fitness, tempOutputFactory, dataHolder);
+        population.eval(fitness, tempVectorFactory, dataHolder);
         Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
@@ -235,7 +235,7 @@ public class Evolution
      */
     public synchronized Output getRawOutput(Individual ind)
     {
-        return population.getRawOutput(ind, tempOutputFactory, dataHolder);
+        return population.getRawOutput(ind, tempVectorFactory, dataHolder);
     }
 
     /**
@@ -250,19 +250,7 @@ public class Evolution
     public synchronized Output getRawOutput(Individual ind, double[][] data)
     {
         DataHolder tmpDataHolder = new DataHolder(data);
-        TempOutputFactory tmpOutFact;
-        if (ind instanceof Tree)
-        {
-            tmpOutFact = new TempOutputFactory(1, data[0].length);
-        }
-        else if (ind instanceof MultiTreeIndividual)
-        {
-            tmpOutFact = new TempOutputFactory(((MultiTreeIndividual)ind).nTrees(), data[0].length);
-        }
-        else
-        {
-            return null;
-        }
+        TempVectorFactory tmpOutFact = new TempVectorFactory(data[0].length);
         return population.getRawOutput(ind, tmpOutFact, tmpDataHolder);
     }
 
@@ -273,7 +261,7 @@ public class Evolution
      */
     public synchronized Output getProcessedOutput(Individual ind)
     {
-        return population.getProcessedOutput(ind, fitness, tempOutputFactory, dataHolder);
+        return population.getProcessedOutput(ind, fitness, tempVectorFactory, dataHolder);
     }
 
     /**
@@ -288,19 +276,7 @@ public class Evolution
     public synchronized Output getProcessedOutput(Individual ind, double[][] data)
     {
         DataHolder tmpDataHolder = new DataHolder(data);
-        TempOutputFactory tmpOutFact;
-        if (ind instanceof Tree)
-        {
-            tmpOutFact = new TempOutputFactory(1, data[0].length);
-        }
-        else if (ind instanceof MultiTreeIndividual)
-        {
-            tmpOutFact = new TempOutputFactory(((MultiTreeIndividual)ind).nTrees(), data[0].length);
-        }
-        else
-        {
-            return null;
-        }
+        TempVectorFactory tmpOutFact = new TempVectorFactory(data[0].length);
         return population.getProcessedOutput(ind, fitness, tmpOutFact, tmpDataHolder);
     }
 

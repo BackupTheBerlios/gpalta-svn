@@ -2,6 +2,7 @@ package gpalta.clustering;
 
 import gpalta.core.*;
 import gpalta.multitree.MultiOutput;
+import gpalta.multitree.MultiTreeIndividual;
 
 /**
  * @author neven
@@ -47,8 +48,8 @@ public class FitnessClusteringCS implements Fitness
                 {
                     dx[wVar] = x1[wVar] - x2[wVar];
                 }
-                kernel[i][j] = InformationTheory.gaussianKernel(dx, 2*sigmaOpt2/1.5);
-                //kernel[i][j] = InformationTheory.gaussianKernel(dx, .01);
+                kernel[i][j] = InformationTheory.gaussianKernel(dx, 2*sigmaOpt2);
+                //kernel[i][j] = InformationTheory.gaussianKernel(dx, .5);
             }
         }
         target = new int[data.nSamples];
@@ -59,7 +60,7 @@ public class FitnessClusteringCS implements Fitness
 
     }
 
-    public void calculate(Output outputs, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
+    public void calculate(Output outputs, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         calcProto(outputs, data);
 
@@ -100,6 +101,12 @@ public class FitnessClusteringCS implements Fitness
         info /= 2;
 
         ind.setFitness(-info);
+
+        for (int wCluster = 0; wCluster < nClusters; wCluster++)
+        {
+            cInfo[wCluster] /= Math.pow(Common.sum(prob[wCluster]), 2);
+            ((MultiTreeIndividual)ind).getTree(wCluster).setFitness(cInfo[wCluster]);
+        }
     }
 
     protected void calcProto(Output outputs, DataHolder data)
@@ -137,7 +144,7 @@ public class FitnessClusteringCS implements Fitness
 
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, TempOutputFactory tempOutputFactory, DataHolder data)
+    public Output getProcessedOutput(Output raw, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
     {
         int nClusters = raw.getDim();
         ClusteringOutput processed = new ClusteringOutput(nClusters, data.nSamples);

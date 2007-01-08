@@ -44,11 +44,11 @@ public class IfThenElse extends Node
         }
     }
 
-    public void evalVect(double[] outVect, double[][] kidOutVect, DataHolder data)
+    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            outVect[wSample] = (kidOutVect[0][wSample] !=0 ? kidOutVect[1][wSample] : kidOutVect[2][wSample]);
+            outVect[wSample] = (kidsOutput[0][wSample] !=0 ? kidsOutput[1][wSample] : kidsOutput[2][wSample]);
         }
     }
 

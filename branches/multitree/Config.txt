@@ -61,8 +61,6 @@ sizePenalization = 0
 
 # For the clustering fitness:
 nClasses = 2
-useSoftPertenence = false
-autoNClusters = false
 
 #------------ General behavior ------------
 # Use vectorial evaluation
