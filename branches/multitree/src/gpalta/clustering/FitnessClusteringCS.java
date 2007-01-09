@@ -23,16 +23,23 @@ public class FitnessClusteringCS implements Fitness
     {
         this.config = config;
 
-        double d = data.nVars;
-        double n = data.nSamples;
-        double sigmax2 = 0;
-        for (int i=0; i<data.nVars; i++)
+        double sigmaOpt2;
+        if (config.sigma == 0)
         {
-            sigmax2 += Common.variance(data.getDataVect(i+1));
+            double d = data.nVars;
+            double n = data.nSamples;
+            double sigmax2 = 0;
+            for (int i=0; i<data.nVars; i++)
+            {
+                sigmax2 += Common.variance(data.getDataVect(i+1));
+            }
+            sigmax2 /= d;
+            sigmaOpt2 = sigmax2*Math.pow(4/(n*(2*d+1)), 2/(d + 4));
         }
-        sigmax2 /= d;
-
-        double sigmaOpt2 = sigmax2*Math.pow(4/(n*(2*d+1)), 2/(d + 4));
+        else
+        {
+            sigmaOpt2 = config.sigma*config.sigma;
+        }
 
         kernel = new double[data.nSamples][data.nSamples];
         double[] dx = new double[data.nVars];
@@ -49,7 +56,6 @@ public class FitnessClusteringCS implements Fitness
                     dx[wVar] = x1[wVar] - x2[wVar];
                 }
                 kernel[i][j] = InformationTheory.gaussianKernel(dx, 2*sigmaOpt2);
-                //kernel[i][j] = InformationTheory.gaussianKernel(dx, .5);
             }
         }
         target = new int[data.nSamples];

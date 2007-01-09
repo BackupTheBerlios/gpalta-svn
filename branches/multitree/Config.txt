@@ -61,6 +61,7 @@ sizePenalization = 0
 
 # For the clustering fitness:
 nClasses = 2
+sigma = 0
 
 #------------ General behavior ------------
 # Use vectorial evaluation

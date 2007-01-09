@@ -196,15 +196,15 @@ public class Evolution
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
 
-        int nonZero = 0;
+        int nValid = 0;
 
         for (int i = 0; i < config.populationSize; i++)
         {
             Individual ind = population.get(i);
-            if (ind.readFitness() != 0)
+            if (!Double.isNaN(ind.readFitness()))
             {
                 evoStats.avgFit += ind.readFitness();
-                nonZero++;
+                nValid++;
             }
             evoStats.avgNodes += ind.getSize();
             if (ind.readFitness() > bestThisGen.readFitness())
@@ -220,7 +220,7 @@ public class Evolution
             evoStats.bestGen = generation;
         }
 
-        evoStats.avgFit /= nonZero;
+        evoStats.avgFit /= nValid;
         evoStats.avgNodes /= config.populationSize;
         evoStats.generation = generation;
         evoStats.bestFitThisGen = bestThisGen.readFitness();
