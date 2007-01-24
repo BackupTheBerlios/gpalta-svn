@@ -35,12 +35,12 @@ public interface Fitness
     /**
      * Initializes the Fitness, reading desired outputs from file
      *
-     * @param config   The evolution config, might be needed inside the Fitness
-     * @param data     The current problem's data, might also be needed (for instance to know the
-     *                 numer of samples used)
-     * @param fileName The file to read
+     * @param config      The evolution config, might be needed inside the Fitness
+     * @param problemData The current problem's data, might also be needed (for instance to know the
+     *                    numer of samples used)
+     * @param fileName    The file to read
      */
-    void init(Config config, DataHolder data, String fileName);
+    void init(Config config, ProblemData problemData, String fileName);
 
 
     /**
@@ -48,29 +48,31 @@ public interface Fitness
      * sample.
      *
      * @param config         The evolution config, might be needed inside the Fitness
-     * @param data           The current problem's data, might also be needed (for instance to know
+     * @param problemData    The current problem's data, might also be needed (for instance to know
      *                       the number of samples used)
      * @param desiredOutputs The desired outputs
      * @param weights        The weight (importance) of each sample
      */
-    void init(Config config, DataHolder data, Output desiredOutputs, double[] weights);
+    void init(Config config, ProblemData problemData, Output desiredOutputs, double[] weights);
 
     /**
-     * Evaluates the individual for every sample, and then calculates its fitness. The value is
-     * stored in the individual
-     */
-    void calculate(Output outputs, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data);
-
-    /**
-     * Get the output of the individual for every sample, plus anything the fitness might need
-     * to add, like statistics or aditional calculations related to the fitness.
+     * Calculate the fitness for an Individual, given its outputs (the Individual is already
+     * evaluated). The fitness value is stored in the individual
      *
-     * @param raw The "raw" output of the individual
-     * @param ind The individual to evaluate
-     * @param tempVectorFactory
-     * @param data The data to evaluate on
+     * @param outputs     The output of the Individual
+     * @param ind         The Individual.
+     * @param problemData The problem's data (might be needed to calculate the fitness)
+     */
+    void calculate(Output outputs, Individual ind, ProblemData problemData);
+
+    /**
+     * Take the output of an Individual and add anything the fitness might need to add, like
+     * statistics or aditional calculations related to the fitness.
+     *
+     * @param raw         The "raw" output of the individual
+     * @param problemData The data to evaluate on
      * @return A specialized output for the problem
      */
-    Output getProcessedOutput(Output raw, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data);
+    Output getProcessedOutput(Output raw, ProblemData problemData);
 
 }

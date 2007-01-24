@@ -32,17 +32,17 @@ import gpalta.core.*;
 public class And extends Node
 {
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
         /* 
          * Note that this might not evaluate the second kid. This is useful to
          * speed things up, but could cause problems if some node on that branch
          * has side effects
          */
-        return (getKid(0).eval(data) != 0 && getKid(1).eval(data) != 0 ? 1 : 0);
+        return (getKid(0).eval(problemData) != 0 && getKid(1).eval(problemData) != 0 ? 1 : 0);
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {

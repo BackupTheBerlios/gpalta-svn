@@ -52,16 +52,6 @@ public abstract class Individual implements Cloneable, Serializable
      */
     public abstract Individual deepClone();
 
-    /**
-     * Get a copy of this Individual, that not necessarily insures independece between both copies.
-     * By defalut, this method calls deepClone. Subclasses should override it sould they see the
-     * need.
-     */
-    public Individual semiDeepClone()
-    {
-        return deepClone();
-    }
-
 
     /**
      * Read this individual's fitness, without recalculating it
@@ -97,8 +87,8 @@ public abstract class Individual implements Cloneable, Serializable
         return isOnPop;
     }
 
-    public abstract Output eval(DataHolder data);
+    public abstract Output eval(ProblemData problemData);
 
-    public abstract void evalVect(Output out, TempVectorFactory tempVectorFactory, DataHolder data);
+    public abstract void evalVect(Output out, TempVectorFactory tempVectorFactory, ProblemData problemData);
 
 }

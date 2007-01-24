@@ -14,24 +14,24 @@ public class FitnessClusteringCS implements Fitness
     private Config config;
     private int[] target;
 
-    public void init(Config config, DataHolder data, String fileName)
+    public void init(Config config, ProblemData problemData, String fileName)
     {
-        init(config, data, null, null);
+        init(config, problemData, null, null);
     }
 
-    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
+    public void init(Config config, ProblemData problemData, Output desiredOutputs, double[] weights)
     {
         this.config = config;
 
         double sigmaOpt2;
         if (config.sigma == 0)
         {
-            double d = data.nVars;
-            double n = data.nSamples;
+            double d = problemData.nVars;
+            double n = problemData.nSamples;
             double sigmax2 = 0;
-            for (int i=0; i<data.nVars; i++)
+            for (int i=0; i< problemData.nVars; i++)
             {
-                sigmax2 += Common.variance(data.getDataVect(i+1));
+                sigmax2 += Common.variance(problemData.getDataVect(i+1));
             }
             sigmax2 /= d;
             sigmaOpt2 = sigmax2*Math.pow(4/(n*(2*d+1)), 2/(d + 4));
@@ -41,47 +41,47 @@ public class FitnessClusteringCS implements Fitness
             sigmaOpt2 = config.sigma*config.sigma;
         }
 
-        kernel = new double[data.nSamples][data.nSamples];
-        double[] dx = new double[data.nVars];
+        kernel = new double[problemData.nSamples][problemData.nSamples];
+        double[] dx = new double[problemData.nVars];
         double[] x1;
         double[] x2;
-        for (int i=0; i<data.nSamples; i++)
+        for (int i=0; i< problemData.nSamples; i++)
         {
-            x1 = data.getSample(i);
-            for (int j=0; j<data.nSamples; j++)
+            x1 = problemData.getSample(i);
+            for (int j=0; j< problemData.nSamples; j++)
             {
-                x2 = data.getSample(j);
-                for (int wVar=0; wVar<data.nVars; wVar++)
+                x2 = problemData.getSample(j);
+                for (int wVar=0; wVar< problemData.nVars; wVar++)
                 {
                     dx[wVar] = x1[wVar] - x2[wVar];
                 }
                 kernel[i][j] = InformationTheory.gaussianKernel(dx, 2*sigmaOpt2);
             }
         }
-        target = new int[data.nSamples];
-        for (int i=0; i<data.nSamples; i++)
+        target = new int[problemData.nSamples];
+        for (int i=0; i< problemData.nSamples; i++)
         {
             target[i] = (int)((SingleOutput)desiredOutputs).x[i];
         }
 
     }
 
-    public void calculate(Output outputs, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
+    public void calculate(Output outputs, Individual ind, ProblemData problemData)
     {
-        calcProto(outputs, data);
+        calcProto(outputs, problemData);
 
         int nClusters = outputs.getDim();
         double[] cInfo = new double[nClusters];
 
-        int[] samples = Common.randPerm(data.nSamples);
+        int[] samples = Common.randPerm(problemData.nSamples);
 
-        int nSubSamples = (int)(0.3*data.nSamples);
+        int nSubSamples = (int)(0.3* problemData.nSamples);
 
         for (int wCluster=0; wCluster<nClusters; wCluster++)
         {
             for (int i=0; i<nSubSamples; i++)
             {
-                for (int j=0; j<data.nSamples; j++)
+                for (int j=0; j< problemData.nSamples; j++)
                 {
                     cInfo[wCluster] += prob[wCluster][samples[i]]*prob[wCluster][j]*kernel[samples[i]][j];
                 }
@@ -94,7 +94,7 @@ public class FitnessClusteringCS implements Fitness
 
         for (int i=0; i<nSubSamples; i++)
         {
-            for (int j=0; j<data.nSamples; j++)
+            for (int j=0; j< problemData.nSamples; j++)
             {
                 info += (1-Common.dotProduct(probT[samples[i]], probT[j]))*kernel[samples[i]][j];
             }
@@ -115,7 +115,7 @@ public class FitnessClusteringCS implements Fitness
         }
     }
 
-    protected void calcProto(Output outputs, DataHolder data)
+    protected void calcProto(Output outputs, ProblemData problemData)
     {
         int nClusters = outputs.getDim();
         prob = new double[nClusters][];
@@ -125,7 +125,7 @@ public class FitnessClusteringCS implements Fitness
             Common.sigmoid(prob[wCluster]);
         }
 
-        for (int wSample=0; wSample< data.nSamples; wSample++)
+        for (int wSample=0; wSample< problemData.nSamples; wSample++)
         {
             for (int wCluster = 0; wCluster <nClusters; wCluster++)
             {
@@ -135,7 +135,7 @@ public class FitnessClusteringCS implements Fitness
             }
         }
 
-        for (int wSample=0; wSample< data.nSamples; wSample++)
+        for (int wSample=0; wSample< problemData.nSamples; wSample++)
         {
             double sum = prob[0][wSample];
             for (int wCluster = 1; wCluster <nClusters; wCluster++)
@@ -150,15 +150,15 @@ public class FitnessClusteringCS implements Fitness
 
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
+    public Output getProcessedOutput(Output raw, ProblemData problemData)
     {
         int nClusters = raw.getDim();
-        ClusteringOutput processed = new ClusteringOutput(nClusters, data.nSamples);
+        ClusteringOutput processed = new ClusteringOutput(nClusters, problemData.nSamples);
         for (int i = 0; i < nClusters; i++)
         {
             processed.store(i, ((MultiOutput)raw).getArrayCopy(i));
         }
-        calcProto(raw, data);
+        calcProto(raw, problemData);
         processed.setPertenenceCopy(prob);
         return processed;
     }

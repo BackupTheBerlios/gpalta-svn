@@ -24,16 +24,16 @@
 
 package gpalta.nodes;
 
-import gpalta.core.DataHolder;
+import gpalta.core.ProblemData;
 
 public class Sin extends Node
 {
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
-        return Math.sin(getKid(0).eval(data));
+        return Math.sin(getKid(0).eval(problemData));
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {

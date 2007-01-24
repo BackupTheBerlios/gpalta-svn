@@ -44,16 +44,16 @@ public class Tree extends Individual implements NodeParent
         newKids();
     }
 
-    public Output eval(DataHolder data)
+    public Output eval(ProblemData problemData)
     {
         SingleOutput out = new SingleOutput(1);
-        out.x[0] = getKid(0).eval(data);
+        out.x[0] = getKid(0).eval(problemData);
         return out;
     }
 
-    public void evalVect(Output out, TempVectorFactory tempVectorFactory, DataHolder data)
+    public void evalVect(Output out, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        getKid(0).evalVect(((SingleOutput)out).x, tempVectorFactory, data);
+        getKid(0).evalVect(((SingleOutput)out).x, tempVectorFactory, problemData);
     }
 
     public int nKids()

@@ -29,6 +29,9 @@ import gpalta.core.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An individual composed of multiple trees
+ */
 public class MultiTreeIndividual extends Individual
 {
     private List<Tree> treeList;
@@ -74,21 +77,21 @@ public class MultiTreeIndividual extends Individual
         return out;
     }
 
-    public Output eval(DataHolder data)
+    public Output eval(ProblemData problemData)
     {
         MultiOutput out = new MultiOutput(nTrees(), 1);
         for (int i=0; i<nTrees(); i++)
         {
-            out.getArray(i)[0] = ((SingleOutput)getTree(i).eval(data)).x[0];
+            out.getArray(i)[0] = ((SingleOutput)getTree(i).eval(problemData)).x[0];
         }
         return out;
     }
 
-    public void evalVect(Output out, TempVectorFactory tempVectorFactory, DataHolder data)
+    public void evalVect(Output out, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         for (int i=0; i<nTrees(); i++)
         {
-            getTree(i).getKid(0).evalVect(((MultiOutput)out).getArray(i), tempVectorFactory, data);
+            getTree(i).getKid(0).evalVect(((MultiOutput)out).getArray(i), tempVectorFactory, problemData);
         }
     }
 

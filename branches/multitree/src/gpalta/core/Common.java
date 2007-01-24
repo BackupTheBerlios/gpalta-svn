@@ -39,8 +39,6 @@ public abstract class Common
      */
     public static java.util.Random globalRandom = new java.util.Random();
 
-    private static int lastN;
-
     /**
      * Efficient permutation algorithm, O(n)
      *
@@ -55,7 +53,6 @@ public abstract class Common
         {
             permutation[i] = i;
         }
-        lastN = n;
 
         /* At the end of each iteration:
         * Between 0 and i is the sequence of indexes already selected
@@ -142,56 +139,6 @@ public abstract class Common
         return mT;
     }
 
-    public static void maxPerRowInline(double[][] m)
-    {
-        for (int i=0; i<m.length; i++)
-        {
-            int maxi = maxI(m[i]);
-            for (int j=0; j<m[i].length; j++)
-            {
-                m[i][j] = 0;
-            }
-            m[i][maxi] = 1;
-        }
-    }
-
-    public static void maxPerColInline(double[][] m)
-    {
-        for (int wCol =0; wCol <m[0].length; wCol++)
-        {
-            int winner = 0;
-            double maxx = 0;
-            for (int wRow =0; wRow <m.length; wRow++)
-            {
-                if (m[wRow][wCol] > maxx)
-                {
-                    winner = wRow;
-                    maxx = m[wRow][wCol];
-                }
-            }
-            for (int wRow =0; wRow <m.length; wRow++)
-            {
-                m[wRow][wCol] = 0;
-            }
-            m[winner][wCol] = 1;
-        }
-    }
-
-    public static int maxI(double[] x)
-    {
-        int maxi = 0;
-        double maxx = 0;
-        for (int i=0; i<x.length; i++)
-        {
-            if (x[i] > maxx)
-            {
-                maxx = x[i];
-                maxi = i;
-            }
-        }
-        return maxi;
-    }
-
     /**
      * Sum of the values of a vector
      * @param x The vector
@@ -267,16 +214,27 @@ public abstract class Common
         return Math.sqrt(d);
     }
 
-    public static double dotProduct(double[] x, double[] y)
+    /**
+     * Dot product between two vectors
+     * @param x1 one vector
+     * @param x2 the other vector
+     * @return the euclidean distance between them
+     */
+    public static double dotProduct(double[] x1, double[] x2)
     {
         double out = 0;
-        for (int i=0; i<x.length; i++)
+        for (int i=0; i<x1.length; i++)
         {
-            out += x[i]*y[i];
+            out += x1[i]*x2[i];
         }
         return out;
     }
 
+    /**
+     * Variance of a vector
+     * @param x The vector
+     * @return The sum of all the values
+     */
     public static double variance(double[] x)
     {
         double[] x2 = new double[x.length];

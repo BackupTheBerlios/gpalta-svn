@@ -27,35 +27,50 @@ package gpalta.core;
 import gpalta.ops.*;
 
 /**
- * Holds the Individuals and performs the most important operations on them: interpreting their
- * output, and organizing them for selection and for evolution.
+ * Holds the problem's Individuals. It must evaluate them and organize them for selection and
+ * evolution. Most applications should use SingleTreePopulation
  *
  * @author neven
  */
 public interface Population
 {
 
-    public void eval(Fitness f, TempVectorFactory tempVectorFactory, DataHolder data);
+    /**
+     * Evaluate every Individual and calculate their fitness
+     * @param f
+     * @param tempVectorFactory
+     * @param problemData
+     */
+    public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData);
 
     /**
      * Get the output directly from the Individual, without further processing
      *
      * @return A totally independent Output object
      */
-    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, DataHolder data);
+    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, ProblemData problemData);
 
-    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, DataHolder data);
+    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData);
 
     /**
      * Get a certain individual
+     *
      * @param which The individual to get
      */
     public Individual get(int which);
 
-    public void init(Config config, DataHolder data, TreeBuilder builder);
+    public void init(Config config, ProblemData problemData, TreeBuilder builder);
 
+    /**
+     * Perform Individual selection
+     * @param sel
+     */
     public void doSelection(IndSelector sel);
 
+    /**
+     * Apply genetic operators
+     * @param op
+     */
     public void evolve(TreeOperator op);
 
 }

@@ -31,7 +31,7 @@ import java.io.Serializable;
  *
  * @author neven
  */
-public abstract class Output implements Cloneable, Serializable
+public abstract class Output
 {
 
     /**

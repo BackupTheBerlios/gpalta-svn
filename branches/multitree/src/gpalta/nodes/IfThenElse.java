@@ -32,19 +32,19 @@ import gpalta.core.*;
 public class IfThenElse extends Node
 {
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
-        if (getKid(0).eval(data) != 0)
+        if (getKid(0).eval(problemData) != 0)
         {
-            return getKid(1).eval(data);
+            return getKid(1).eval(problemData);
         }
         else
         {
-            return getKid(2).eval(data);
+            return getKid(2).eval(problemData);
         }
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {

@@ -32,12 +32,12 @@ import gpalta.core.*;
 public class Not extends Node
 {
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
-        return (getKid(0).eval(data) == 0 ? 1 : 0);
+        return (getKid(0).eval(problemData) == 0 ? 1 : 0);
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {

@@ -37,7 +37,7 @@ public class FitnessClassic implements Fitness
     private SingleOutput desiredOutputs;
     private double[] weights;
 
-    public void init(Config config, DataHolder data, String fileName)
+    public void init(Config config, ProblemData problemData, String fileName)
     {
         try
         {
@@ -57,7 +57,7 @@ public class FitnessClassic implements Fitness
             {
                 Logger.log("\t Using weight data");
             }
-            Logger.log("\t Samples:              " + data.nSamples);
+            Logger.log("\t Samples:              " + problemData.nSamples);
         }
 
         /* TODO: This exception shouldn't be caught here, but thrown to the
@@ -69,23 +69,23 @@ public class FitnessClassic implements Fitness
         }
     }
 
-    public void init(Config config, DataHolder data, Output desiredOutputs, double[] weights)
+    public void init(Config config, ProblemData problemData, Output desiredOutputs, double[] weights)
     {
         this.desiredOutputs = (SingleOutput)desiredOutputs;
         this.weights = weights;
     }
 
-    public void calculate(Output outputs, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
+    public void calculate(Output outputs, Individual ind, ProblemData problemData)
     {
         double error = 0;
-        for (int i = 0; i < data.nSamples; i++)
+        for (int i = 0; i < problemData.nSamples; i++)
         {
             error += Math.pow(((SingleOutput)outputs).x[i] - desiredOutputs.x[i], 2);
         }
         ind.setFitness(1 / (1 + Math.sqrt(error)));
     }
 
-    public Output getProcessedOutput(Output raw, Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
+    public Output getProcessedOutput(Output raw, ProblemData problemData)
     {
         return raw;
     }

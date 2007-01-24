@@ -83,7 +83,6 @@ public class Config implements Serializable
     public String rankingType = "gpalta.ops.RankingRaw";
 
     //---------------- Fitness -----------------------
-    /* generic or clustering */
     public String fitness = "gpalta.core.FitnessClassic";
 
     /* stop if fitness reaches this value: */

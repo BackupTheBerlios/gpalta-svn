@@ -30,29 +30,29 @@ public class DistanceToCentroid extends Node
 {
     public double[] c;
 
-    public void init(Config config, DataHolder data)
+    public void init(Config config, ProblemData problemData)
     {
-        c = new double[data.nVars];
-        for (int wVar=0; wVar<data.nVars; wVar++)
-            c[wVar] = data.getMin(wVar+1) + Common.globalRandom.nextDouble() * (data.getMax(wVar+1)-data.getMin(wVar+1));
+        c = new double[problemData.nVars];
+        for (int wVar=0; wVar< problemData.nVars; wVar++)
+            c[wVar] = problemData.getMin(wVar+1) + Common.globalRandom.nextDouble() * (problemData.getMax(wVar+1)- problemData.getMin(wVar+1));
     }
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
-        double[] x = data.getCurrentSample();
+        double[] x = problemData.getCurrentSample();
         return Common.dist2(x,c);
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         double[] x;
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
-            x = data.getSample(wSample);
+            x = problemData.getSample(wSample);
             outVect[wSample] = 0;
-            for (int wVar=0; wVar<data.nVars; wVar++)
-                outVect[wSample] += Math.abs(c[wVar]-x[wVar])/data.getRange(wVar+1);
-            outVect[wSample] /= data.nVars;
+            for (int wVar=0; wVar< problemData.nVars; wVar++)
+                outVect[wSample] += Math.abs(c[wVar]-x[wVar])/ problemData.getRange(wVar+1);
+            outVect[wSample] /= problemData.nVars;
         }
     }
 

@@ -31,7 +31,7 @@ import java.io.*;
  *
  * @author neven
  */
-public class DataHolder
+public class ProblemData
 {
 
     /* Every row in data correponds to all the samples for a variable.
@@ -69,7 +69,7 @@ public class DataHolder
     /**
      * Initialize the data from a file
      */
-    public DataHolder(String fileName)
+    public ProblemData(String fileName)
     {
         try
         {
@@ -94,7 +94,7 @@ public class DataHolder
      * Initialize the data from the given matrix. Every row is a variable and
      * every column is a sample
      */
-    public DataHolder(double[][] data)
+    public ProblemData(double[][] data)
     {
         this.data = data;
         dataT = Common.transpose(data);

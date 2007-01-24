@@ -43,14 +43,14 @@ public class RealVar extends Node
         this.whichVar = whichVar;
     }
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
-        return data.getData(whichVar);
+        return problemData.getData(whichVar);
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
-        System.arraycopy(data.getDataVect(whichVar), 0, outVect, 0, data.nSamples);
+        System.arraycopy(problemData.getDataVect(whichVar), 0, outVect, 0, problemData.nSamples);
     }
 
     public int nKids()

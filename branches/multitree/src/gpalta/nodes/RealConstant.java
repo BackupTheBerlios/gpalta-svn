@@ -44,12 +44,12 @@ public class RealConstant extends Node
         this.constant = constant;
     }
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
         return (constant);
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
@@ -67,7 +67,7 @@ public class RealConstant extends Node
         return ("" + constant);
     }
 
-    public void init(Config config, DataHolder data)
+    public void init(Config config, ProblemData problemData)
     {
         double random01 = Common.globalRandom.nextDouble();
         this.constant = config.constLowLimit + (config.constUpLimit - config.constLowLimit) * random01;

@@ -37,15 +37,10 @@ public abstract class IndSelector
      * Performs the selection
      *
      * @param population A list of Trees from where to select the individuals
-     * @return A new list of Trees with the selected individuals. If a Tree is
-     *         selected more than once, each instance of that Tree will be a totally
-     *         independant individual (no other Trees will be modified when modifying that Tree)
+     * @return A new list of Trees with the selected individuals. If a Tree is selected more than
+     *         once, each instance of that Tree will be a totally independant individual (no other
+     *         Trees will be modified when modifying that Tree)
      */
     public abstract <T extends Individual> List<T> select(List<T> population);
-
-    public <T extends Individual> List<T> select(List<T> population, boolean useDeepClone)
-    {
-        return select(population);
-    }
 
 }

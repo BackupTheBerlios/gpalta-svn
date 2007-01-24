@@ -42,48 +42,48 @@ public class SingleTreePopulation implements Population, Serializable
     private Config config;
     private SingleOutput outputs;
 
-    public void eval(Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
+    public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         for (Tree t : treeList)
         {
             if (!config.rememberLastEval || !t.fitCalculated)
             {
-                getOutput(t, outputs, tempVectorFactory, data);
-                f.calculate(outputs, t, tempVectorFactory, data);
+                getOutput(t, outputs, tempVectorFactory, problemData);
+                f.calculate(outputs, t, problemData);
                 t.fitCalculated = true;
             }
         }
     }
 
-    private void getOutput(Tree t, SingleOutput o, TempVectorFactory tempVectorFactory, DataHolder data)
+    private void getOutput(Tree t, SingleOutput o, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         double[] results = o.x;
-        data.reset();
+        problemData.reset();
         if (config.useVect)
         {
-            t.evalVect(o, tempVectorFactory, data);
+            t.evalVect(o, tempVectorFactory, problemData);
         }
         else
         {
-            for (int i = 0; i < data.nSamples; i++)
+            for (int i = 0; i < problemData.nSamples; i++)
             {
-                results[i] = ((SingleOutput)t.eval(data)).x[0];
-                data.update();
+                results[i] = ((SingleOutput)t.eval(problemData)).x[0];
+                problemData.update();
             }
         }
     }
 
-    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
+    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        SingleOutput out = new SingleOutput(data.nSamples);
-        getOutput((Tree) ind, out, tempVectorFactory, data);
+        SingleOutput out = new SingleOutput(problemData.nSamples);
+        getOutput((Tree) ind, out, tempVectorFactory, problemData);
         return out;
     }
 
-    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
+    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        Output raw = getRawOutput(ind, tempVectorFactory, data);
-        return f.getProcessedOutput(raw, ind, tempVectorFactory, data);
+        Output raw = getRawOutput(ind, tempVectorFactory, problemData);
+        return f.getProcessedOutput(raw, problemData);
     }
 
     public Individual get(int which)
@@ -101,7 +101,7 @@ public class SingleTreePopulation implements Population, Serializable
         op.operate(treeList);
     }
 
-    public void init(Config config, DataHolder data, TreeBuilder builder)
+    public void init(Config config, ProblemData problemData, TreeBuilder builder)
     {
         this.config = config;
         treeList = new ArrayList<Tree>(config.populationSize);
@@ -110,7 +110,7 @@ public class SingleTreePopulation implements Population, Serializable
             treeList.add(new Tree(builder.treeRoot()));
         }
         builder.build(treeList);
-        outputs = new SingleOutput(data.nSamples);
+        outputs = new SingleOutput(problemData.nSamples);
     }
 
 }

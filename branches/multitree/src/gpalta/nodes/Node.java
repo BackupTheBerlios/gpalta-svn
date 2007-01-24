@@ -52,32 +52,31 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
      * created
      *
      * @param config
-     * @param data
+     * @param problemData
      */
-    public void init(Config config, DataHolder data)
+    public void init(Config config, ProblemData problemData)
     {
 
     }
 
     /**
-     * Evaluate the Node for a sinlge sample. All Nodes must override this method. The Node is
+     * Evaluate the Node for a single sample. All Nodes must override this method. The Node is
      * responsible for evaluating its children, if any.
      *
-     * @param data
+     * @param problemData
      * @return The output of the Node
      */
-    public abstract double eval(DataHolder data);
+    public abstract double eval(ProblemData problemData);
 
     /**
-     * Evaluate a Node for all samples (vectorial evaluation), using Output objects for storing the
-     * results. Override this method only if the Node has a special behabior with respect to
-     * multiple dimension outputs
+     * Evaluate a Node for all samples (vectorial evaluation). This method should be called by an
+     * Individual to evaluate the root Node
      *
      * @param outVect
      * @param tempVectorFactory
-     * @param data
+     * @param problemData
      */
-    public void evalVect(double[] outVect, TempVectorFactory tempVectorFactory, DataHolder data)
+    public final void evalVect(double[] outVect, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         if (nKids() > 0)
         {
@@ -90,27 +89,27 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             }
             for (int wKid = 0; wKid < nKids(); wKid++)
             {
-                getKid(wKid).evalVect(kidsOutput[wKid], tempVectorFactory, data);
+                getKid(wKid).evalVect(kidsOutput[wKid], tempVectorFactory, problemData);
             }
-            evalVect(outVect, kidsOutput, data);
+            evalVectInternal(outVect, kidsOutput, problemData);
             for (int wKid = 1; wKid < nKids(); wKid++)
                 tempVectorFactory.release();
         }
         else
         {
-            evalVect(outVect,(double[][]) null, data);
+            evalVectInternal(outVect, null, problemData);
         }
     }
 
     /**
-     * Evaluate the Node for all samples (vectorial evaluation). All Nodes must override this
-     * method
+     * Internal method that evaluates the Node given its kids' outputs. All Nodes must override this
+     * method. Different to eval(), in this case, kids are already evaluated
      *
-     * @param outVect    The array where the outout must be stored
-     * @param kidsOutput
-     * @param data       The problem's data
+     * @param outVect     The array where the outout must be stored
+     * @param kidsOutput  Each array holds all the outputs for a kid
+     * @param problemData The problem's data
      */
-    public abstract void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data);
+    protected abstract void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData);
 
     public void setTypeOfKids(int whichKid, NodeSet t)
     {
@@ -146,7 +145,7 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             out += "(";
         }
         out += name();
-        if (kids!=null)
+        if (kids != null)
         {
             for (int i = 0; i < nKids(); i++)
             {

@@ -44,12 +44,12 @@ public class LogicConstant extends Node
         this.constant = constant;
     }
 
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
         return constant;
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {
@@ -67,7 +67,7 @@ public class LogicConstant extends Node
         return (constant != 0 ? "true" : "false");
     }
 
-    public void init(Config config, DataHolder data)
+    public void init(Config config, ProblemData problemData)
     {
         constant = Common.globalRandom.nextInt(2);
     }

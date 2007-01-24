@@ -33,8 +33,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 /**
- * Created by IntelliJ IDEA. User: nvn Date: 03-01-2007 Time: 11:08:05 PM To change this template
- * use File | Settings | File Templates.
+ * A Population composed of MultiTreeIndividuals.
  */
 public class MultiTreePopulation implements Population
 {
@@ -43,32 +42,32 @@ public class MultiTreePopulation implements Population
     private Config config;
     private MultiOutput outputs;
 
-    public void eval(Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
+    public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         for (MultiTreeIndividual mt : multiTreeList)
         {
             if (!config.rememberLastEval || !mt.fitCalculated)
             {
-                getOutput(mt, outputs, tempVectorFactory, data);
-                f.calculate(outputs, mt, tempVectorFactory, data);
+                getOutput(mt, outputs, tempVectorFactory, problemData);
+                f.calculate(outputs, mt, problemData);
                 mt.fitCalculated = true;
             }
         }
     }
 
-    private void getOutput(MultiTreeIndividual mt, MultiOutput output, TempVectorFactory tempVectorFactory, DataHolder data)
+    private void getOutput(MultiTreeIndividual mt, MultiOutput output, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         if (config.useVect)
         {
-            mt.evalVect(output, tempVectorFactory, data);
+            mt.evalVect(output, tempVectorFactory, problemData);
         }
         else
         {
-            data.reset();
-            for (int i=0; i<data.nSamples; i++)
+            problemData.reset();
+            for (int i=0; i< problemData.nSamples; i++)
             {
-                MultiOutput o = (MultiOutput)mt.eval(data);
-                data.update();
+                MultiOutput o = (MultiOutput)mt.eval(problemData);
+                problemData.update();
                 for (int j=0; j<mt.nTrees(); j++)
                 {
                     output.getArray(j)[i] = o.getArray(j)[0];
@@ -77,17 +76,17 @@ public class MultiTreePopulation implements Population
         }
     }
 
-    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, DataHolder data)
+    public Output getRawOutput(Individual ind, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        MultiOutput out = new MultiOutput(((MultiTreeIndividual)ind).nTrees(), data.nSamples);
-        getOutput((MultiTreeIndividual) ind, out, tempVectorFactory, data);
+        MultiOutput out = new MultiOutput(((MultiTreeIndividual)ind).nTrees(), problemData.nSamples);
+        getOutput((MultiTreeIndividual) ind, out, tempVectorFactory, problemData);
         return out;
     }
 
-    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, DataHolder data)
+    public Output getProcessedOutput(Individual ind, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        Output raw = getRawOutput(ind, tempVectorFactory, data);
-        return f.getProcessedOutput(raw, ind, tempVectorFactory, data);
+        Output raw = getRawOutput(ind, tempVectorFactory, problemData);
+        return f.getProcessedOutput(raw, problemData);
     }
 
     public Individual get(int which)
@@ -95,7 +94,7 @@ public class MultiTreePopulation implements Population
         return multiTreeList.get(which);
     }
 
-    public void init(Config config, DataHolder data, TreeBuilder builder)
+    public void init(Config config, ProblemData problemData, TreeBuilder builder)
     {
         this.config = config;
         multiTreeList = new ArrayList<MultiTreeIndividual>(config.populationSize);
@@ -110,7 +109,7 @@ public class MultiTreePopulation implements Population
             }
         }
         builder.build(tmpList);
-        outputs = new MultiOutput(config.nClasses, data.nSamples);
+        outputs = new MultiOutput(config.nClasses, problemData.nSamples);
     }
 
     public void doSelection(IndSelector sel)

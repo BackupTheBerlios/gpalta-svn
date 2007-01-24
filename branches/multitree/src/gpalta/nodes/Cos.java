@@ -1,5 +1,5 @@
 /*
- * SCos.java
+ * Cos.java
  *
  * Created on 04-01-2007, 12:44:50 PM
  *
@@ -24,16 +24,16 @@
 
 package gpalta.nodes;
 
-import gpalta.core.DataHolder;
+import gpalta.core.ProblemData;
 
 public class Cos extends Node
 {
-    public double eval(DataHolder data)
+    public double eval(ProblemData problemData)
     {
-        return Math.cos(getKid(0).eval(data));
+        return Math.cos(getKid(0).eval(problemData));
     }
 
-    public void evalVect(double[] outVect, double[][] kidsOutput, DataHolder data)
+    public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
     {
         for (int wSample=0; wSample<outVect.length; wSample++)
         {

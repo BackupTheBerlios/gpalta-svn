@@ -25,7 +25,6 @@
 package gpalta.core;
 
 import gpalta.ops.*;
-import gpalta.multitree.MultiTreeIndividual;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -46,16 +45,16 @@ public class Evolution
     private IndSelector indSelector;
     private Ranking theRanking;
     public Fitness fitness;
-    private DataHolder dataHolder;
+    private ProblemData problemData;
     public int generation;
     public Config config;
     private NodeFactory nodeFactory;
     public EvolutionStats evoStats;
     private TempVectorFactory tempVectorFactory;
 
-    private void initCommon(Config config, DataHolder initializedData, boolean initPop)
+    private void initCommon(Config config, ProblemData initializedProblemData, boolean initPop)
     {
-        nodeFactory = new NodeFactory(config, initializedData);
+        nodeFactory = new NodeFactory(config, initializedProblemData);
 
         treeOp = new TreeOperator(config, nodeFactory);
 
@@ -112,7 +111,7 @@ public class Evolution
                 {
                     population = (Population)co[0].newInstance();
                 }
-                population.init(config, initializedData, treeBuilder);
+                population.init(config, initializedProblemData, treeBuilder);
                 evoStats.bestSoFar = population.get(0);
             }
         }
@@ -135,7 +134,7 @@ public class Evolution
 
         if (config.useVect)
         {
-            tempVectorFactory = new TempVectorFactory(dataHolder.nSamples);
+            tempVectorFactory = new TempVectorFactory(problemData.nSamples);
         }
 
         generation = 0;
@@ -153,11 +152,11 @@ public class Evolution
     {
         this.config = config;
 
-        dataHolder = new DataHolder("data.txt");
+        problemData = new ProblemData("data.txt");
 
-        initCommon(config, dataHolder, initPop);
+        initCommon(config, problemData, initPop);
 
-        fitness.init(config, dataHolder, "class.txt");
+        fitness.init(config, problemData, "class.txt");
 
     }
 
@@ -176,13 +175,13 @@ public class Evolution
     {
         this.config = config;
 
-        dataHolder = new DataHolder(data);
+        problemData = new ProblemData(data);
 
-        initCommon(config, dataHolder, initPop);
+        initCommon(config, problemData, initPop);
 
-        SingleOutput des = new SingleOutput(dataHolder.nSamples);
+        SingleOutput des = new SingleOutput(problemData.nSamples);
         des.store(desiredOutputs);
-        fitness.init(config, dataHolder, des, weights);
+        fitness.init(config, problemData, des, weights);
 
     }
 
@@ -191,7 +190,7 @@ public class Evolution
      */
     public synchronized void eval()
     {
-        population.eval(fitness, tempVectorFactory, dataHolder);
+        population.eval(fitness, tempVectorFactory, problemData);
         Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
@@ -235,7 +234,7 @@ public class Evolution
      */
     public synchronized Output getRawOutput(Individual ind)
     {
-        return population.getRawOutput(ind, tempVectorFactory, dataHolder);
+        return population.getRawOutput(ind, tempVectorFactory, problemData);
     }
 
     /**
@@ -249,9 +248,9 @@ public class Evolution
      */
     public synchronized Output getRawOutput(Individual ind, double[][] data)
     {
-        DataHolder tmpDataHolder = new DataHolder(data);
+        ProblemData tmpProblemData = new ProblemData(data);
         TempVectorFactory tmpOutFact = new TempVectorFactory(data[0].length);
-        return population.getRawOutput(ind, tmpOutFact, tmpDataHolder);
+        return population.getRawOutput(ind, tmpOutFact, tmpProblemData);
     }
 
     /**
@@ -261,7 +260,7 @@ public class Evolution
      */
     public synchronized Output getProcessedOutput(Individual ind)
     {
-        return population.getProcessedOutput(ind, fitness, tempVectorFactory, dataHolder);
+        return population.getProcessedOutput(ind, fitness, tempVectorFactory, problemData);
     }
 
     /**
@@ -275,9 +274,9 @@ public class Evolution
      */
     public synchronized Output getProcessedOutput(Individual ind, double[][] data)
     {
-        DataHolder tmpDataHolder = new DataHolder(data);
+        ProblemData tmpProblemData = new ProblemData(data);
         TempVectorFactory tmpOutFact = new TempVectorFactory(data[0].length);
-        return population.getProcessedOutput(ind, fitness, tmpOutFact, tmpDataHolder);
+        return population.getProcessedOutput(ind, fitness, tmpOutFact, tmpProblemData);
     }
 
     /**

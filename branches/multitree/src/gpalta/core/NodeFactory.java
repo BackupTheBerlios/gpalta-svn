@@ -38,7 +38,7 @@ import java.util.*;
 public class NodeFactory
 {
     private Config config;
-    private DataHolder data;
+    private ProblemData problemData;
     private NodeSet[] nodeSets;
     public NodeSet treeRoot;
 
@@ -46,10 +46,10 @@ public class NodeFactory
      * Read Node config from file config.nodeConfigFileName, including available nodes and their
      * possible connections
      */
-    public NodeFactory(Config config, DataHolder data)
+    public NodeFactory(Config config, ProblemData problemData)
     {
         this.config = config;
-        this.data = data;
+        this.problemData = problemData;
         try
         {
             FileInputStream in = new FileInputStream(config.nodeConfigFileName);
@@ -93,7 +93,7 @@ public class NodeFactory
                         Class cl = Class.forName("gpalta.nodes." + nodes[j]);
                         if (nodes[j].contains("Var"))
                         {
-                            for (k = 0; k < data.nVars; k++)
+                            for (k = 0; k < problemData.nVars; k++)
                             {
                                 java.lang.reflect.Constructor[] co = cl.getConstructors();
                                 nodeSets[i].addTerminal((Node) co[0].newInstance(k + 1));
@@ -209,7 +209,7 @@ public class NodeFactory
         {
             Logger.log(e);
         }
-        outNode.init(config, data);
+        outNode.init(config, problemData);
         outNode.setCurrentDepth(currentGlobalDepth);
         return outNode;
     }
