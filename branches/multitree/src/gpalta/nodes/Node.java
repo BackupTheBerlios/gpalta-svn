@@ -29,7 +29,7 @@ import java.io.Serializable;
 import gpalta.core.*;
 
 /**
- * Generic Node definition
+ * Generic Node definition. User defined nodes must extend this class
  *
  * @author neven
  */

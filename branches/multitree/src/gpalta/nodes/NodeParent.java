@@ -27,6 +27,7 @@ package gpalta.nodes;
 import gpalta.core.NodeSet;
 
 /**
+ * Any object that can be set as the parent of a Node must conform to this Interface
  * @author neven
  */
 public interface NodeParent

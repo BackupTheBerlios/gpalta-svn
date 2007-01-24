@@ -27,7 +27,7 @@ package gpalta.core;
 import gpalta.nodes.*;
 
 /**
- * The most common type of individual: a function tree
+ * The simplest individual: a function tree
  * @author neven
  */
 public class Tree extends Individual implements NodeParent
