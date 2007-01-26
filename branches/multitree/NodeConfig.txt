@@ -6,6 +6,7 @@ sets = real, logic
 #For each set, function and terminal nodes must be specified
 realFunctions = Plus, Minus, Times, Divide, IfThenElse
 realTerminals = RealConstant, RealVar
+#Other available functions: Cos, Sin, Exponential, Square, SquareRoot
 
 logicFunctions = And, Or, Not, GreaterThan, LessThan, Equals
 logicTerminals = LogicConstant
