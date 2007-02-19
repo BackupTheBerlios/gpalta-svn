@@ -74,20 +74,21 @@ public class Evolution
                 Class[] params = co[0].getParameterTypes();
                 if (params.length == 0)
                 {
-                    indSelector = (IndSelector)co[0].newInstance();
+                    indSelector = (IndSelector) co[0].newInstance();
                 }
                 else if (params.length == 1 && params[0].getName().equals(Config.class.getName()))
                 {
-                    indSelector = (IndSelector)co[0].newInstance(config);
+                    indSelector = (IndSelector) co[0].newInstance(config);
                 }
-                else if (params.length == 2 && params[0].getName().equals(Config.class.getName()) && params[1].getName().equals(Ranking.class.getName()))
+                else
+                if (params.length == 2 && params[0].getName().equals(Config.class.getName()) && params[1].getName().equals(Ranking.class.getName()))
                 {
                     cl = Class.forName(config.rankingType);
                     java.lang.reflect.Constructor[] co2 = cl.getConstructors();
-                    if (co2.length == 1 && co2[0].getParameterTypes().length==0)
+                    if (co2.length == 1 && co2[0].getParameterTypes().length == 0)
                     {
-                        theRanking = (Ranking)co2[0].newInstance();
-                        indSelector = (IndSelector)co[0].newInstance(config, theRanking);
+                        theRanking = (Ranking) co2[0].newInstance();
+                        indSelector = (IndSelector) co[0].newInstance(config, theRanking);
                     }
                 }
             }
@@ -97,7 +98,7 @@ public class Evolution
             co = cl.getConstructors();
             if (co[0].getParameterTypes().length == 0)
             {
-                fitness = (Fitness)co[0].newInstance();
+                fitness = (Fitness) co[0].newInstance();
             }
 
             evoStats = new EvolutionStats();
@@ -109,7 +110,7 @@ public class Evolution
                 co = cl.getConstructors();
                 if (co[0].getParameterTypes().length == 0)
                 {
-                    population = (Population)co[0].newInstance();
+                    population = (Population) co[0].newInstance();
                 }
                 population.init(config, initializedProblemData, treeBuilder);
                 evoStats.bestSoFar = population.get(0);
@@ -212,7 +213,7 @@ public class Evolution
 
         evoStats.bestTreeChanged = false;
         if (bestThisGen.readFitness() > evoStats.bestSoFar.readFitness()
-            || (bestThisGen.readFitness() == evoStats.bestSoFar.readFitness() && bestThisGen.getSize() < evoStats.bestSoFar.getSize()))
+                || (bestThisGen.readFitness() == evoStats.bestSoFar.readFitness() && bestThisGen.getSize() < evoStats.bestSoFar.getSize()))
         {
             evoStats.bestSoFar = bestThisGen.deepClone();
             evoStats.bestTreeChanged = true;

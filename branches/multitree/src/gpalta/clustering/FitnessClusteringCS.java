@@ -26,15 +26,12 @@ public class FitnessClusteringCS implements Fitness
         double sigmaOpt2;
         if (config.sigma == 0)
         {
-            double d = problemData.nVars;
-            double n = problemData.nSamples;
-            double sigmax2 = 0;
-            for (int i=0; i< problemData.nVars; i++)
+            double[][] data = new double[problemData.nVars][];
+            for (int i=0; i<problemData.nVars; i++)
             {
-                sigmax2 += Common.variance(problemData.getDataVect(i+1));
+                data[i] = problemData.getDataVect(i+1);
             }
-            sigmax2 /= d;
-            sigmaOpt2 = sigmax2*Math.pow(4/(n*(2*d+1)), 2/(d + 4));
+            sigmaOpt2 = InformationTheory.sigmaOpt2(data);
         }
         else
         {
@@ -75,7 +72,7 @@ public class FitnessClusteringCS implements Fitness
 
         int[] samples = Common.randPerm(problemData.nSamples);
 
-        int nSubSamples = (int)(0.3* problemData.nSamples);
+        int nSubSamples = (int)(config.subSamplingRatio * problemData.nSamples);
 
         for (int wCluster=0; wCluster<nClusters; wCluster++)
         {

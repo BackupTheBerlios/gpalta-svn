@@ -1,5 +1,7 @@
 package gpalta.clustering;
 
+import gpalta.core.Common;
+
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 15-12-2006 Time: 09:07:08 PM To change this template
  * use File | Settings | File Templates.
@@ -151,6 +153,19 @@ public abstract class InformationTheory
             }
         }
         return out/Math.log(2);
+    }
+
+    public static double sigmaOpt2(double[][] data)
+    {
+        double d = data.length;
+        double n = data[0].length;
+        double sigmax2 = 0;
+        for (int i=0; i< d; i++)
+        {
+            sigmax2 += Common.variance(data[i]);
+        }
+        sigmax2 /= d;
+        return sigmax2*Math.pow(4/(n*(2*d+1)), 2/(d + 4));
     }
     
 }

@@ -96,6 +96,7 @@ public class Config implements Serializable
     //For the clustering fitness:
     public int nClasses = 2;
     public double sigma = 0;
+    public double subSamplingRatio = 1;
 
     //------------ General behavior ------------
     /* Use vectorial evaluation
