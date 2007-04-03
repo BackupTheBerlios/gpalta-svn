@@ -69,11 +69,11 @@ public class ProblemData
     /**
      * Initialize the data from a file
      */
-    public ProblemData(String fileName)
+    public ProblemData(String fileName, String separator)
     {
         try
         {
-            dataT = Common.readFromFile(fileName, "\\s+");
+            dataT = Common.readFromFile(fileName, separator);
             data = Common.transpose(dataT);
             nVars = data.length;
             nSamples = data[0].length;

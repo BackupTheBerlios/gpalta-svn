@@ -37,6 +37,10 @@ public class Config implements Serializable
     public String saveFileName = "evo.bin";
     public String nodeConfigFileName = "NodeConfig.txt";
     public static String logFileName = "log.txt";
+    public String operatorConfigFileName = "OperatorConfig.txt";
+    public String dataFile = "data.txt";
+    public String desOutputsFile = "class.txt";
+    public String separator = "\\s+";
 
     // ----------- Basic GP options ------------
     public String population = "gpalta.core.SingleTreePopulation";
@@ -84,14 +88,10 @@ public class Config implements Serializable
 
     //---------------- Fitness -----------------------
     public String fitness = "gpalta.core.FitnessClassic";
+    public boolean useHits = false;
 
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;
-
-    /* fitness will be: 
-     * f' = (1-sizePenalization*treeDepth/maxDepth)*f
-     */
-    public double sizePenalization = 0;
 
     //For the clustering fitness:
     public int nClasses = 2;

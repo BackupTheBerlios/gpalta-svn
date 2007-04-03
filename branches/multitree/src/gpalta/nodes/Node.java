@@ -45,6 +45,18 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
     private int maxDepthFromHere;
     private int nSubNodes;
 
+    public NodeSet getType()
+    {
+        return type;
+    }
+
+    public void setType(NodeSet type)
+    {
+        this.type = type;
+    }
+
+    private NodeSet type;
+
     private NodeSet[] kidsType;
 
     /**

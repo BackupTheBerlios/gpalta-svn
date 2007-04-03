@@ -4,6 +4,8 @@ import gpalta.core.*;
 import gpalta.multitree.MultiOutput;
 import gpalta.multitree.MultiTreeIndividual;
 
+import java.io.IOException;
+
 /**
  * @author neven
  */
@@ -13,10 +15,33 @@ public class FitnessClusteringCS implements Fitness
     private double[][] prob;
     private Config config;
     private int[] target;
+    private int[] winner;
+    private int[][] close;
 
     public void init(Config config, ProblemData problemData, String fileName)
     {
-        init(config, problemData, null, null);
+        SingleOutput desOutput = new SingleOutput(problemData.nSamples);
+        double[][] desOutputMatrix = null;
+        try
+        {
+            /* Use any separator, there should be exactly one value per line */
+            desOutputMatrix = Common.readFromFile(fileName, ",");
+        }
+        catch (IOException e)
+        {
+            Logger.log(e);
+        }
+
+        if (desOutputMatrix.length != problemData.nSamples || desOutputMatrix[0].length != 1)
+        {
+            Logger.log("Warning: wrong size when reading desired outputs from " + fileName);
+        }
+
+        /* Common.readFromFile() returns a matrix
+         * We need to turn it into a vector
+         */
+        desOutput.store(Common.transpose(desOutputMatrix)[0]);
+        init(config, problemData, desOutput, null);
     }
 
     public void init(Config config, ProblemData problemData, Output desiredOutputs, double[] weights)
@@ -55,12 +80,35 @@ public class FitnessClusteringCS implements Fitness
                 kernel[i][j] = InformationTheory.gaussianKernel(dx, 2*sigmaOpt2);
             }
         }
-        target = new int[problemData.nSamples];
-        for (int i=0; i< problemData.nSamples; i++)
+        if (config.useHits)
         {
-            target[i] = (int)((SingleOutput)desiredOutputs).x[i];
+            target = new int[problemData.nSamples];
+            for (int i=0; i< problemData.nSamples; i++)
+            {
+                target[i] = (int)((SingleOutput)desiredOutputs).x[i];
+            }
+            winner = new int[problemData.nSamples];
         }
 
+        double limit = 1E-3;
+        close = new int[problemData.nSamples][];
+
+        for (int i = 0; i < problemData.nSamples; i++)
+        {
+            int n = 0;
+            for (int j = 0; j < problemData.nSamples; j++)
+            {
+                if (kernel[i][j] > limit)
+                    n++;
+            }
+            close[i] = new int[n];
+            int nAdded = 0;
+            for (int j = 0; j < problemData.nSamples; j++)
+            {
+                if (kernel[i][j] > limit)
+                    close[i][nAdded++] = j;
+            }
+        }
     }
 
     public void calculate(Output outputs, Individual ind, ProblemData problemData)
@@ -78,9 +126,11 @@ public class FitnessClusteringCS implements Fitness
         {
             for (int i=0; i<nSubSamples; i++)
             {
-                for (int j=0; j< problemData.nSamples; j++)
+                int ii = samples[i];
+                for (int j = 0; j < close[ii].length; j++)
                 {
-                    cInfo[wCluster] += prob[wCluster][samples[i]]*prob[wCluster][j]*kernel[samples[i]][j];
+                    int jj = close[ii][j];
+                    cInfo[wCluster] += prob[wCluster][ii]*prob[wCluster][jj]*kernel[ii][jj];
                 }
             }
         }
@@ -91,9 +141,11 @@ public class FitnessClusteringCS implements Fitness
 
         for (int i=0; i<nSubSamples; i++)
         {
-            for (int j=0; j< problemData.nSamples; j++)
+            int ii = samples[i];
+            for (int j = 0; j < close[ii].length; j++)
             {
-                info += (1-Common.dotProduct(probT[samples[i]], probT[j]))*kernel[samples[i]][j];
+                int jj = close[ii][j];
+                info += (1-Common.dotProduct(probT[ii], probT[jj]))*kernel[ii][jj];
             }
         }
 
@@ -103,13 +155,19 @@ public class FitnessClusteringCS implements Fitness
         }
         info /= 2;
 
-        ind.setFitness(-info);
+        ind.setFitness(1/(1+info));
 
         for (int wCluster = 0; wCluster < nClusters; wCluster++)
         {
             cInfo[wCluster] /= Math.pow(Common.sum(prob[wCluster]), 2);
             ((MultiTreeIndividual)ind).getTree(wCluster).setFitness(cInfo[wCluster]);
         }
+
+        if (config.useHits)
+        {
+            ind.hits = (double)hits(winner, target, nClusters)/problemData.nSamples;
+        }
+
     }
 
     protected void calcProto(Output outputs, ProblemData problemData)
@@ -128,7 +186,7 @@ public class FitnessClusteringCS implements Fitness
             {
                 prob[wCluster][wSample] += 0.05;
                 if (prob[wCluster][wSample] > 1)
-                            prob[wCluster][wSample] = 1;
+                    prob[wCluster][wSample] = 1;
             }
         }
 
@@ -142,6 +200,23 @@ public class FitnessClusteringCS implements Fitness
             for (int wCluster = 0; wCluster <nClusters; wCluster++)
             {
                 prob[wCluster][wSample] /= sum;
+            }
+        }
+
+        if (config.useHits)
+        {
+            for (int wSample=0; wSample< problemData.nSamples; wSample++)
+            {
+                winner[wSample] = 0;
+                double max = prob[0][wSample];
+                for (int wCluster = 1; wCluster <nClusters; wCluster++)
+                {
+                    if (prob[wCluster][wSample] > max)
+                    {
+                        max = prob[wCluster][wSample];
+                        winner[wSample] = wCluster;
+                    }
+                }
             }
         }
 
@@ -160,64 +235,64 @@ public class FitnessClusteringCS implements Fitness
         return processed;
     }
 
-    public int hits(int[] system, int[] real, int nClasses)
+    public int hits(int[] system, int[] actual, int nClasses)
     {
         int hits = 0;
         int[][] assigned = new int[nClasses][nClasses];
         for (int i=0; i<system.length; i++)
         {
-            if (real[i] >= nClasses)
+            if (actual[i] >= nClasses)
                 continue;
-            assigned[real[i]][system[i]]++;
+            assigned[actual[i]][system[i]]++;
         }
         boolean done = false;
-        int[] eq = new int[nClasses];
-        int[] eq2 = new int[nClasses];
+        int[] eqA2S = new int[nClasses];
+        int[] eqS2A = new int[nClasses];
         for (int i=0; i<nClasses; i++)
         {
-            eq[i] = -1;
-            eq2[i] = -1;
+            eqA2S[i] = -1;
+            eqS2A[i] = -1;
         }
         while(!done)
         {
 
-            for (int rc=0; rc<nClasses; rc++)
+            for (int ac=0; ac<nClasses; ac++)
             {
-                if (eq[rc] != -1)
+                if (eqA2S[ac] != -1)
                     continue;
                 int max = -1;
                 int winner = 0;
                 for (int sc=0; sc<nClasses; sc++)
                 {
-                    if (eq2[sc] != -1)
+                    if (eqS2A[sc] != -1)
                         continue;
-                    if(assigned[rc][sc] > max)
+                    if(assigned[ac][sc] > max)
                     {
-                        max = assigned[rc][sc];
+                        max = assigned[ac][sc];
                         winner = sc;
                     }
                 }
-                int winner2 = rc;
-                for (int rc2=0; rc2<nClasses; rc2++)
+                int winner2 = ac;
+                for (int ac2=0; ac2<nClasses; ac2++)
                 {
-                    if (eq[rc2] != -1)
+                    if (eqA2S[ac2] != -1)
                         continue;
-                    if(assigned[rc2][winner] > max)
+                    if(assigned[ac2][winner] > max)
                     {
-                        max = assigned[rc2][winner];
-                        winner2 = rc2;
+                        max = assigned[ac2][winner];
+                        winner2 = ac2;
                     }
                 }
-                if (winner2 == rc)
+                if (winner2 == ac)
                 {
-                    eq[rc] = winner;
-                    eq2[winner] = rc;
+                    eqA2S[ac] = winner;
+                    eqS2A[winner] = ac;
                 }
             }
             done = true;
             for (int i=0; i<nClasses; i++)
             {
-                if (eq[i]==-1)
+                if (eqA2S[i]==-1)
                 {
                     done = false;
                     break;
@@ -226,9 +301,9 @@ public class FitnessClusteringCS implements Fitness
         }
         for (int i=0; i<system.length; i++)
         {
-            if (real[i] >= nClasses)
+            if (actual[i] >= nClasses)
                 continue;
-            if (system[i] == eq[real[i]])
+            if (system[i] == eqA2S[actual[i]])
             {
                 hits++;
             }

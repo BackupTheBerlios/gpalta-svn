@@ -95,12 +95,12 @@ public class SingleTreePopulation implements Population, Serializable
         treeList = sel.select(treeList);
     }
 
-    public void evolve(TreeOperator op)
+    public void evolve(TreeOperator treeOp, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        op.operate(treeList);
+        treeOp.operate(treeList);
     }
 
-    public void init(Config config, ProblemData problemData, TreeBuilder builder)
+    public void init(Config config, ProblemData problemData, TreeBuilder builder, TreeOperator treeOp)
     {
         this.config = config;
         treeList = new ArrayList<Tree>(config.populationSize);

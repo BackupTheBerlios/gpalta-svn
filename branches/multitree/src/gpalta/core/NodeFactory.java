@@ -107,6 +107,14 @@ public class NodeFactory
                     }
                 }
             }
+            
+            for (i = 0; i < nodeSets.length; i++)
+            {
+                for (Node n : nodeSets[i].getAll())
+                {
+                    n.setType(nodeSets[i]);
+                }
+            }
 
             for (i = 0; i < nodeSets.length; i++)
             {
@@ -212,16 +220,6 @@ public class NodeFactory
         outNode.init(config, problemData);
         outNode.setCurrentDepth(currentGlobalDepth);
         return outNode;
-    }
-
-    public static boolean isInList(Node node, List<Node> l)
-    {
-        for (Node n : l)
-        {
-            if (n.getClass() == node.getClass())
-                return true;
-        }
-        return false;
     }
 
     /**

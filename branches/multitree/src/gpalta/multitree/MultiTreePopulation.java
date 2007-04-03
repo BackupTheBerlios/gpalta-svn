@@ -28,6 +28,9 @@ import gpalta.core.*;
 import gpalta.ops.TreeBuilder;
 import gpalta.ops.IndSelector;
 import gpalta.ops.TreeOperator;
+import gpalta.multitree.operators.MultiTreeOperator;
+import gpalta.multitree.operators.LowLevelMultiTreeOperator;
+import gpalta.multitree.operators.MultiTreeOperatorMeasure;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -41,6 +44,9 @@ public class MultiTreePopulation implements Population
     private List<MultiTreeIndividual> multiTreeList;
     private Config config;
     private MultiOutput outputs;
+    private MultiTreeOperator multiTreeOp;
+    private LowLevelMultiTreeOperator[] operatorsApplied;
+    double[] oldFitness;
 
     public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
@@ -51,6 +57,46 @@ public class MultiTreePopulation implements Population
                 getOutput(mt, outputs, tempVectorFactory, problemData);
                 f.calculate(outputs, mt, problemData);
                 mt.fitCalculated = true;
+            }
+        }
+        if (operatorsApplied != null)
+        {
+            boolean evalOnSame = false;
+            if (!evalOnSame)
+            {
+                for (int i=0; i<multiTreeOp.lowLevelOps.length; i++)
+                {
+                    multiTreeOp.lowLevelOps[i].timesApplied = 0;
+                    multiTreeOp.lowLevelOps[i].timesFitnessImproved = 0;
+                }
+
+                for (int i=0; i<multiTreeList.size(); i++)
+                {
+                    //Trees at the end of the list might not get an operator applied:
+                    if (operatorsApplied[i] != null)
+                    {
+                        operatorsApplied[i].timesApplied++;
+                        if (multiTreeList.get(i).readFitness() > oldFitness[i])
+                            operatorsApplied[i].timesFitnessImproved++;
+                    }
+                }
+            }
+            else
+            {
+                int nDone = 0;
+                for (int i=0; i<multiTreeOp.lowLevelOps.length; i++)
+                {
+                    LowLevelMultiTreeOperator op = multiTreeOp.lowLevelOps[i];
+                    for (int j=0; j<op.nIndividuals(); j++)
+                    {
+                        op.timesApplied ++;
+                        if (multiTreeList.get(nDone+j).readFitness() > oldFitness[j])
+                        {
+                            op.timesFitnessImproved++;
+                        }
+                    }
+                    nDone += op.nIndividuals();
+                }
             }
         }
     }
@@ -94,7 +140,7 @@ public class MultiTreePopulation implements Population
         return multiTreeList.get(which);
     }
 
-    public void init(Config config, ProblemData problemData, TreeBuilder builder)
+    public void init(Config config, ProblemData problemData, TreeBuilder builder, TreeOperator treeOp)
     {
         this.config = config;
         multiTreeList = new ArrayList<MultiTreeIndividual>(config.populationSize);
@@ -110,6 +156,7 @@ public class MultiTreePopulation implements Population
         }
         builder.build(tmpList);
         outputs = new MultiOutput(config.nClasses, problemData.nSamples);
+        multiTreeOp = new MultiTreeOperator(config, treeOp);
     }
 
     public void doSelection(IndSelector sel)
@@ -117,8 +164,16 @@ public class MultiTreePopulation implements Population
         multiTreeList = sel.select(multiTreeList);
     }
 
-    public void evolve(TreeOperator op)
+    public void evolve(TreeOperator treeOp, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        new MultiTreeOperator(config, op).operate(multiTreeList);
+        oldFitness = new double[multiTreeList.size()];
+        for (int i=0; i<multiTreeList.size(); i++)
+            oldFitness[i] = multiTreeList.get(i).readFitness();
+        operatorsApplied = multiTreeOp.operate(multiTreeList, tempVectorFactory, problemData);
+    }
+
+    public LowLevelMultiTreeOperator[] getOperatorStats()
+    {
+        return multiTreeOp.lowLevelOps;
     }
 }

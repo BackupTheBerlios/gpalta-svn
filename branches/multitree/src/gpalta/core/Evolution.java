@@ -54,6 +54,7 @@ public class Evolution
 
     private void initCommon(Config config, ProblemData initializedProblemData, boolean initPop)
     {
+
         nodeFactory = new NodeFactory(config, initializedProblemData);
 
         treeOp = new TreeOperator(config, nodeFactory);
@@ -112,7 +113,7 @@ public class Evolution
                 {
                     population = (Population) co[0].newInstance();
                 }
-                population.init(config, initializedProblemData, treeBuilder);
+                population.init(config, initializedProblemData, treeBuilder, treeOp);
                 evoStats.bestSoFar = population.get(0);
             }
         }
@@ -153,11 +154,11 @@ public class Evolution
     {
         this.config = config;
 
-        problemData = new ProblemData("data.txt");
+        problemData = new ProblemData(config.dataFile, config.separator);
 
         initCommon(config, problemData, initPop);
 
-        fitness.init(config, problemData, "class.txt");
+        fitness.init(config, problemData, config.desOutputsFile);
 
     }
 
@@ -287,7 +288,7 @@ public class Evolution
     public synchronized void evolve()
     {
         population.doSelection(indSelector);
-        population.evolve(treeOp);
+        population.evolve(treeOp, tempVectorFactory, problemData);
         generation++;
     }
 

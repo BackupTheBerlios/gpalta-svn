@@ -38,6 +38,7 @@ public abstract class Individual implements Cloneable, Serializable
     private double fitness;
     private boolean isOnPop;
     public boolean fitCalculated;
+    public double hits;
 
     /**
      * Get the size of this Individual, hopefully without recalculating it (ie. in the case of a

@@ -2,6 +2,8 @@ package gpalta.clustering;
 
 import gpalta.core.Common;
 
+import java.util.Arrays;
+
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 15-12-2006 Time: 09:07:08 PM To change this template
  * use File | Settings | File Templates.
@@ -60,6 +62,77 @@ public abstract class InformationTheory
         {
             if (count[j] != 0)
                 count[j] /= x.length;
+        }
+        return count;
+    }
+
+    public static double[] px(double[] x, double min, double max, int nIntervals)
+    {
+        double[] count = new double[nIntervals];
+        double[] intervals = new double[nIntervals];
+        for (int i=0; i<nIntervals; i++)
+        {
+            intervals[i] = min + (max-min)/nIntervals*(i+1);
+        }
+        for (int i=0; i<x.length; i++)
+        {
+            int pos = Arrays.binarySearch(intervals, x[i]);
+            //if pos >= 0, it matches one of the interval limits:
+            if (pos < 0)
+            {
+                if (pos == -1)
+                    pos = 0;
+                else
+                    pos = -pos - 2;
+            }
+            count[pos]++;
+        }
+        for (int j=0; j<nIntervals; j++)
+        {
+            count[j] /= x.length;
+        }
+        return count;
+    }
+    public static double[][] pxy(double[] x, double[] y, double min, double max, int nIntervals)
+    {
+        if (x.length != y.length)
+        return null;
+        double[][] count = new double[nIntervals][nIntervals];
+        double[] intervals = new double[nIntervals];
+        for (int i=0; i<nIntervals; i++)
+        {
+            intervals[i] = min + (max-min)/nIntervals*(i+1);
+        }
+        for (int i=0; i<x.length; i++)
+        {
+            int posx = Arrays.binarySearch(intervals, x[i]);
+            //if posx >= 0, it matches one of the interval limits:
+            if (posx < 0)
+            {
+                if (posx == -1)
+                    posx = 0;
+                else
+                    posx = -posx - 2;
+            }
+            for (int j=0; j<y.length; j++)
+            {
+                int posy = Arrays.binarySearch(intervals, y[i]);
+                if (posy < 0)
+                {
+                    if (posy == -1)
+                        posy = 0;
+                    else
+                        posy = -posy - 2;
+                }
+                count[posx][posy]++;
+            }
+        }
+        for (int i=0; i<nIntervals; i++)
+        {
+            for (int j=0; j<nIntervals; j++)
+            {
+                count[i][j] /= x.length;
+            }
         }
         return count;
     }

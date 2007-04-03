@@ -59,7 +59,7 @@ public interface Population
      */
     public Individual get(int which);
 
-    public void init(Config config, ProblemData problemData, TreeBuilder builder);
+    public void init(Config config, ProblemData problemData, TreeBuilder builder, TreeOperator treeOp);
 
     /**
      * Perform Individual selection
@@ -69,8 +69,10 @@ public interface Population
 
     /**
      * Apply genetic operators
-     * @param op
+     * @param treeOp
+     * @param tempVectorFactory
+     * @param problemData
      */
-    public void evolve(TreeOperator op);
+    public void evolve(TreeOperator treeOp, TempVectorFactory tempVectorFactory, ProblemData problemData);
 
 }

@@ -4,6 +4,10 @@
 saveFileName = evo.bin
 nodeConfigFileName = NodeConfig.txt
 logFileName = log.txt
+operatorConfigFileName = OperatorConfig.txt
+dataFile = data.txt
+desOutputsFile = class.txt
+separator = \\s+
 
 # ----------- Basic GP options ------------
 population = gpalta.core.SingleTreePopulation
@@ -51,13 +55,10 @@ rankingType = gpalta.ops.RankingRaw
 #---------------- Fitness -----------------------
 # generic or clustering
 fitness = gpalta.core.FitnessClassic
+useHits = false
 
 # stop if fitness reaches this value:
 stopFitness = 0.99
-
-# fitness will be: 
-# f' = (1-sizePenalization*treeDepth/maxDepth)*f
-sizePenalization = 0
 
 # For the clustering fitness:
 nClasses = 2

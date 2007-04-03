@@ -76,7 +76,7 @@ public class NodeSelector
     }
 
     /**
-     * Picks any node of the same type as node within the tree. It only checks if the node is real or logic. O(n)
+     * Picks any node of the same type as node within the tree. O(n)
      *
      * @param node The 'sample' Node.
      */
@@ -87,15 +87,18 @@ public class NodeSelector
 
         if (type <= config.upLimitProbSelectTerminal)
         {
-            getNodes(l, tree.getKid(0), node.getParent().typeOfKids(node.getWhichKidOfParent()).getTerminals());
+            getTerminalNodes(l, tree.getKid(0), node.getType());
         }
         else if (type <= config.upLimitProbSelectNonTerminal)
         {
-            getNodes(l, tree.getKid(0), node.getParent().typeOfKids(node.getWhichKidOfParent()).getFunctions());
+            getFunctionNodes(l, tree.getKid(0), node.getType());
         }
         else
         {
-            getNodes(l, tree.getKid(0), node.getParent().typeOfKids(node.getWhichKidOfParent()).getAll());
+            if (tree.getKid(0).getType().getName().equals(node.getType().getName()))
+                return tree.getKid(0);
+            else
+                return null;
         }
         //TODO: what should we do if we don't find any node?
         if (l.size() == 0)
@@ -104,18 +107,6 @@ public class NodeSelector
         }
         int which = Common.globalRandom.nextInt(l.size());
         return l.get(which);
-    }
-
-    private void getNodes(List<Node> l, Node node, List<Node> types)
-    {
-        if (NodeFactory.isInList(node, types))
-        {
-            l.add(node);
-        }
-        for (int i = 0; i < node.nKids(); i++)
-        {
-            getNodes(l, node.getKid(i), types);
-        }
     }
 
     /**
@@ -172,6 +163,30 @@ public class NodeSelector
         for (int i = 0; i < node.nKids(); i++)
         {
             getFunctionNodes(l, node.getKid(i));
+        }
+    }
+
+    private void getTerminalNodes(List<Node> l, Node node, NodeSet type)
+    {
+        if (node.nKids() == 0 && node.getType().getName().equals(type.getName()))
+        {
+            l.add(node);
+        }
+        for (int i = 0; i < node.nKids(); i++)
+        {
+            getTerminalNodes(l, node.getKid(i), type);
+        }
+    }
+
+    private void getFunctionNodes(List<Node> l, Node node, NodeSet type)
+    {
+        if (node.nKids() > 0 && node.getType().getName().equals(type.getName()))
+        {
+            l.add(node);
+        }
+        for (int i = 0; i < node.nKids(); i++)
+        {
+            getFunctionNodes(l, node.getKid(i), type);
         }
     }
 

@@ -55,6 +55,7 @@ public class GPaltaGUI extends javax.swing.JFrame
     private Chart2D plot;
     private ITrace2D trace;
     private ITrace2D traceMean;
+    private ITrace2D traceHits;
     private boolean usePlot;
     public boolean stopSaveQuit;
     private Timer timer;
@@ -495,17 +496,29 @@ public class GPaltaGUI extends javax.swing.JFrame
             plot.setBackground(plot.getParent().getBackground());
             plot.addTrace(trace);
             plot.addTrace(traceMean);
+            if (config.useHits)
+            {
+                traceHits = new Trace2DBijective();
+                traceHits.setName("Hits best so far");
+                traceHits.setColor(Color.GREEN);
+                plot.addTrace(traceHits);
+            }
         }
         else
         {
             trace.removeAllPoints();
             traceMean.removeAllPoints();
+            if (config.useHits)
+            {
+                traceHits.removeAllPoints();
+            }
         }
 
     }
 
     private void newEvo(boolean fromFile)
     {
+        first = !fromFile;
         if (usePlot)
         {
             plotInit();
@@ -552,7 +565,6 @@ public class GPaltaGUI extends javax.swing.JFrame
         setEnabledAll(disableWhenNotRunning, false);
         progressBar.setStringPainted(false);
         progressBar.setValue(0);
-        first = !fromFile;
     }
 
     private void go(int n)
@@ -624,20 +636,26 @@ public class GPaltaGUI extends javax.swing.JFrame
             //labelBestSoFarHR1Value.setText("   " + String.format("%.3f",evoStats.bestSoFar.hr1));
             labelBestSoFarNodesValue.setText("   " + evoStats.bestSoFar.getSize());
         }
-        if (usePlot)
-        {
-            trace.addPoint(evoStats.generation, evoStats.bestSoFar.readFitness());
-            traceMean.addPoint(evoStats.generation, evoStats.avgFit);
-        }
 
-        /* The first update is for evaluation of initial population (gen 0), so we
-        * haven't really advanced a generation
-        */
+        /* First update is when evoThread is created */
         if (first)
         {
             first = false;
         }
-        else
+        else if (usePlot)
+        {
+            trace.addPoint(evoStats.generation, evoStats.bestSoFar.readFitness());
+            traceMean.addPoint(evoStats.generation, evoStats.avgFit);
+            if (config.useHits)
+            {
+                traceHits.addPoint(evoStats.generation, evoStats.bestSoFar.hits);
+            }
+        }
+
+        /* The first and second update are for evaluation of initial population (gen 0), so we
+         * haven't really advanced a generation
+         */
+        if (evoStats.generation > 0)
         {
             nGenDone++;
         }
