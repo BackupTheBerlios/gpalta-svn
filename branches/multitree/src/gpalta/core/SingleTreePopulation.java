@@ -26,6 +26,7 @@ package gpalta.core;
 
 import gpalta.core.Tree;
 import gpalta.ops.*;
+import gpalta.multithread.MultiThreadedEvaluator;
 
 import java.util.*;
 import java.io.Serializable;
@@ -41,17 +42,9 @@ public class SingleTreePopulation implements Population, Serializable
     private Config config;
     private SingleOutput outputs;
 
-    public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
+    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        for (Tree t : treeList)
-        {
-            if (!config.rememberLastEval || !t.fitCalculated)
-            {
-                getOutput(t, outputs, tempVectorFactory, problemData);
-                f.calculate(outputs, t, problemData);
-                t.fitCalculated = true;
-            }
-        }
+        evaluator.eval(treeList, outputs);
     }
 
     private void getOutput(Tree t, SingleOutput o, TempVectorFactory tempVectorFactory, ProblemData problemData)

@@ -25,6 +25,7 @@
 package gpalta.core;
 
 import gpalta.ops.*;
+import gpalta.multithread.MultiThreadedEvaluator;
 
 /**
  * Holds the problem's Individuals. It must evaluate them and organize them for selection and
@@ -37,11 +38,12 @@ public interface Population
 
     /**
      * Evaluate every Individual and calculate their fitness
+     * @param evaluator
      * @param f
      * @param tempVectorFactory
      * @param problemData
      */
-    public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData);
+    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData);
 
     /**
      * Get the output directly from the Individual, without further processing

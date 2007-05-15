@@ -31,7 +31,7 @@ import java.io.*;
  *
  * @author neven
  */
-public class ProblemData
+public class ProblemData implements Serializable
 {
 
     /* Every row in data correponds to all the samples for a variable.

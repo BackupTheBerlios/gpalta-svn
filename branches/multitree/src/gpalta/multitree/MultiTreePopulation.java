@@ -30,7 +30,7 @@ import gpalta.ops.IndSelector;
 import gpalta.ops.TreeOperator;
 import gpalta.multitree.operators.MultiTreeOperator;
 import gpalta.multitree.operators.LowLevelMultiTreeOperator;
-import gpalta.multitree.operators.MultiTreeOperatorMeasure;
+import gpalta.multithread.MultiThreadedEvaluator;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -48,17 +48,10 @@ public class MultiTreePopulation implements Population
     private LowLevelMultiTreeOperator[] operatorsApplied;
     double[] oldFitness;
 
-    public void eval(Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
+
+    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        for (MultiTreeIndividual mt : multiTreeList)
-        {
-            if (!config.rememberLastEval || !mt.fitCalculated)
-            {
-                getOutput(mt, outputs, tempVectorFactory, problemData);
-                f.calculate(outputs, mt, problemData);
-                mt.fitCalculated = true;
-            }
-        }
+        evaluator.eval(multiTreeList, outputs);
         if (operatorsApplied != null)
         {
             boolean evalOnSame = false;

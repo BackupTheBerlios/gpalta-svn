@@ -174,9 +174,6 @@ public class EvolutionThread extends Thread
             {
                 wait();
             }
-            /* TODO: I don't know when this exception could be thrown and what
-             * to do about it
-             */
             catch (InterruptedException e)
             {
                 Logger.log(e);

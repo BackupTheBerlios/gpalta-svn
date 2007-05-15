@@ -63,7 +63,9 @@ public interface Fitness
      * @param ind         The Individual.
      * @param problemData The problem's data (might be needed to calculate the fitness)
      */
-    void calculate(Output outputs, Individual ind, ProblemData problemData);
+    double[] calculate(Output outputs, Individual ind, ProblemData problemData);
+
+    void assign(Individual ind, double[] fit);
 
     /**
      * Take the output of an Individual and add anything the fitness might need to add, like
@@ -74,5 +76,12 @@ public interface Fitness
      * @return A specialized output for the problem
      */
     Output getProcessedOutput(Output raw, ProblemData problemData);
+
+    /**
+     * Make a copy This method must be implemented cloned instances must be independent.
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    Object clone() throws CloneNotSupportedException;
 
 }

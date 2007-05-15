@@ -114,6 +114,8 @@ public class Config implements Serializable
      */
     public boolean useVect = false;
 
+    public int nEvalThreads = 1;
+
     /* If true, trees that haven't changed from the past generation will remember
     * their fitness and won't be evaluated again.
     * WARNING: do not use if some values change between generations (e.g. cicling
@@ -124,6 +126,9 @@ public class Config implements Serializable
     /* These two for non interactive mode */
     public boolean nonInteractive = false;
     public int nDaysToRun = 1;
+
+    public int distributedPort = 12345;
+    public String distributedServers = "localhost";
 
     /**
      * Reads config from a property file. The file must contain a value for all

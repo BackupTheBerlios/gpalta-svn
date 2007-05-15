@@ -5,11 +5,12 @@ import gpalta.multitree.MultiOutput;
 import gpalta.multitree.MultiTreeIndividual;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * @author neven
  */
-public class FitnessClusteringCS implements Fitness
+public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
 {
     private double[][] kernel;
     private double[][] prob;
@@ -17,6 +18,20 @@ public class FitnessClusteringCS implements Fitness
     private int[] target;
     private int[] winner;
     private int[][] close;
+
+    public Object clone() throws CloneNotSupportedException
+    {
+        FitnessClusteringCS f = (FitnessClusteringCS)super.clone();
+        f.kernel = Common.copy(kernel);
+        f.prob = null;
+        if (config.useHits)
+        {
+            f.target = Common.copy(target);
+            f.winner = Common.copy(winner);
+        }
+        f.close = Common.copy(close);
+        return f;
+    }
 
     public void init(Config config, ProblemData problemData, String fileName)
     {
@@ -90,7 +105,17 @@ public class FitnessClusteringCS implements Fitness
             winner = new int[problemData.nSamples];
         }
 
-        double limit = 1E-3;
+        double[][] pdist = new double[problemData.nSamples][problemData.nSamples];
+        for (int s1=0; s1 < problemData.nSamples-1; s1++)
+        {
+            for (int s2=s1+1; s2<problemData.nSamples; s2++)
+            {
+                pdist[s1][s2] = pdist[s2][s1] = Common.dist2(problemData.getSample(s1), problemData.getSample(s2));
+            }
+        }
+
+        double limit = InformationTheory.paretoRadius(pdist, false);
+        //double limit = 1E-3;
         close = new int[problemData.nSamples][];
 
         for (int i = 0; i < problemData.nSamples; i++)
@@ -98,22 +123,22 @@ public class FitnessClusteringCS implements Fitness
             int n = 0;
             for (int j = 0; j < problemData.nSamples; j++)
             {
-                if (kernel[i][j] > limit)
+                if (pdist[i][j] <= limit)
                     n++;
             }
             close[i] = new int[n];
             int nAdded = 0;
             for (int j = 0; j < problemData.nSamples; j++)
             {
-                if (kernel[i][j] > limit)
+                if (pdist[i][j] <= limit)
                     close[i][nAdded++] = j;
             }
         }
     }
 
-    public void calculate(Output outputs, Individual ind, ProblemData problemData)
+    public double[] calculate(Output outputs, Individual ind, ProblemData problemData)
     {
-        calcProto(outputs, problemData);
+        calcProb(outputs, problemData);
 
         int nClusters = outputs.getDim();
         double[] cInfo = new double[nClusters];
@@ -155,22 +180,32 @@ public class FitnessClusteringCS implements Fitness
         }
         info /= 2;
 
-        ind.setFitness(1/(1+info));
-
+        double[] fit = new double[nClusters + 2];
+        fit[0] = 1/(1+info);
+        if (config.useHits)
+        {
+            fit[1] = (double)hits(winner, target, nClusters)/problemData.nSamples;
+        }
         for (int wCluster = 0; wCluster < nClusters; wCluster++)
         {
             cInfo[wCluster] /= Math.pow(Common.sum(prob[wCluster]), 2);
+            fit[2+wCluster] = cInfo[wCluster];
             ((MultiTreeIndividual)ind).getTree(wCluster).setFitness(cInfo[wCluster]);
         }
-
-        if (config.useHits)
-        {
-            ind.hits = (double)hits(winner, target, nClusters)/problemData.nSamples;
-        }
-
+        return fit;
     }
 
-    protected void calcProto(Output outputs, ProblemData problemData)
+    public void assign(Individual ind, double[] fit)
+    {
+        ind.setFitness(fit[0]);
+        ind.hits = fit[1];
+        for (int wCluster=0; wCluster<((MultiTreeIndividual)ind).nTrees(); wCluster++)
+        {
+            ((MultiTreeIndividual)ind).getTree(wCluster).setFitness(fit[2+wCluster]);
+        }
+    }
+
+    protected void calcProb(Output outputs, ProblemData problemData)
     {
         int nClusters = outputs.getDim();
         prob = new double[nClusters][];
@@ -230,7 +265,7 @@ public class FitnessClusteringCS implements Fitness
         {
             processed.store(i, ((MultiOutput)raw).getArrayCopy(i));
         }
-        calcProto(raw, problemData);
+        calcProb(raw, problemData);
         processed.setPertenenceCopy(prob);
         return processed;
     }

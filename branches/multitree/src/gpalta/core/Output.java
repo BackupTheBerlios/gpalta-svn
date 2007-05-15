@@ -31,12 +31,23 @@ import java.io.Serializable;
  *
  * @author neven
  */
-public abstract class Output implements Serializable
+public abstract class Output implements Serializable, Cloneable
 {
 
     /**
      * Get the dimension (number of scalar outputs per sample) of this Output
      */
     public abstract int getDim();
+
+    /**
+     * Must implement clone() so Outputs can be cloned witout knowing the actual subclass.
+     * Subclasses must override this to make sure that cloned instances are independent.
+     * @return
+     * @throws CloneNotSupportedException
+     */
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
+    }
 
 }

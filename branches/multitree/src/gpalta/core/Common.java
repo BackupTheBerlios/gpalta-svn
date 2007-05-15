@@ -170,6 +170,21 @@ public abstract class Common
     }
 
     /**
+     * Obtain an independent copy of the given matrix
+     * @param m The matrix to copy
+     * @return a new matrix, with the same values as the original
+     */
+    public static int[][] copy(int[][] m)
+    {
+        int[][] out = new int[m.length][];
+        for (int i=0; i<m.length; i++)
+        {
+            out[i] = copy(m[i]);
+        }
+        return out;
+    }
+
+    /**
      * Obtain a copy of an array
      * @param x The array to copy
      * @return a new array, with the same values as the original
@@ -177,6 +192,18 @@ public abstract class Common
     public static double[] copy(double[] x)
     {
         double[] out = new double[x.length];
+        System.arraycopy(x, 0, out, 0, x.length);
+        return out;
+    }
+
+    /**
+     * Obtain a copy of an array
+     * @param x The array to copy
+     * @return a new array, with the same values as the original
+     */
+    public static int[] copy(int[] x)
+    {
+        int[] out = new int[x.length];
         System.arraycopy(x, 0, out, 0, x.length);
         return out;
     }

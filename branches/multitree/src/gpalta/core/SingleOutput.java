@@ -40,6 +40,13 @@ public class SingleOutput extends Output
         x = new double[nSamples];
     }
 
+    public Object clone() throws CloneNotSupportedException
+    {
+        SingleOutput output = (SingleOutput) super.clone();
+        output.store(x);
+        return output;
+    }
+
     public int getDim()
     {
         return 1;

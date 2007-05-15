@@ -3,6 +3,7 @@ package gpalta.clustering;
 import gpalta.core.Common;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 15-12-2006 Time: 09:07:08 PM To change this template
@@ -240,5 +241,25 @@ public abstract class InformationTheory
         sigmax2 /= d;
         return sigmax2*Math.pow(4/(n*(2*d+1)), 2/(d + 4));
     }
-    
+
+    public static double paretoRadius(double[][] pdist, boolean sort)
+    {
+        int n = pdist.length;
+
+        if (!sort)
+        {
+            pdist = Common.copy(pdist);
+        }
+
+        double[] r = new double[n];
+        int nOpt = (int)(0.2 * n);
+
+        for (int i =0; i < n; i++)
+        {
+            Arrays.sort(pdist[i]);
+            r[i] = pdist[i][nOpt];
+        }
+        return Common.sum(r)/n;
+    }
 }
+

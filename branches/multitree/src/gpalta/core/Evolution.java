@@ -25,6 +25,7 @@
 package gpalta.core;
 
 import gpalta.ops.*;
+import gpalta.multithread.MultiThreadedEvaluator;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -45,6 +46,7 @@ public class Evolution
     private IndSelector indSelector;
     private Ranking theRanking;
     public Fitness fitness;
+    private MultiThreadedEvaluator evaluator;
     private ProblemData problemData;
     public int generation;
     public Config config;
@@ -159,6 +161,7 @@ public class Evolution
         initCommon(config, problemData, initPop);
 
         fitness.init(config, problemData, config.desOutputsFile);
+        evaluator = new MultiThreadedEvaluator(config, fitness, problemData);
 
     }
 
@@ -184,6 +187,7 @@ public class Evolution
         SingleOutput des = new SingleOutput(problemData.nSamples);
         des.store(desiredOutputs);
         fitness.init(config, problemData, des, weights);
+        evaluator = new MultiThreadedEvaluator(config, fitness, problemData);
 
     }
 
@@ -192,7 +196,7 @@ public class Evolution
      */
     public synchronized void eval()
     {
-        population.eval(fitness, tempVectorFactory, problemData);
+        population.eval(evaluator, fitness, tempVectorFactory, problemData);
         Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
@@ -350,6 +354,20 @@ public class Evolution
 
         in.close();
 
+    }
+
+    /* Make sure  to destroy evaluator and its threads when this Evolution is garbage collected */
+    protected void finalize()
+    {
+        try
+        {
+            super.finalize();
+        }
+        catch (Throwable throwable)
+        {
+            throwable.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        evaluator.destroy();
     }
 
 }

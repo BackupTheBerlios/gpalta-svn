@@ -42,6 +42,13 @@ public class MultiOutput extends Output
         this.dim = dim;
     }
 
+    public Object clone() throws CloneNotSupportedException
+    {
+        MultiOutput output = (MultiOutput) super.clone();
+        output.data = Common.copy(data);
+        return output;
+    }
+
     /**
      * Get an array representing outputs for each sample
      *

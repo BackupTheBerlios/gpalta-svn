@@ -31,11 +31,16 @@ import java.io.*;
  *
  * @author neven
  */
-public class FitnessClassic implements Fitness
+public class FitnessClassic implements Fitness, Serializable, Cloneable
 {
 
     private SingleOutput desiredOutputs;
     private double[] weights;
+
+    public Object clone() throws CloneNotSupportedException
+    {
+        return super.clone();
+    }
 
     public void init(Config config, ProblemData problemData, String fileName)
     {
@@ -75,14 +80,22 @@ public class FitnessClassic implements Fitness
         this.weights = weights;
     }
 
-    public void calculate(Output outputs, Individual ind, ProblemData problemData)
+    public double[] calculate(Output outputs, Individual ind, ProblemData problemData)
     {
         double error = 0;
         for (int i = 0; i < problemData.nSamples; i++)
         {
             error += Math.pow(((SingleOutput)outputs).x[i] - desiredOutputs.x[i], 2);
         }
-        ind.setFitness(1 / (1 + Math.sqrt(error)));
+        double fit = 1 / (1 + Math.sqrt(error));
+        return new double[]{fit};
+    }
+
+    public void assign(Individual ind, double[] fit)
+    {
+        ind.setFitness(fit[0]);
+        if (fit.length == 2)
+            ind.hits = fit[1];
     }
 
     public Output getProcessedOutput(Output raw, ProblemData problemData)

@@ -44,6 +44,9 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
     private int currentDepth;
     private int maxDepthFromHere;
     private int nSubNodes;
+    private NodeSet type;
+
+    private NodeSet[] kidsType;
 
     public NodeSet getType()
     {
@@ -55,9 +58,7 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
         this.type = type;
     }
 
-    private NodeSet type;
 
-    private NodeSet[] kidsType;
 
     /**
      * Initialize the Node. Override this if the node has a state that needs to be specified when
@@ -173,7 +174,7 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
 
     public Object clone() throws CloneNotSupportedException
     {
-        return (Node) super.clone();
+        return super.clone();
     }
 
     public Node deepClone(int currentDepth)
