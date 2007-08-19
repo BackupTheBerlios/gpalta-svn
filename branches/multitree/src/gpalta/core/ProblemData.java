@@ -41,10 +41,11 @@ public class ProblemData implements Serializable
     private double[][] data;
     private double[][] dataT;
     private double[][] ranges;
+    private double[][] angles;
+    private double[] norms;
     public int nSamples;
     private int currentSample;
     public int nVars;
-    private double e1;
 
     /**
      * Get the current value for a variable
@@ -126,12 +127,20 @@ public class ProblemData implements Serializable
             }
             mean[wVar] /= nSamples;
         }
-        e1 = 0;
+        angles = new double[nVars-1][nSamples];
+        for (int wAngle=1; wAngle<nVars; wAngle++)
+        {
+            for (int wSample=0; wSample<nSamples; wSample++)
+            {
+                angles[wAngle-1][wSample] = angle(dataT[wSample], wAngle);
+            }
+        }
+        norms = new double[nSamples];
         for (int wSample=0; wSample<nSamples; wSample++)
         {
-            e1 += Common.dist2(mean, dataT[wSample]);
+            double[] x = dataT[wSample];
+            norms[wSample] = Math.sqrt(Common.dotProduct(x, x));
         }
-
     }
 
     /**
@@ -198,9 +207,38 @@ public class ProblemData implements Serializable
         return dataT[wSample];
     }
 
-    public double getE1()
+    public double getAngleCurrentSample(int wAngle)
     {
-        return e1;
+        return angles[wAngle-1][currentSample];
+    }
+
+    public double[] getAngles(int wAngle)
+    {
+        return angles[wAngle-1];
+    }
+
+    private double angle(double[] x, int wAngle)
+    {
+        if (x[wAngle-1]==0)
+            return Math.PI/2;
+        if (wAngle == nVars-1)
+            return Math.atan(x[wAngle]/x[wAngle-1]);
+        double num = 0;
+        for (int i=1; i<=nVars-wAngle; i++)
+        {
+            num += x[nVars-i]*x[nVars-i];
+        }
+        return Math.atan(Math.sqrt(num)/x[wAngle-1]);
+    }
+
+    public double getNormCurrentSample()
+    {
+        return norms[currentSample];
+    }
+
+    public double[] getNorms()
+    {
+        return norms;
     }
 
 }

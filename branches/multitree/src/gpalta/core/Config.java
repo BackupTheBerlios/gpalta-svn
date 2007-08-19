@@ -88,7 +88,10 @@ public class Config implements Serializable
 
     //---------------- Fitness -----------------------
     public String fitness = "gpalta.core.FitnessClassic";
+    public boolean useNativeFitness = false;
+    public String nativeFitnessLib;
     public boolean useHits = false;
+    public boolean normalizeOutputs = true;
 
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;

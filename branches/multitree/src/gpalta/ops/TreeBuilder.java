@@ -42,7 +42,6 @@ public class TreeBuilder
 
     private NodeBuilder nodeBuilderGrow;
     private NodeBuilder nodeBuilderFull;
-    private int[] nTreesEachDepth;
     private Config config;
     private NodeFactory nodeFactory;
 
@@ -64,7 +63,7 @@ public class TreeBuilder
      */
     public <T extends Tree> void build(List<T> treeList)
     {
-        nTreesEachDepth = new int[config.initialMaxDepth - config.initialMinDepth + 1];
+        int[] nTreesEachDepth = new int[config.initialMaxDepth - config.initialMinDepth + 1];
         /* nTreesEachDepth will contain the number of trees created for each
          * depth from initialMinDepth to maxDepth
          * ie:

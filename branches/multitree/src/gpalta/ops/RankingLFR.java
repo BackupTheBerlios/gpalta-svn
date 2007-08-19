@@ -53,11 +53,10 @@ public class RankingLFR extends Ranking
     /*
     *Ranks population
     */
-    public void rankPop(List<? extends Individual> population, Comparator comp)
+    public <T extends Individual> List<T> rankPop(List<T> population, Comparator<Individual> comp)
     {
-        int j;
         double m;
-        this.init(population, comp);
+        List<T> popList =this.init(population, comp);
         //m=m/(-(popSize-1) );
         m = (max - min) / (popSize - 1);
 
@@ -72,6 +71,7 @@ public class RankingLFR extends Ranking
             totalFitness += adjustedFitness[i];
             acumulatedFit[i] = totalFitness;
         }
+        return popList;
 
     }
 

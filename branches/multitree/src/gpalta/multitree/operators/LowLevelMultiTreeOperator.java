@@ -6,6 +6,8 @@ import gpalta.multitree.MultiTreeIndividual;
 import gpalta.multitree.MultiOutput;
 import gpalta.clustering.InformationTheory;
 
+import java.util.*;
+
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 21-03-2007 Time: 03:45:37 PM To change this template
  * use File | Settings | File Templates.
@@ -52,6 +54,82 @@ public abstract class LowLevelMultiTreeOperator
             }
         }
         return max;
+    }
+
+    public int selectWorstTreeRoulette(MultiTreeIndividual ind)
+    {
+        int n = ind.nTrees();
+        double[] unFit = new double[n];
+        for (int i = 0; i < n; i++)
+        {
+            unFit[i] = 1/(1+ind.getTree(i).readFitness());
+        }
+        return selectRoulette(unFit);
+    }
+
+    public int selectBestTreeRoulette(MultiTreeIndividual ind)
+    {
+        int n = ind.nTrees();
+        double[] fit = new double[n];
+        for (int i = 0; i < n; i++)
+        {
+            fit[i] = ind.getTree(i).readFitness();
+        }
+        return selectRoulette(fit);
+    }
+
+    public int selectMostSimilarTreeRoulette(Tree tree1, MultiTreeIndividual multiTree2, TempVectorFactory tempVectorFactory, ProblemData problemData)
+    {
+        SingleOutput out1 = new SingleOutput(problemData.nSamples);
+        tree1.evalVect(out1, tempVectorFactory, problemData);
+        Common.sigmoid(out1.x);
+
+        int dim2 = multiTree2.nTrees();
+        MultiOutput out2 = new MultiOutput(dim2, problemData.nSamples);
+        multiTree2.evalVect(out2, tempVectorFactory, problemData);
+        double[] invDiff = new double[dim2];
+        for (int i=0; i<dim2; i++)
+        {
+            invDiff[i] = 1/(1+diffBetweenOutputs(out1.x, out2.getArray(i)));
+        }
+        return selectRoulette(invDiff);
+    }
+
+    public int selectRoulette(double[] scores)
+    {
+        int n = scores.length;
+        List<IndexedObject<Double>> indexedScores = new ArrayList<IndexedObject<Double>>(n);
+        for (int i=0; i<n; i++)
+        {
+            indexedScores.add(new IndexedObject<Double>(i, scores[i]));
+        }
+        Collections.sort(indexedScores, new Comparator<IndexedObject<Double>>()
+        {
+            public int compare(IndexedObject<Double> o1, IndexedObject<Double> o2)
+            {
+                return o1.object.compareTo(o2.object);
+            }
+        });
+        double[] acScore = new double[n];
+        double sum = 0;
+        for (int i = 0; i < n; i++)
+        {
+            sum += indexedScores.get(i).object;
+            acScore[i] = sum;
+        }
+        for (int i = 0; i < n; i++)
+        {
+            acScore[i] /= sum;
+        }
+        double r = Common.globalRandom.nextDouble();
+        for (int i = 0; i < n; i++)
+        {
+            if (r < acScore[i])
+            {
+                return indexedScores.get(i).index;
+            }
+        }
+        return indexedScores.get(n-1).index;
     }
 
     public int selectMostSimilarTree(Tree tree1, MultiTreeIndividual multiTree2, TempVectorFactory tempVectorFactory, ProblemData problemData)
@@ -115,3 +193,23 @@ public abstract class LowLevelMultiTreeOperator
     }
 
 }
+
+class IndexedObject<T>
+{
+    public final T object;
+    public final int index;
+    public IndexedObject(int index, T object)
+    {
+        this.object = object;
+        this.index = index;
+    }
+}
+
+class IndexedIndFitnessComparator implements Comparator<IndexedObject<? extends Individual>>
+{
+    public int compare(IndexedObject<? extends Individual> o1, IndexedObject<? extends Individual> o2)
+    {
+        return new IndFitnessComparator().compare(o1.object, o2.object);
+    }
+}
+

@@ -47,9 +47,9 @@ public class RankingRaw extends Ranking
     /*
     *Obtain number expentances and sort population
     */
-    public void rankPop(List<? extends Individual> population, Comparator comp)
+    public <T extends Individual> List<T> rankPop(List<T> population, Comparator<Individual> comp)
     {
-        this.init(population, comp);
+        List<T> popList = this.init(population, comp);
 
         /*
         *Calculate acumulated fitness and acumulated probabilities
@@ -58,12 +58,13 @@ public class RankingRaw extends Ranking
         totalFitness = 0;
         for (int i = 0; i < popSize; i++)
         {
-            adjustedFitness[i] = popArray[i].readFitness() - min;
+            adjustedFitness[i] = popList.get(i).readFitness() - min;
             totalFitness += adjustedFitness[i];
             acumulatedFit[i] = totalFitness;
         }
-
+        return popList;
 
     }
+
 
 }

@@ -6,7 +6,7 @@ import gpalta.core.*;
  * Created by IntelliJ IDEA. User: nvn Date: 26-04-2007 Time: 02:22:15 PM To change this template
  * use File | Settings | File Templates.
  */
-public class EvalThread extends Thread
+class EvalThread extends Thread
 {
     private Fitness fitness;
     private ProblemData problemData;

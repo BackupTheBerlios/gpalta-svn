@@ -13,20 +13,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class MultiThreadedEvaluator
 {
     private int nThreads;
-    private Fitness[] fitness;
-    private TempVectorFactory[] tempVectorFactory;
     private Queue<EvalThread> availableThreads;
 
     public MultiThreadedEvaluator(Config config, Fitness f, ProblemData problemData)
     {
         nThreads = config.nEvalThreads;
-        this.fitness = new Fitness[nThreads];
-        tempVectorFactory = new TempVectorFactory[nThreads];
+        Fitness[] fitness = new Fitness[nThreads];
+        TempVectorFactory[] tempVectorFactory = new TempVectorFactory[nThreads];
         for (int i=0; i< nThreads; i++)
         {
             try
             {
-                this.fitness[i] = (Fitness)f.clone();
+                fitness[i] = (Fitness)f.clone();
+                fitness[i].setCallingThread(i);
             }
             catch (CloneNotSupportedException e)
             {
@@ -49,7 +48,7 @@ public class MultiThreadedEvaluator
         notifyAll();
     }
 
-    public synchronized <T extends Individual> void eval(List<T> population, Output tmpOutput)
+    public synchronized void eval(List<? extends Individual> population, Output tmpOutput)
     {
         int nDone = 0;
         EvalThread evalThread;

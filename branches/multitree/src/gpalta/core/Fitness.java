@@ -84,4 +84,6 @@ public interface Fitness
      */
     Object clone() throws CloneNotSupportedException;
 
+    void setCallingThread(int wThread);
+
 }

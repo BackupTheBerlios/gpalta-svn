@@ -38,46 +38,51 @@ public abstract class Ranking
 
     int popSize;
     boolean filled;
-    private List<? extends Individual> population;
     public double[] adjustedFitness;
-    public Individual [] popArray;
     double min;
     double max;
     public double totalFitness;
     public double acumulatedFit[];
 
-    public abstract void rankPop(List<? extends Individual> population, Comparator comp);
+    public abstract <T extends Individual> List<T> rankPop(List<T> population, Comparator<Individual> comp);
 
-    <T extends Individual> void init(List<T> population, Comparator comp)
+    public <T extends Individual> List<T> init(List<T> population, Comparator<Individual> comp)
     {
-        this.population = population;
-        popArray = this.indSort(population, comp);
+        List<T> popList = this.indSort(population, comp);
         this.popSize = population.size();
-        min = popArray[0].readFitness();
-        max = popArray[popSize - 1].readFitness();
+        min = popList.get(0).readFitness();
+        max = popList.get(popSize - 1).readFitness();
         adjustedFitness = new double [popSize];
         acumulatedFit = new double [popSize];
         filled = true;
+        return popList;
     }
 
-    private <T extends Individual> T[] indSort(List<T> population, Comparator comp)
+    private <T extends Individual> List<T> indSort(List<T> population, Comparator<Individual> comp)
     {
-        Individual [] popArray = new Individual[population.size()];
+        List<T> list = new ArrayList<T>(population.size());
+        list.addAll(population);
+        for (Individual ind : list)
+            ind.setOnPop(true);
 
-        /*
-        * Move population to an Array structure for sorting.
-        */
-        for (int i = 0; i < population.size(); i++)
-        {
-            popArray[i] = population.get(i);
-            population.get(i).setOnPop(false);
-        }
-
-        /*
-        *Sort
-        */
-        Arrays.sort(popArray, comp);
-        return (T[]) popArray;
+        Collections.sort(list, comp);
+        return list;
+//        Individual [] popArray = new Individual[population.size()];
+//
+//        /*
+//        * Move population to an Array structure for sorting.
+//        */
+//        for (int i = 0; i < population.size(); i++)
+//        {
+//            popArray[i] = population.get(i);
+//            population.get(i).setOnPop(false);
+//        }
+//
+//        /*
+//        *Sort
+//        */
+//        Arrays.sort(popArray, comp);
+//        return (T[]) popArray;
     }
 
 }

@@ -4,15 +4,15 @@ import gpalta.ops.TreeOperator;
 import gpalta.multitree.MultiTreeIndividual;
 import gpalta.core.TempVectorFactory;
 import gpalta.core.ProblemData;
-import gpalta.core.Tree;
+import gpalta.core.Common;
 
 /**
  * Created by IntelliJ IDEA. User: nvn Date: 21-03-2007 Time: 04:21:00 PM To change this template
  * use File | Settings | File Templates.
  */
-public class ReplaceWorstWithMostSimilarIfBetterMutInf extends LowLevelMultiTreeOperator
+public class CrossWorstWithBest extends LowLevelMultiTreeOperator
 {
-    public ReplaceWorstWithMostSimilarIfBetterMutInf(TreeOperator op)
+    public CrossWorstWithBest(TreeOperator op)
     {
         super(op);
     }
@@ -20,15 +20,8 @@ public class ReplaceWorstWithMostSimilarIfBetterMutInf extends LowLevelMultiTree
     public boolean operate(MultiTreeIndividual[] individuals, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         int t1 = selectWorstTreeRoulette(individuals[0]);
-        int t2 = selectMostSimilarTreeMutInf(individuals[0].getTree(t1), individuals[1], tempVectorFactory, problemData);
-
-
-        if (individuals[1].getTree(t2).readFitness() > individuals[0].getTree(t1).readFitness())
-        {
-            individuals[0].setTree(t1, (Tree)individuals[1].getTree(t2).deepClone());
-            return true;
-        }
-        return false;
+        int t2 = selectBestTreeRoulette(individuals[0]);
+        return treeOp.crossOver(individuals[0].getTree(t1), individuals[1].getTree(t2));
     }
 
     public int nIndividuals()

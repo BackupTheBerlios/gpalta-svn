@@ -21,7 +21,6 @@ public class DistributedEvalServer implements DistributedEvalProtocol
     private Output tmpOutput;
     private TempVectorFactory tempVectorFactory;
     private boolean first;
-    private double[][] fitResult;
 
     public DistributedEvalServer(Config config)
     {
@@ -64,7 +63,7 @@ public class DistributedEvalServer implements DistributedEvalProtocol
             }
             System.out.println("Done");
             System.out.print("Evaluating...");
-            fitResult = new double[nIndividuals][];
+            double[][] fitResult = new double[nIndividuals][];
             for (int i = 0; i < ind.length; i++)
             {
                 ind[i].evalVect(tmpOutput, tempVectorFactory, problemData);

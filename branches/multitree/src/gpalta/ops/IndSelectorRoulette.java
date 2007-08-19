@@ -33,7 +33,6 @@ import java.util.*;
  */
 public class IndSelectorRoulette extends IndSelector
 {
-    private Config config;
     private Comparator<Individual> comp;
     private Ranking theRanking;
 
@@ -42,7 +41,6 @@ public class IndSelectorRoulette extends IndSelector
      */
     public IndSelectorRoulette(Config config, Ranking theRanking)
     {
-        this.config = config;
         this.comp = new IndFitnessComparator();
         this.theRanking = theRanking;
     }
@@ -58,7 +56,7 @@ public class IndSelectorRoulette extends IndSelector
 
 
         List<T> out = new ArrayList<T>();
-        theRanking.rankPop(population, comp);
+        List<T> popList = theRanking.rankPop(population, comp);
 
         /*
         * Roulette iterations
@@ -75,7 +73,7 @@ public class IndSelectorRoulette extends IndSelector
                     break;
                 }
             }
-            temp1 = ((T) theRanking.popArray[k]);
+            temp1 = popList.get(k);
             if (!temp1.isOnPop())
             {
                 out.add(temp1);

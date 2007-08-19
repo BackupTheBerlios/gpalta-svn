@@ -33,7 +33,7 @@ import gpalta.core.*;
  */
 public class RealVar extends Node
 {
-    public int whichVar;
+    private int whichVar;
 
     /**
      * Creates a new instance of RealVar

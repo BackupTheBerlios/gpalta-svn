@@ -36,10 +36,16 @@ public class FitnessClassic implements Fitness, Serializable, Cloneable
 
     private SingleOutput desiredOutputs;
     private double[] weights;
+    private int callingThread;
 
     public Object clone() throws CloneNotSupportedException
     {
         return super.clone();
+    }
+
+    public void setCallingThread(int wThread)
+    {
+        callingThread = wThread;
     }
 
     public void init(Config config, ProblemData problemData, String fileName)

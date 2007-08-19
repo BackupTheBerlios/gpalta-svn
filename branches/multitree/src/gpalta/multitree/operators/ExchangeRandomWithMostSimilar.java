@@ -21,7 +21,7 @@ public class ExchangeRandomWithMostSimilar extends LowLevelMultiTreeOperator
     public boolean operate(MultiTreeIndividual[] individuals, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         int t1 = Common.globalRandom.nextInt(individuals[0].nTrees());
-        int t2 = selectMostSimilarTree(individuals[0].getTree(t1), individuals[1], tempVectorFactory, problemData);
+        int t2 = selectMostSimilarTreeRoulette(individuals[0].getTree(t1), individuals[1], tempVectorFactory, problemData);
         Tree tree1 = individuals[0].getTree(t1);
         Tree tree2 = individuals[1].getTree(t2);
         individuals[0].setTree(t1, tree2);

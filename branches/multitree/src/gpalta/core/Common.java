@@ -139,6 +139,17 @@ public abstract class Common
         return mT;
     }
 
+    public static void transpose(double[][] mT, double[][] m)
+    {
+        int nRows = m.length;
+        int nCols = m[0].length;
+
+        for (int row = 0; row < nRows; row++)
+            for (int col = 0; col < nCols; col++)
+                mT[col][row] = m[row][col];
+
+    }
+
     /**
      * Sum of the values of a vector
      * @param x The vector

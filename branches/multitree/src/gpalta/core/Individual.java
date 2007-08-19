@@ -52,8 +52,7 @@ public abstract class Individual implements Cloneable, Serializable
      * properly, in order to insure that two instances are not modified unintentionally
      */
     public abstract Individual deepClone();
-
-
+    
     /**
      * Read this individual's fitness, without recalculating it
      */

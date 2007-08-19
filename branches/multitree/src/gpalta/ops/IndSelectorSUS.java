@@ -33,14 +33,12 @@ import java.util.*;
  */
 public class IndSelectorSUS extends IndSelector
 {
-    private Config config;
     private Comparator<Individual> comp;
     private double pointerDistance;
     private Ranking theRanking;
 
     public IndSelectorSUS(Config config, Ranking theRanking)
     {
-        this.config = config;
         this.comp = new IndFitnessComparator();
         this.pointerDistance = config.SUSPointerDistance;
         this.theRanking = theRanking;
@@ -56,7 +54,7 @@ public class IndSelectorSUS extends IndSelector
         List<T> out = new ArrayList<T>();
 
 
-        theRanking.rankPop(population, comp);
+        List<T> popList = theRanking.rankPop(population, comp);
 
         /*
         *SUS iterations
@@ -73,7 +71,7 @@ public class IndSelectorSUS extends IndSelector
                     break;
                 }
             }
-            temp1 = (T) theRanking.popArray[k];
+            temp1 = popList.get(k);
             if (!temp1.isOnPop())
             {
                 out.add(temp1);

@@ -19,7 +19,7 @@ public class MutateWorstTree extends LowLevelMultiTreeOperator
 
     public boolean operate(MultiTreeIndividual[] individuals, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        int t1 = selectWorstTree(individuals[0]);
+        int t1 = selectWorstTreeRoulette(individuals[0]);
         treeOp.mutateBuild(individuals[0].getTree(t1));
         return true;
     }

@@ -107,7 +107,7 @@ public class MultiTreeOperator
     }
 
 
-    public <M extends MultiTreeIndividual> LowLevelMultiTreeOperator[] operate(List<M> population, TempVectorFactory tempVectorFactory, ProblemData problemData)
+    public LowLevelMultiTreeOperator[] operate(List<MultiTreeIndividual> population, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         LowLevelMultiTreeOperator[] operatorsApplied = new LowLevelMultiTreeOperator[population.size()];
         double op;

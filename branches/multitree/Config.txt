@@ -55,7 +55,10 @@ rankingType = gpalta.ops.RankingRaw
 #---------------- Fitness -----------------------
 # generic or clustering
 fitness = gpalta.core.FitnessClassic
+useNativeFitness = false
+nativeFitnessLib = 
 useHits = false
+normalizeOutputs = true
 
 # stop if fitness reaches this value:
 stopFitness = 0.99

@@ -21,8 +21,8 @@ public class ReplaceWorstWithMostSimilarIfBetter extends LowLevelMultiTreeOperat
 
     public boolean operate(MultiTreeIndividual[] individuals, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        int t1 = selectWorstTree(individuals[0]);
-        int t2 = selectMostSimilarTree(individuals[0].getTree(t1), individuals[1], tempVectorFactory, problemData);
+        int t1 = selectWorstTreeRoulette(individuals[0]);
+        int t2 = selectMostSimilarTreeRoulette(individuals[0].getTree(t1), individuals[1], tempVectorFactory, problemData);
         
 
         if (individuals[1].getTree(t2).readFitness() > individuals[0].getTree(t1).readFitness())

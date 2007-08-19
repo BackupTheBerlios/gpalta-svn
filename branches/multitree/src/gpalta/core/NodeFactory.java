@@ -99,6 +99,14 @@ public class NodeFactory
                                 nodeSets[i].addTerminal((Node) co[0].newInstance(k + 1));
                             }
                         }
+                        else if (nodes[j].contains("Angle"))
+                        {
+                            for (k = 0; k < problemData.nVars-1; k++)
+                            {
+                                java.lang.reflect.Constructor[] co = cl.getConstructors();
+                                nodeSets[i].addTerminal((Node) co[0].newInstance(k + 1));
+                            }
+                        }
                         else
                         {
                             java.lang.reflect.Constructor co = cl.getConstructor();

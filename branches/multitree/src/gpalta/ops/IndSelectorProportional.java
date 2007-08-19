@@ -36,7 +36,6 @@ import java.util.*;
  */
 public class IndSelectorProportional extends IndSelector
 {
-    private Config config;
     private Comparator<Individual> comp;
     private Comparator<Individual> comp2;
     private Ranking theRanking;
@@ -46,7 +45,6 @@ public class IndSelectorProportional extends IndSelector
      */
     public IndSelectorProportional(Config config, Ranking theRanking)
     {
-        this.config = config;
         this.comp = new IndFitnessComparator();
         this.comp2 = new IndFitnessComparatorDec();
         this.theRanking = theRanking;
@@ -65,13 +63,13 @@ public class IndSelectorProportional extends IndSelector
         double fitness;
         //double totalFitness;
         int treeCounter, treeCopies, k;
-        T temp1, temp2;
+        T temp1;
 
 
         List<T> out = new ArrayList<T>();
 
 
-        theRanking.rankPop(population, comp);
+        List<T> popList = theRanking.rankPop(population, comp);
 
 
         treeCounter = 0;
@@ -79,7 +77,7 @@ public class IndSelectorProportional extends IndSelector
         {
             fitness = theRanking.adjustedFitness[population.size() - 1 - i];
 
-            temp1 = ((T) theRanking.popArray[population.size() - 1 - i]);
+            temp1 = popList.get(population.size() - 1 - i);
             treeCopies = (int) Math.floor(fitness / theRanking.totalFitness * population.size());
             for (int j = 1; j <= treeCopies; j++)
             {
@@ -102,10 +100,10 @@ public class IndSelectorProportional extends IndSelector
         /*
         *Select best fitted for unsigned population slots
         */
-        Arrays.sort(theRanking.popArray, comp2);
+        Collections.sort(popList, comp2);
         while (treeCounter < population.size())
         {
-            temp1 = (T) theRanking.popArray[population.size() - 1 - k];
+            temp1 = popList.get(population.size() - 1 - k);
             if (!temp1.isOnPop())
             {
                 out.add(temp1);

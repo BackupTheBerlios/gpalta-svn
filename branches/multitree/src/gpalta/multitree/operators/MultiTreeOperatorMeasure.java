@@ -16,14 +16,14 @@ public class MultiTreeOperatorMeasure extends MultiTreeOperator
     }
 
 
-    public <M extends MultiTreeIndividual> LowLevelMultiTreeOperator[] operate(List<M> population, TempVectorFactory tempVectorFactory, ProblemData problemData)
+    public LowLevelMultiTreeOperator[] operate(List<MultiTreeIndividual> population, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
         LowLevelMultiTreeOperator[] operatorsApplied = new LowLevelMultiTreeOperator[population.size()];
 
         int maxInd = 0;
         for (LowLevelMultiTreeOperator operator : lowLevelOps)
             maxInd = Math.max(maxInd, operator.nIndividuals());
-        List<MultiTreeIndividual> firstIndividuals = new ArrayList();
+        List<MultiTreeIndividual> firstIndividuals = new ArrayList<MultiTreeIndividual>();
         for (int i = 0; i < maxInd; i++)
         {
             firstIndividuals.add(population.get(i));
@@ -46,7 +46,7 @@ public class MultiTreeOperatorMeasure extends MultiTreeOperator
             }
             for (int i = 0; i < operator.nIndividuals(); i++)
             {
-                population.set(nDone + i, (M) inds[i]);
+                population.set(nDone + i, inds[i]);
                 operatorsApplied[nDone + i] = operator;
             }
             nDone += operator.nIndividuals();

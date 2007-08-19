@@ -36,12 +36,10 @@ public class NodeSelector
 
     private int currentNodeSearched;
     private Config config;
-    private NodeFactory nodeFactory;
 
     public NodeSelector(Config config, NodeFactory nodeFactory)
     {
         this.config = config;
-        this.nodeFactory = nodeFactory;
     }
 
     public Node pickRandomNode(Tree tree)

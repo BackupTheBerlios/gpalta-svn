@@ -486,7 +486,7 @@ public class GPaltaGUI extends javax.swing.JFrame
             traceMean = new Trace2DBijective();
             traceMean.setName("Mean fitness");
             traceMean.setColor(Color.BLUE);
-            plot.getAxisY().setRangePolicy(new RangePolicyFixedViewport(new Range(0 ,1)));
+            plot.getAxisY().setRangePolicy(new RangePolicyFixedViewport());
             plot.getAxisY().setRange(new Range(0, 1));
             plot.getAxisY().setPaintGrid(true);
             plot.getAxisY().setMinorTickSpacing(.1);

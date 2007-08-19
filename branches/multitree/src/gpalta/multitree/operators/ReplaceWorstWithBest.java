@@ -20,8 +20,8 @@ public class ReplaceWorstWithBest extends LowLevelMultiTreeOperator
 
     public boolean operate(MultiTreeIndividual[] individuals, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        int t1 = selectWorstTree(individuals[0]);
-        int t2 = selectBestTree(individuals[1]);
+        int t1 = selectWorstTreeRoulette(individuals[0]);
+        int t2 = selectBestTreeRoulette(individuals[1]);
 
         individuals[0].setTree(t1, (Tree)individuals[1].getTree(t2).deepClone());
         return true;
