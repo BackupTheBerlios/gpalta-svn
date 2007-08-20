@@ -246,7 +246,12 @@ public class NodeFactory
         Node outNode = null;
         if (name.startsWith("X"))
         {
-            outNode = new RealVar(Integer.parseInt(name.substring(1)));
+            outNode = new RealVar(Integer.parseInt(name.substring("X".length(), name.length())));
+        }
+        else if (name.startsWith("angle"))
+        {
+            int end = name.lastIndexOf("angle");
+            outNode = new Angle(Integer.parseInt(name.substring("angle".length(), name.length())));
         }
         else if (name.substring(0, 1).matches("\\d"))
         {

@@ -219,7 +219,7 @@ public abstract class Node implements NodeParent, Cloneable, Serializable
             //error
         }
 
-        expression = expression.substring(matcher.end() + 1).trim();
+        expression = expression.substring(matcher.end()).trim();
 
         int nKidsDone = 0;
         while (expression.length() != 0)

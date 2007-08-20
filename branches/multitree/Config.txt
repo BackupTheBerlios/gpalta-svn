@@ -58,15 +58,15 @@ fitness = gpalta.core.FitnessClassic
 useNativeFitness = false
 nativeFitnessLib = 
 useHits = false
-normalizeOutputs = true
 
 # stop if fitness reaches this value:
 stopFitness = 0.99
 
-# For the clustering fitness:
+# Only for the clustering fitness:
 nClasses = 2
 sigma = 0
 subSamplingRatio = 1
+normalizeOutputs = true
 
 #------------ General behavior ------------
 # Use vectorial evaluation
@@ -96,3 +96,8 @@ rememberLastEval = true
 # These two for non interactive mode
 nonInteractive = false
 nDaysToRun = 1
+
+# Distributed evaluation (experimental)
+distributedPort = 12345
+distributedServers = localhost
+

@@ -91,15 +91,15 @@ public class Config implements Serializable
     public boolean useNativeFitness = false;
     public String nativeFitnessLib;
     public boolean useHits = false;
-    public boolean normalizeOutputs = true;
 
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;
 
-    //For the clustering fitness:
+    //Only for the clustering fitness:
     public int nClasses = 2;
     public double sigma = 0;
     public double subSamplingRatio = 1;
+    public boolean normalizeOutputs = true;
 
     //------------ General behavior ------------
     /* Use vectorial evaluation
@@ -130,6 +130,7 @@ public class Config implements Serializable
     public boolean nonInteractive = false;
     public int nDaysToRun = 1;
 
+    /* Distributed evaluation (experimental) */
     public int distributedPort = 12345;
     public String distributedServers = "localhost";
 
