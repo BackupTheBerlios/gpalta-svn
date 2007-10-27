@@ -63,7 +63,7 @@ public interface Fitness
      * @param ind         The Individual.
      * @param problemData The problem's data (might be needed to calculate the fitness)
      */
-    double[] calculate(Output outputs, Individual ind, ProblemData problemData);
+    double[] calculate(Output outputs, Individual ind, ProblemData problemData, int[] wSamples);
 
     void assign(Individual ind, double[] fit);
 

@@ -250,7 +250,6 @@ public class NodeFactory
         }
         else if (name.startsWith("angle"))
         {
-            int end = name.lastIndexOf("angle");
             outNode = new Angle(Integer.parseInt(name.substring("angle".length(), name.length())));
         }
         else if (name.substring(0, 1).matches("\\d"))

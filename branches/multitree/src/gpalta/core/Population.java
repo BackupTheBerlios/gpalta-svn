@@ -43,7 +43,7 @@ public interface Population
      * @param tempVectorFactory
      * @param problemData
      */
-    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData);
+    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData, int[] wSamples);
 
     /**
      * Get the output directly from the Individual, without further processing

@@ -21,6 +21,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
     private int[][] close;
     private boolean first;
     private int callingThread;
+    private int[] allSamples;
 
     private boolean useNative;
     private static boolean isNativeLibLoaded;
@@ -151,8 +152,12 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
             }
         }
 
-        double limit = InformationTheory.paretoRadius(pdist, false);
-        //double limit = Double.MAX_VALUE;
+        double limit;
+        if (config.useParetoRadius)
+                limit = InformationTheory.paretoRadius(pdist, false);
+        else
+                limit = Double.MAX_VALUE;
+        
         close = new int[problemData.nSamples][];
 
         for (int i = 0; i < problemData.nSamples; i++)
@@ -182,12 +187,17 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
             }
         }
         first = true;
+        allSamples = new int[problemData.nSamples];
+        for (int i = 0; i < allSamples.length; i++)
+        {
+            allSamples[i] = i;
+        }
     }
 
-    public native double[] calculateNative(int wThread, double[][] outputs, int nSamples, int nClusters, int[] samples, int nSubSamples, int useHits, int normalizeOutputs);
+    public native double[] calculateNative(int wThread, double[][] outputs, int nSamples, int nClusters, int[] samples, int nSubSamples, int useHits, int normalizeOutputs, int discretize);
     public native void initNative(int wThread, double[][] kernel, int nSamples, int nClusters, int[][] close, int[] nClose);
     
-    public double[] calculateNativeInterface(Output outputs, ProblemData problemData)
+    public double[] calculateNativeInterface(Output outputs, ProblemData problemData, int[] wSamples)
     {
         int nClusters = outputs.getDim();
         if (first)
@@ -206,23 +216,26 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
         {
             out[wCluster] = ((MultiOutput)outputs).getArray(wCluster);
         }
-        int[] samples = Common.randPerm(problemData.nSamples);
-        int nSubSamples = (int)(config.subSamplingRatio * problemData.nSamples);
+
+        if (wSamples == null)
+        {
+            wSamples = allSamples;
+        }
+        int nSubSamples = wSamples.length;
         int useHits = config.useHits? 1:0;
         int normalizeOutputs = config.normalizeOutputs ? 1:0;
+        int discretize = config.discretize ? 1:0;
 
-        return calculateNative(callingThread, out, problemData.nSamples, nClusters, samples, nSubSamples, useHits, normalizeOutputs);
+        return calculateNative(callingThread, out, problemData.nSamples, nClusters, wSamples, nSubSamples, useHits, normalizeOutputs, discretize);
     }
 
-
-    public double[] calculate(Output outputs, Individual ind, ProblemData problemData)
+    public double[] calculate(Output outputs, Individual ind, ProblemData problemData, int[] wSamples)
     {
         if (useNative)
         {
-            double[] out = calculateNativeInterface(outputs, problemData);
-            return out;
+            return calculateNativeInterface(outputs, problemData, wSamples);
         }
-        
+
         double[] probCluster;
         int[] closeii;
         double[] kernelii;
@@ -233,16 +246,17 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
         int nClusters = outputs.getDim();
         double[] cInfo = new double[nClusters];
 
-        int[] samples = Common.randPerm(problemData.nSamples);
-
-        int nSubSamples = (int)(config.subSamplingRatio * problemData.nSamples);
-
+        if (wSamples == null)
+        {
+            wSamples = allSamples;
+        }
+        int nSubSamples = wSamples.length;
         for (int wCluster=0; wCluster<nClusters; wCluster++)
         {
             probCluster = prob[wCluster];
             for (int i=0; i<nSubSamples; i++)
             {
-                int ii = samples[i];
+                int ii = wSamples[i];
                 closeii = close[ii];
                 kernelii = kernel[ii];
                 for (int j = 0; j < closeii.length; j++)
@@ -262,7 +276,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
 
         for (int i=0; i<nSubSamples; i++)
         {
-            int ii = samples[i];
+            int ii = wSamples[i];
             closeii = close[ii];
             kernelii = kernel[ii];
             for (int j = 0; j < closeii.length; j++)
@@ -279,8 +293,8 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
         info /= 2;
 
         double[] fit = new double[nClusters + 2];
-        fit[0] = 1/(1+info);
-        
+        fit[0] = -info;
+
         if (config.useHits)
         {
             fit[1] = (double)hits(winner, target, nClusters)/problemData.nSamples;
@@ -291,7 +305,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
             int[] nPerCluster = new int[nClusters];
             for (int i=0; i<nSubSamples; i++)
             {
-                int ii = samples[i];
+                int ii = wSamples[i];
                 nPerCluster[winner[ii]]++;
             }
             for (int wCluster=0; wCluster<nClusters; wCluster++)
@@ -299,7 +313,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
                 cInfo[wCluster] = 0;
                 for (int i=0; i<nSubSamples; i++)
                 {
-                    int ii = samples[i];
+                    int ii = wSamples[i];
                     closeii = close[ii];
                     kernelii = kernel[ii];
                     if (winner[ii] == wCluster)
@@ -324,7 +338,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
                 probCluster = prob[wCluster];
                 for (int i=0; i<nSubSamples; i++)
                 {
-                    int ii = samples[i];
+                    int ii = wSamples[i];
                     closeii = close[ii];
                     for (int j = 0; j < closeii.length; j++)
                     {
@@ -336,6 +350,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
                 //cInfo[wCluster] /= Math.pow(Common.sum(prob[wCluster]), 2);
             }
         }
+
         System.arraycopy(cInfo, 0, fit, 2, nClusters);
         return fit;
     }
@@ -368,10 +383,9 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
                 double max = prob[0][wSample];
                 for (int wCluster = 1; wCluster <nClusters; wCluster++)
                 {
-                    probCluster = prob[wCluster];
-                    if (probCluster[wSample] > max)
+                    if (prob[wCluster][wSample] > max)
                     {
-                        max = probCluster[wSample];
+                        max = prob[wCluster][wSample];
                         winner[wSample] = wCluster;
                     }
                 }
@@ -380,30 +394,13 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
 
         if (config.normalizeOutputs)
         {
-            /*
-            for (int wSample=0; wSample< problemData.nSamples; wSample++)
-            {
-                double mean = 0;
-                for (int wCluster = 0; wCluster < nClusters; wCluster++)
-                {
-                    mean += prob[wCluster][wSample];
-                }
-                for (int wCluster = 0; wCluster < nClusters; wCluster++)
-                {
-                    //prob[wCluster][wSample] = Math.exp(prob[wCluster][wSample] - mean);
-                    prob[wCluster][wSample] = Math.exp(prob[wCluster][wSample]);
-                }
-            }
-            */
-
             for (int wCluster = 0; wCluster < nClusters; wCluster++)
             {
                 Common.sigmoid(prob[wCluster]);
             }
-            
         }
-        /*
-        if (config.useHits)
+
+        if (config.useHits && config.discretize)
         {
             for (int wSample=0; wSample< problemData.nSamples; wSample++)
             {
@@ -414,7 +411,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
                 prob[winner[wSample]][wSample] = 1;
             }
         }
-        */
+
         for (int wCluster = 0; wCluster <nClusters; wCluster++)
         {
             probCluster = prob[wCluster];

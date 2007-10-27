@@ -49,49 +49,57 @@ public class MultiTreePopulation implements Population
     double[] oldFitness;
 
 
-    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
+    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData, int[] wSamples)
     {
-        evaluator.eval(multiTreeList, outputs);
-        if (operatorsApplied != null)
+        evaluator.eval(multiTreeList, outputs, wSamples);
+        /*
+        for (MultiTreeIndividual ind : multiTreeList)
         {
-            boolean evalOnSame = false;
-            if (!evalOnSame)
-            {
-                for (int i=0; i<multiTreeOp.lowLevelOps.length; i++)
-                {
-                    multiTreeOp.lowLevelOps[i].timesApplied = 0;
-                    multiTreeOp.lowLevelOps[i].timesFitnessImproved = 0;
-                }
-
-                for (int i=0; i<multiTreeList.size(); i++)
-                {
-                    //Trees at the end of the list might not get an operator applied:
-                    if (operatorsApplied[i] != null)
-                    {
-                        operatorsApplied[i].timesApplied++;
-                        if (multiTreeList.get(i).readFitness() > oldFitness[i])
-                            operatorsApplied[i].timesFitnessImproved++;
-                    }
-                }
-            }
-            else
-            {
-                int nDone = 0;
-                for (int i=0; i<multiTreeOp.lowLevelOps.length; i++)
-                {
-                    LowLevelMultiTreeOperator op = multiTreeOp.lowLevelOps[i];
-                    for (int j=0; j<op.nIndividuals(); j++)
-                    {
-                        op.timesApplied ++;
-                        if (multiTreeList.get(nDone+j).readFitness() > oldFitness[j])
-                        {
-                            op.timesFitnessImproved++;
-                        }
-                    }
-                    nDone += op.nIndividuals();
-                }
-            }
+            ind.evalVect(outputs, tempVectorFactory, problemData);
+            double[] fit = f.calculate(outputs, ind, problemData, wSamples);
+            f.assign(ind, fit);
         }
+        */
+//        if (operatorsApplied != null)
+//        {
+//            boolean evalOnSame = false;
+//            if (!evalOnSame)
+//            {
+//                for (int i=0; i<multiTreeOp.lowLevelOps.length; i++)
+//                {
+//                    multiTreeOp.lowLevelOps[i].timesApplied = 0;
+//                    multiTreeOp.lowLevelOps[i].timesFitnessImproved = 0;
+//                }
+//
+//                for (int i=0; i<multiTreeList.size(); i++)
+//                {
+//                    //Trees at the end of the list might not get an operator applied:
+//                    if (operatorsApplied[i] != null)
+//                    {
+//                        operatorsApplied[i].timesApplied++;
+//                        if (multiTreeList.get(i).readFitness() > oldFitness[i])
+//                            operatorsApplied[i].timesFitnessImproved++;
+//                    }
+//                }
+//            }
+//            else
+//            {
+//                int nDone = 0;
+//                for (int i=0; i<multiTreeOp.lowLevelOps.length; i++)
+//                {
+//                    LowLevelMultiTreeOperator op = multiTreeOp.lowLevelOps[i];
+//                    for (int j=0; j<op.nIndividuals(); j++)
+//                    {
+//                        op.timesApplied ++;
+//                        if (multiTreeList.get(nDone+j).readFitness() > oldFitness[j])
+//                        {
+//                            op.timesFitnessImproved++;
+//                        }
+//                    }
+//                    nDone += op.nIndividuals();
+//                }
+//            }
+//        }
     }
 
     private void getOutput(MultiTreeIndividual mt, MultiOutput output, TempVectorFactory tempVectorFactory, ProblemData problemData)
@@ -159,10 +167,12 @@ public class MultiTreePopulation implements Population
 
     public void evolve(TreeOperator treeOp, TempVectorFactory tempVectorFactory, ProblemData problemData)
     {
-        oldFitness = new double[multiTreeList.size()];
-        for (int i=0; i<multiTreeList.size(); i++)
-            oldFitness[i] = multiTreeList.get(i).readFitness();
-        operatorsApplied = multiTreeOp.operate(multiTreeList, tempVectorFactory, problemData);
+//        oldFitness = new double[multiTreeList.size()];
+//        for (int i=0; i<multiTreeList.size(); i++)
+//            oldFitness[i] = multiTreeList.get(i).readFitness();
+//        operatorsApplied = multiTreeOp.operate(multiTreeList, tempVectorFactory, problemData);
+//
+        multiTreeOp.operate(multiTreeList, tempVectorFactory, problemData);
     }
 
     public LowLevelMultiTreeOperator[] getOperatorStats()

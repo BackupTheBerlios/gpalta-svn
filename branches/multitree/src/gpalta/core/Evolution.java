@@ -196,7 +196,18 @@ public class Evolution
      */
     public synchronized void eval()
     {
-        population.eval(evaluator, fitness, tempVectorFactory, problemData);
+        if (config.subSamplingRatio < 1)
+        {
+            int[] allSamples = Common.randPerm(problemData.nSamples);
+            int nSubSamples = (int)(config.subSamplingRatio * problemData.nSamples);
+            int[] wSamples = new int[nSubSamples];
+            System.arraycopy(allSamples, 0, wSamples, 0, nSubSamples);
+            population.eval(evaluator, fitness, tempVectorFactory, problemData, wSamples);
+        }
+        else
+        {
+            population.eval(evaluator, fitness, tempVectorFactory, problemData, null);
+        }
         Individual bestThisGen = population.get(0);
         evoStats.avgFit = 0;
         evoStats.avgNodes = 0;
@@ -217,6 +228,21 @@ public class Evolution
         }
 
         evoStats.bestTreeChanged = false;
+
+        /* Reevaluate individual using all samples before comparing with bestSoFar */
+        if (config.subSamplingRatio < 1)
+        {
+            if (generation == 0)
+            {
+                Output out = population.getRawOutput(evoStats.bestSoFar, tempVectorFactory, problemData);
+                double[] f = fitness.calculate(out, evoStats.bestSoFar, problemData, null);
+                fitness.assign(evoStats.bestSoFar, f);
+            }
+            bestThisGen = bestThisGen.deepClone();
+            Output out = population.getRawOutput(bestThisGen, tempVectorFactory, problemData);
+            double[] f = fitness.calculate(out, bestThisGen, problemData, null);
+            fitness.assign(bestThisGen, f);
+        }
         if (bestThisGen.readFitness() > evoStats.bestSoFar.readFitness()
                 || (bestThisGen.readFitness() == evoStats.bestSoFar.readFitness() && bestThisGen.getSize() < evoStats.bestSoFar.getSize()))
         {

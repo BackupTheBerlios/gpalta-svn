@@ -58,6 +58,7 @@ fitness = gpalta.core.FitnessClassic
 useNativeFitness = false
 nativeFitnessLib = 
 useHits = false
+hitsTolerance = 0.01
 
 # stop if fitness reaches this value:
 stopFitness = 0.99
@@ -67,6 +68,8 @@ nClasses = 2
 sigma = 0
 subSamplingRatio = 1
 normalizeOutputs = true
+useParetoRadius = false
+discretize = false
 
 #------------ General behavior ------------
 # Use vectorial evaluation

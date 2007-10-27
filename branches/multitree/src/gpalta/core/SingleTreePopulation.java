@@ -42,9 +42,9 @@ public class SingleTreePopulation implements Population, Serializable
     private Config config;
     private SingleOutput outputs;
 
-    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData)
+    public void eval(MultiThreadedEvaluator evaluator, Fitness f, TempVectorFactory tempVectorFactory, ProblemData problemData, int[] wSamples)
     {
-        evaluator.eval(treeList, outputs);
+        evaluator.eval(treeList, outputs, wSamples);
     }
 
     private void getOutput(Tree t, SingleOutput o, TempVectorFactory tempVectorFactory, ProblemData problemData)

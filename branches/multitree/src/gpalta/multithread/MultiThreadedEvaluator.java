@@ -48,7 +48,7 @@ public class MultiThreadedEvaluator
         notifyAll();
     }
 
-    public synchronized void eval(List<? extends Individual> population, Output tmpOutput)
+    public synchronized void eval(List<? extends Individual> population, Output tmpOutput, int[] wSamples)
     {
         int nDone = 0;
         EvalThread evalThread;
@@ -74,7 +74,7 @@ public class MultiThreadedEvaluator
             inds = population.subList(nDone, nDone+nToDo).toArray(inds);
             try
             {
-                evalThread.eval(inds, (Output)tmpOutput.clone());
+                evalThread.eval(inds, (Output)tmpOutput.clone(), wSamples);
             }
             catch (CloneNotSupportedException e)
             {

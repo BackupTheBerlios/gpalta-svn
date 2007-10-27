@@ -91,6 +91,7 @@ public class Config implements Serializable
     public boolean useNativeFitness = false;
     public String nativeFitnessLib;
     public boolean useHits = false;
+    public double hitsTolerance = 0.01;
 
     /* stop if fitness reaches this value: */
     public double stopFitness = 0.99;
@@ -100,6 +101,8 @@ public class Config implements Serializable
     public double sigma = 0;
     public double subSamplingRatio = 1;
     public boolean normalizeOutputs = true;
+    public boolean useParetoRadius = false;
+    public boolean discretize = false;
 
     //------------ General behavior ------------
     /* Use vectorial evaluation

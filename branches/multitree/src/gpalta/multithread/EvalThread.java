@@ -13,6 +13,7 @@ class EvalThread extends Thread
     private Individual[] inds;
     private TempVectorFactory tempVectorFactory;
     private Output tmpOutput;
+    private int[] wSamples;
     private Config config;
     private boolean exit;
     private MultiThreadedEvaluator threadedEvaluator;
@@ -27,10 +28,11 @@ class EvalThread extends Thread
         exit = false;
     }
 
-    public synchronized void eval(Individual[] inds, Output tmpOutput)
+    public synchronized void eval(Individual[] inds, Output tmpOutput, int[] wSamples)
     {
         this.inds = inds;
         this.tmpOutput = tmpOutput;
+        this.wSamples = wSamples;
         notifyAll();
     }
 
@@ -46,7 +48,7 @@ class EvalThread extends Thread
                     if (!config.rememberLastEval || !inds[i].fitCalculated)
                     {
                         inds[i].evalVect(tmpOutput, tempVectorFactory, problemData);
-                        fitResult = fitness.calculate(tmpOutput, inds[i], problemData);
+                        fitResult = fitness.calculate(tmpOutput, inds[i], problemData, wSamples);
                         fitness.assign(inds[i], fitResult);
                         inds[i].fitCalculated = true;
                     }

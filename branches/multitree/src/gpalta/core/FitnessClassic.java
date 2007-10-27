@@ -37,6 +37,8 @@ public class FitnessClassic implements Fitness, Serializable, Cloneable
     private SingleOutput desiredOutputs;
     private double[] weights;
     private int callingThread;
+    private double hitsTolerance;
+    private boolean useHits;
 
     public Object clone() throws CloneNotSupportedException
     {
@@ -50,6 +52,8 @@ public class FitnessClassic implements Fitness, Serializable, Cloneable
 
     public void init(Config config, ProblemData problemData, String fileName)
     {
+        this.hitsTolerance = config.hitsTolerance;
+        useHits = config.useHits;
         try
         {
             double[][] matrix = Common.transpose(Common.readFromFile(fileName, "\\s+"));
@@ -84,17 +88,37 @@ public class FitnessClassic implements Fitness, Serializable, Cloneable
     {
         this.desiredOutputs = (SingleOutput)desiredOutputs;
         this.weights = weights;
+        useHits = config.useHits;
+        this.hitsTolerance = config.hitsTolerance;
     }
 
-    public double[] calculate(Output outputs, Individual ind, ProblemData problemData)
+    public double[] calculate(Output outputs, Individual ind, ProblemData problemData, int[] wSamples)
     {
+        double hits = 0;
         double error = 0;
-        for (int i = 0; i < problemData.nSamples; i++)
+        double d = 0;
+        if (wSamples != null)
         {
-            error += Math.pow(((SingleOutput)outputs).x[i] - desiredOutputs.x[i], 2);
+            for (int i = 0; i < wSamples.length; i++)
+            {
+                d = ((SingleOutput)outputs).x[wSamples[i]] - desiredOutputs.x[wSamples[i]];
+                error += Math.pow(d, 2);
+                if (useHits && Math.abs(d)<hitsTolerance)
+                    hits++;
+            }
+        }
+        else
+        {
+            for (int i = 0; i < problemData.nSamples; i++)
+            {
+                d = ((SingleOutput)outputs).x[i] - desiredOutputs.x[i];
+                error += Math.pow(d, 2);
+                if (useHits && Math.abs(d)<hitsTolerance)
+                    hits++;
+            }
         }
         double fit = 1 / (1 + Math.sqrt(error));
-        return new double[]{fit};
+        return new double[]{fit, hits/problemData.nSamples};
     }
 
     public void assign(Individual ind, double[] fit)

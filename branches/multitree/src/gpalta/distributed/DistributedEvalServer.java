@@ -67,7 +67,7 @@ public class DistributedEvalServer implements DistributedEvalProtocol
             for (int i = 0; i < ind.length; i++)
             {
                 ind[i].evalVect(tmpOutput, tempVectorFactory, problemData);
-                fitResult[i] = fitness.calculate(tmpOutput, ind[i], problemData);
+                fitResult[i] = fitness.calculate(tmpOutput, ind[i], problemData, null);
             }
             System.out.println("Done");
             System.out.print("Sending results back to client...");
