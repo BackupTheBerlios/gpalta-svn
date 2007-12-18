@@ -1,5 +1,5 @@
 /*
- * DistanceToCentroid.java
+ * RBF.java
  *
  * Created on 03-08-2006, 12:08:15 PM
  *
@@ -24,15 +24,22 @@
 
 package gpalta.nodes;
 
-import gpalta.core.*;
+import gpalta.clustering.InformationTheory;
+import gpalta.core.Common;
+import gpalta.core.Config;
+import gpalta.core.ProblemData;
 
-public class DistanceToCentroid extends Node
+public class RBF extends Node
 {
-    public double[] c;
+    private double[] c;
+    private double sigmaFraction;
+    private double[] d;
 
     public void init(Config config, ProblemData problemData)
     {
         c = new double[problemData.nVars];
+        d = new double[problemData.nVars];
+        sigmaFraction = 1/2 + 1.5*Common.globalRandom.nextDouble();
         for (int wVar=0; wVar< problemData.nVars; wVar++)
             c[wVar] = problemData.getMin(wVar+1) + Common.globalRandom.nextDouble() * (problemData.getMax(wVar+1)- problemData.getMin(wVar+1));
     }
@@ -40,7 +47,9 @@ public class DistanceToCentroid extends Node
     public double eval(ProblemData problemData)
     {
         double[] x = problemData.getCurrentSample();
-        return Common.dist2(x,c);
+        for (int wVar=0; wVar< problemData.nVars; wVar++)
+            d[wVar] = x[wVar] - c[wVar];
+        return InformationTheory.gaussianKernel(d, sigmaFraction*problemData.sigmaOpt2);
     }
 
     public void evalVectInternal(double[] outVect, double[][] kidsOutput, ProblemData problemData)
@@ -51,8 +60,8 @@ public class DistanceToCentroid extends Node
             x = problemData.getSample(wSample);
             outVect[wSample] = 0;
             for (int wVar=0; wVar< problemData.nVars; wVar++)
-                outVect[wSample] += Math.abs(c[wVar]-x[wVar])/ problemData.getRange(wVar+1);
-            outVect[wSample] /= problemData.nVars;
+                d[wVar] = x[wVar] - c[wVar];
+            outVect[wSample] = InformationTheory.gaussianKernel(d, sigmaFraction*problemData.sigmaOpt2);
         }
     }
 

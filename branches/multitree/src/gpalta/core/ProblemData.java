@@ -46,6 +46,7 @@ public class ProblemData implements Serializable
     public int nSamples;
     private int currentSample;
     public int nVars;
+    public double sigmaOpt2;
 
     /**
      * Get the current value for a variable

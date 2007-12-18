@@ -68,7 +68,7 @@ nClasses = 2
 sigma = 0
 subSamplingRatio = 1
 normalizeOutputs = true
-useParetoRadius = false
+useNeighborhood = false
 discretize = false
 
 #------------ General behavior ------------

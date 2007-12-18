@@ -101,7 +101,7 @@ public class Config implements Serializable
     public double sigma = 0;
     public double subSamplingRatio = 1;
     public boolean normalizeOutputs = true;
-    public boolean useParetoRadius = false;
+    public boolean useNeighborhood = false;
     public boolean discretize = false;
 
     //------------ General behavior ------------
