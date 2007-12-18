@@ -302,7 +302,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
                 {
                     infoi[wCluster] += probTj[wCluster]*kerneliij;
                 }
-                sumKernel += kernelii[j];
+                sumKernel += kerneliij;
             }
             info += Common.dotProduct(probT[ii], infoi);
         }

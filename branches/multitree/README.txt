@@ -65,7 +65,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 Important notice:
 
-GPalta uses JChart2d for plotting inside the graphical interface.
+GPalta uses JChart2D for plotting inside the graphical interface.
 JChart2D is a minimalistic charting library published under the LGPL.
 For more details, see the project web page:
 http://jchart2d.sourceforge.net
