@@ -1,5 +1,5 @@
 /*
- * Nodo.java
+ * Node.java
  *
  * Created on 10 de mayo de 2005, 09:54 PM
  *

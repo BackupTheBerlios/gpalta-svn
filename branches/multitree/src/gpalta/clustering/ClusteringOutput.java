@@ -3,7 +3,7 @@
  *
  * Created on 1 de junio de 2006, 05:52 PM
  *
- * Copyright (C) 2006 Neven Boric <nboric@gmail.com>
+ * Copyright (C) 2006, 2007 Neven Boric <nboric@gmail.com>
  *
  * This file is part of GPalta.
  *
@@ -24,12 +24,8 @@
 
 package gpalta.clustering;
 
-import gpalta.core.*;
 import gpalta.multitree.MultiOutput;
 
-/**
- * @author neven
- */
 public class ClusteringOutput extends MultiOutput
 {
     public double[][] prototypes;

@@ -25,7 +25,6 @@
 package gpalta.ops;
 
 import gpalta.core.Tree;
-import gpalta.nodes.*;
 
 import java.util.*;
 

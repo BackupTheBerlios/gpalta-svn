@@ -24,7 +24,6 @@
 
 package gpalta.multitree;
 
-import gpalta.core.Logger;
 import gpalta.core.Output;
 import gpalta.core.Common;
 

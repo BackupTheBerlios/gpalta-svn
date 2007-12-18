@@ -24,8 +24,6 @@
 
 package gpalta.core;
 
-import gpalta.nodes.*;
-
 
 /**
  * Simple class that holds some statistics about the ongoing Evolution

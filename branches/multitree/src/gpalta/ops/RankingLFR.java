@@ -26,7 +26,6 @@
 package gpalta.ops;
 
 import gpalta.core.Individual;
-import gpalta.nodes.*;
 
 import java.util.*;
 

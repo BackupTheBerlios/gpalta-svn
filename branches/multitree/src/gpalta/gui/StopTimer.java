@@ -24,7 +24,6 @@
 
 package gpalta.gui;
 
-import java.io.IOException;
 import java.util.*;
 
 import gpalta.core.*;
