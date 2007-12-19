@@ -392,16 +392,20 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
     private void calcProb(Output outputs, ProblemData problemData)
     {
         int nClusters = outputs.getDim();
-        prob = new double[nClusters][];
+        int nSamples = problemData.nSamples;
+
+        if (prob==null || prob.length != nClusters || prob[0]==null)
+            prob = new double[nClusters][nSamples];
+
         double[] probCluster;
         for (int wCluster = 0; wCluster < nClusters; wCluster++)
         {
-            prob[wCluster] = ((MultiOutput)outputs).getArrayCopy(wCluster);
+            System.arraycopy(((MultiOutput)outputs).getArray(wCluster),0,prob[wCluster],0,nSamples);
         }
 
         if (config.useHits || config.discretize)
         {
-            for (int wSample=0; wSample< problemData.nSamples; wSample++)
+            for (int wSample=0; wSample< nSamples; wSample++)
             {
                 winner[wSample] = 0;
                 double max = prob[0][wSample];
@@ -426,7 +430,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
 
         if (config.discretize)
         {
-            for (int wSample=0; wSample< problemData.nSamples; wSample++)
+            for (int wSample=0; wSample< nSamples; wSample++)
             {
                 for (int wCluster = 0; wCluster <nClusters; wCluster++)
                 {
@@ -439,7 +443,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
         for (int wCluster = 0; wCluster <nClusters; wCluster++)
         {
             probCluster = prob[wCluster];
-            for (int wSample=0; wSample< problemData.nSamples; wSample++)
+            for (int wSample=0; wSample< nSamples; wSample++)
             {
                 probCluster[wSample] += 0.05;
                 if (probCluster[wSample] > 1)
@@ -448,7 +452,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
         }
 
 
-        for (int wSample=0; wSample< problemData.nSamples; wSample++)
+        for (int wSample=0; wSample< nSamples; wSample++)
         {
             double sum = prob[0][wSample];
             for (int wCluster = 1; wCluster <nClusters; wCluster++)
