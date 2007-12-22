@@ -1,0 +1,13 @@
+nOperators = 5
+useEqProb = false
+
+op1 = gpalta.multitree.operators.ReplaceWorstWithMostSimilarIfBetter
+op1UpProb = .2
+op2 = gpalta.multitree.operators.CrossRandomWithMostSimilar
+op2UpProb = .4
+op3 = gpalta.multitree.operators.MutateRandomTree
+op3UpProb = .6
+op4 =  gpalta.multitree.operators.ReplaceWorstWithMostSimilarIfBetterMutInf
+op4UpProb = .8
+op5 = gpalta.multitree.operators.ExchangeRandomWithMostSimilar
+op5UpProb = 1
