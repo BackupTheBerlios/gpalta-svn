@@ -394,7 +394,7 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
         int nClusters = outputs.getDim();
         int nSamples = problemData.nSamples;
 
-        if (prob==null || prob.length != nClusters || prob[0]==null)
+        if (prob==null || prob.length != nClusters || prob[0]==null || prob[0].length != nSamples)
             prob = new double[nClusters][nSamples];
 
         double[] probCluster;
@@ -405,6 +405,8 @@ public class FitnessClusteringCS implements Fitness, Serializable, Cloneable
 
         if (config.useHits || config.discretize)
         {
+            if (winner.length != nSamples)
+                winner = new int[nSamples];
             for (int wSample=0; wSample< nSamples; wSample++)
             {
                 winner[wSample] = 0;
